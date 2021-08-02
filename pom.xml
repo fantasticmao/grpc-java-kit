@@ -41,13 +41,13 @@
 
     <issueManagement>
         <system>github</system>
-        <url>https://github.com/fantasticmao/mundo/issues/</url>
+        <url>https://github.com/fantasticmao/grpc-java-kit/issues/</url>
     </issueManagement>
 
     <modules>
         <module>grpc-kit-examples</module>
-        <module>grpc-kit-nameresolver</module>
         <module>grpc-kit-loadbalancer</module>
+        <module>grpc-kit-nameresolver</module>
         <module>grpc-kit-scalabledesign</module>
         <module>grpc-kit-monitor</module>
     </modules>
@@ -64,6 +64,8 @@
         <google.protobuf.version>3.15.3</google.protobuf.version>
         <google.protoc.version>3.15.3</google.protoc.version>
         <google.grpc.version>1.39.0</google.grpc.version>
+
+        <apache.zookeeper.version>3.7.0</apache.zookeeper.version>
     </properties>
 
     <build>
@@ -135,6 +137,31 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>cn.fantasticmao.grpc-kit</groupId>
+                <artifactId>grpc-kit-loadbalancer</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.fantasticmao.grpc-kit</groupId>
+                <artifactId>grpc-kit-nameresolver</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.fantasticmao.grpc-kit</groupId>
+                <artifactId>grpc-kit-scalabledesign</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>cn.fantasticmao.grpc-kit</groupId>
+                <artifactId>grpc-kit-monitor</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- Junit dependency -->
+            <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter</artifactId>
                 <version>${junit.version}</version>
@@ -157,6 +184,12 @@
             <!-- Google gRPC dependency -->
             <dependency>
                 <groupId>io.grpc</groupId>
+                <artifactId>grpc-core</artifactId>
+                <version>${google.grpc.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.grpc</groupId>
                 <artifactId>grpc-netty-shaded</artifactId>
                 <version>${google.grpc.version}</version>
             </dependency>
@@ -171,6 +204,13 @@
                 <groupId>io.grpc</groupId>
                 <artifactId>grpc-stub</artifactId>
                 <version>${google.grpc.version}</version>
+            </dependency>
+
+            <!-- ZooKeeper dependency -->
+            <dependency>
+                <groupId>org.apache.zookeeper</groupId>
+                <artifactId>zookeeper</artifactId>
+                <version>${apache.zookeeper.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

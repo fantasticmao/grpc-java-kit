@@ -45,5 +45,15 @@
             <groupId>io.grpc</groupId>
             <artifactId>grpc-stub</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>cn.fantasticmao.grpc-kit</groupId>
+            <artifactId>grpc-kit-nameresolver</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.zookeeper</groupId>
+            <artifactId>zookeeper</artifactId>
+        </dependency>
     </dependencies>
 </project>

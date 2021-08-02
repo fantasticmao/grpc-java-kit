@@ -6,6 +6,7 @@ import io.grpc.stub.StreamObserver;
  * GreeterServiceImpl
  *
  * @author maomao
+ * @version 1.39.0
  * @since 2021-07-31
  */
 public class GreeterServiceImpl extends GreeterServiceGrpc.GreeterServiceImplBase {

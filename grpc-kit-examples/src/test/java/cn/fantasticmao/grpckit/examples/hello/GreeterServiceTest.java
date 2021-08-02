@@ -12,6 +12,7 @@ import java.io.IOException;
  * GreeterServiceTest
  *
  * @author maomao
+ * @version 1.39.0
  * @since 2021-07-31
  */
 public class GreeterServiceTest {

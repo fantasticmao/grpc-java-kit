@@ -1,0 +1,2 @@
+cn.fantasticmao.grpckit.nameresolver.ZooKeeperNameResolverProvider
+cn.fantasticmao.grpckit.nameresolver.ConsulNameResolverProvider
