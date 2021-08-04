@@ -20,7 +20,7 @@ public class ZooKeeperNameResolverTest {
 
     @BeforeAll
     public static void beforeAll() {
-        System.setProperty(ConsulNameResolverProvider.VM_SWITCH, Boolean.FALSE.toString());
+        System.setProperty(ConsulNameResolverProvider.VM_OPTION, Boolean.FALSE.toString());
     }
 
     @Test

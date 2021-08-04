@@ -13,14 +13,14 @@ import java.net.URI;
  * @since 2021-08-03
  */
 public class ConsulNameResolverProvider extends AbstractNameResolverProvider {
-    public static final String VM_SWITCH = "io.grpc.NameResolverProvider.switch.consul";
+    public static final String VM_OPTION = "io.grpc.NameResolverProvider.switch.consul";
 
     public ConsulNameResolverProvider() {
     }
 
     @Override
-    protected String getVmSwitchKey() {
-        return VM_SWITCH;
+    protected String getVmOptionKey() {
+        return VM_OPTION;
     }
 
     @Override

@@ -1,10 +1,14 @@
 package cn.fantasticmao.grpckit.nameresolver;
 
+import cn.fantasticmao.grpckit.common.config.GrpcKitConfig;
+import cn.fantasticmao.grpckit.common.constant.Constant;
 import io.grpc.NameResolver;
 import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
 
 import java.io.IOException;
+import java.util.Objects;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -17,16 +21,32 @@ import java.util.logging.Logger;
  * @since 2021-07-31
  */
 public class ZooKeeperNameResolver extends NameResolver {
-    private static final Logger logger = Logger.getLogger(ZooKeeperNameResolver.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ZooKeeperNameResolver.class.getName());
 
     private final ZooKeeper zooKeeper;
 
-    public ZooKeeperNameResolver(String[] addresses, int sessionTimeout) throws IOException {
-        String connectString = String.join(",", addresses);
+    public ZooKeeperNameResolver() throws IOException {
+        String connectString = GrpcKitConfig.getInstance().getValue(Constant.ConfigKey.ZOOKEEPER_CONNECT_STRING);
+        Objects.requireNonNull(connectString, "ZooKeeper connect string can not be null");
+
+        int sessionTimeout;
+        int defaultSessionTimeout = 5_000;
+        String sessionTimeoutStr = GrpcKitConfig.getInstance().getValue(Constant.ConfigKey.ZOOKEEPER_SESSION_TIMEOUT,
+            String.valueOf(defaultSessionTimeout));
+        try {
+            sessionTimeout = Integer.parseInt(sessionTimeoutStr);
+        } catch (NumberFormatException e) {
+            if (LOGGER.isLoggable(Level.WARNING)) {
+                LOGGER.log(Level.WARNING, "ZooKeeper session timeout number format error, fallback to " +
+                    defaultSessionTimeout + " ms", e);
+            }
+            sessionTimeout = defaultSessionTimeout;
+        }
+
         this.zooKeeper = new ZooKeeper(connectString, sessionTimeout, event -> {
             if (Watcher.Event.KeeperState.SyncConnected.equals(event.getState())
                 && Watcher.Event.EventType.None.equals(event.getType())) {
-                logger.info("watch zookeeper connected ...");
+                LOGGER.info("Watch zookeeper connected ...");
             }
         });
     }

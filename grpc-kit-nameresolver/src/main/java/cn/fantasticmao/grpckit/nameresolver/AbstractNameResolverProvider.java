@@ -6,23 +6,24 @@ import io.grpc.NameResolverProvider;
  * AbstractNameResolverProvider
  *
  * @author maomao
+ * @version 1.39.0
  * @since 2021-08-03
  */
 public abstract class AbstractNameResolverProvider extends NameResolverProvider {
 
     /**
-     * Allow using a JVM property to disable this provider
+     * Allow using a JVM option to disable this provider
      *
      * @return JVM property key
      */
-    protected abstract String getVmSwitchKey();
+    protected abstract String getVmOptionKey();
 
     @Override
     protected boolean isAvailable() {
-        String vmSwitchKey = this.getVmSwitchKey();
+        String vmOptionKey = this.getVmOptionKey();
         // available is the default.
-        String vmSwitchProperty = System.getProperty(vmSwitchKey, Boolean.TRUE.toString());
-        return Boolean.parseBoolean(vmSwitchProperty);
+        String vmOptionalVal = System.getProperty(vmOptionKey, Boolean.TRUE.toString());
+        return Boolean.parseBoolean(vmOptionalVal);
     }
 
     @Override

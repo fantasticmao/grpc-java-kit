@@ -16,17 +16,17 @@ import java.util.logging.Logger;
  * @since 2021-07-31
  */
 public class ZooKeeperNameResolverProvider extends AbstractNameResolverProvider {
-    public static final String VM_SWITCH = "io.grpc.NameResolverProvider.switch.zookeeper";
+    public static final String VM_OPTION = "io.grpc.NameResolverProvider.switch.zookeeper";
 
-    private static final Logger logger = Logger.getLogger(ZooKeeperNameResolverProvider.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ZooKeeperNameResolverProvider.class.getName());
     private static final String SCHEME = "zookeeper";
 
     public ZooKeeperNameResolverProvider() {
     }
 
     @Override
-    protected String getVmSwitchKey() {
-        return VM_SWITCH;
+    protected String getVmOptionKey() {
+        return VM_OPTION;
     }
 
     @Override
@@ -39,18 +39,17 @@ public class ZooKeeperNameResolverProvider extends AbstractNameResolverProvider 
             Class.forName("org.apache.zookeeper.ZooKeeper");
             return true;
         } catch (ClassNotFoundException e) {
-            logger.log(Level.FINE, "Unable to find ZooKeeper NameResolver", e);
+            LOGGER.log(Level.FINE, "Unable to find ZooKeeper NameResolver", e);
             return false;
         }
     }
 
     @Override
     public ZooKeeperNameResolver newNameResolver(URI targetUri, NameResolver.Args args) {
-        // TODO how to pass args from ManagedChannel to there?
         try {
-            return new ZooKeeperNameResolver(new String[]{"localhost:2181"}, 10_000);
+            return new ZooKeeperNameResolver();
         } catch (IOException e) {
-            logger.log(Level.SEVERE, "connect to zookeeper error", e);
+            LOGGER.log(Level.SEVERE, "Connect to ZooKeeper error", e);
             throw new RuntimeException(e);
         }
     }
