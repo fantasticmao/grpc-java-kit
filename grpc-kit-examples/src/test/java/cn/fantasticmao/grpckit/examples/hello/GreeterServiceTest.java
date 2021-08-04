@@ -1,9 +1,12 @@
 package cn.fantasticmao.grpckit.examples.hello;
 
+import cn.fantasticmao.grpckit.nameresolver.ConsulNameResolverProvider;
+import cn.fantasticmao.grpckit.nameresolver.ZooKeeperNameResolverProvider;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -16,6 +19,12 @@ import java.io.IOException;
  * @since 2021-07-31
  */
 public class GreeterServiceTest {
+
+    @BeforeAll
+    public static void beforeAll() {
+        System.setProperty(ConsulNameResolverProvider.VM_OPTION, Boolean.FALSE.toString());
+        System.setProperty(ZooKeeperNameResolverProvider.VM_OPTION, Boolean.FALSE.toString());
+    }
 
     @Test
     public void greeting() throws IOException {

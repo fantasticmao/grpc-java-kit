@@ -41,7 +41,7 @@ public class GrpcKitConfig {
     }
 
     private void load() {
-        URL configUrl = GrpcKitConfig.class.getResource(Constant.CONFIG_FILE_PATH);
+        URL configUrl = Thread.currentThread().getContextClassLoader().getResource(Constant.CONFIG_FILE_PATH);
         if (configUrl == null) {
             if (LOGGER.isLoggable(Level.WARNING)) {
                 LOGGER.warning("Not exists grpc-kit config file: \"" + Constant.CONFIG_FILE_PATH + "\"");
