@@ -2,7 +2,6 @@ package cn.fantasticmao.grpckit.nameresolver;
 
 import io.grpc.NameResolver;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -46,12 +45,7 @@ public class ZooKeeperNameResolverProvider extends AbstractNameResolverProvider 
 
     @Override
     public ZooKeeperNameResolver newNameResolver(URI targetUri, NameResolver.Args args) {
-        try {
-            return new ZooKeeperNameResolver();
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Connect to ZooKeeper error", e);
-            throw new RuntimeException(e);
-        }
+        return new ZooKeeperNameResolver();
     }
 
     @Override

@@ -11,8 +11,8 @@ public interface Constant {
     String CONFIG_FILE_PATH = "grpc-kit.properties";
 
     enum ConfigKey {
-        ZOOKEEPER_CONNECT_STRING("grpc.nameresolver.zookeeper.connect-string"),
-        ZOOKEEPER_SESSION_TIMEOUT("grpc.nameresolver.zookeeper.session-timeout");
+        ZOOKEEPER_CONNECT_STRING("nameresolver.zookeeper.connect-string"),
+        ZOOKEEPER_SESSION_TIMEOUT("nameresolver.zookeeper.session-timeout");
 
         public final String code;
 

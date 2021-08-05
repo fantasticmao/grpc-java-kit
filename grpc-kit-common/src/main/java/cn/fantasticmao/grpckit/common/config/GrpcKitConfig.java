@@ -36,7 +36,7 @@ public class GrpcKitConfig {
         return instance;
     }
 
-    public GrpcKitConfig() {
+    private GrpcKitConfig() {
         this.properties = new Properties();
     }
 
