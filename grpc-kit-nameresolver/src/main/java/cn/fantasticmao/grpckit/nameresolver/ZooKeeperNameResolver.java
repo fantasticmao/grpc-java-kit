@@ -16,8 +16,14 @@ import java.util.logging.Logger;
 public class ZooKeeperNameResolver extends NameResolver {
     private static final Logger LOGGER = Logger.getLogger(ZooKeeperNameResolver.class.getName());
 
-    public ZooKeeperNameResolver() {
+    private final String path;
+    private final ServiceNameResolver.Registry registry;
+    private final ServiceNameResolver.Discovery discovery;
 
+    public ZooKeeperNameResolver(String path) {
+        this.path = path;
+        this.registry = ZooKeeperNameResolverExecutor.getInstance();
+        this.discovery = ZooKeeperNameResolverExecutor.getInstance();
     }
 
     @Override

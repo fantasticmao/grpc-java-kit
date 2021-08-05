@@ -3,12 +3,10 @@ package cn.fantasticmao.grpckit.examples.nameresolver;
 import cn.fantasticmao.grpckit.examples.hello.GreeterProto;
 import cn.fantasticmao.grpckit.examples.hello.GreeterServiceGrpc;
 import cn.fantasticmao.grpckit.examples.hello.GreeterServiceImpl;
-import cn.fantasticmao.grpckit.nameresolver.ConsulNameResolverProvider;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -22,14 +20,8 @@ import java.io.IOException;
  */
 public class ZooKeeperNameResolverTest {
 
-    @BeforeAll
-    public static void beforeAll() {
-        System.setProperty(ConsulNameResolverProvider.VM_OPTION, Boolean.FALSE.toString());
-    }
-
     @Test
     public void zooKeeperNameResolver() throws IOException {
-        final String host = "localhost";
         final int port = 50051;
 
         Server server = ServerBuilder
@@ -41,7 +33,7 @@ public class ZooKeeperNameResolverTest {
 
         try {
             ManagedChannel channel = ManagedChannelBuilder
-                .forAddress(host, port)
+                .forTarget("zookeeper://localhost:" + port)
                 .usePlaintext()
                 .build();
             GreeterServiceGrpc.GreeterServiceBlockingStub stub = GreeterServiceGrpc.newBlockingStub(channel);

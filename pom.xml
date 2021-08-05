@@ -67,7 +67,7 @@
         <google.protoc.version>3.15.3</google.protoc.version>
         <google.grpc.version>1.39.0</google.grpc.version>
 
-        <apache.zookeeper.version>3.7.0</apache.zookeeper.version>
+        <curator5.version>5.2.0</curator5.version>
     </properties>
 
     <build>
@@ -220,11 +220,11 @@
                 <version>${google.grpc.version}</version>
             </dependency>
 
-            <!-- ZooKeeper dependency -->
+            <!-- Curator(to ZooKeeper) dependency -->
             <dependency>
-                <groupId>org.apache.zookeeper</groupId>
-                <artifactId>zookeeper</artifactId>
-                <version>${apache.zookeeper.version}</version>
+                <groupId>org.apache.curator</groupId>
+                <artifactId>curator-framework</artifactId>
+                <version>${curator5.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
