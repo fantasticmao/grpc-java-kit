@@ -49,7 +49,6 @@
         <module>grpc-kit-common</module>
         <module>grpc-kit-loadbalancer</module>
         <module>grpc-kit-nameresolver</module>
-        <module>grpc-kit-scalabledesign</module>
         <module>grpc-kit-monitor</module>
     </modules>
 
@@ -153,12 +152,6 @@
             <dependency>
                 <groupId>cn.fantasticmao.grpc-kit</groupId>
                 <artifactId>grpc-kit-nameresolver</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>cn.fantasticmao.grpc-kit</groupId>
-                <artifactId>grpc-kit-scalabledesign</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
