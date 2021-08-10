@@ -7,6 +7,7 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -18,6 +19,7 @@ import java.io.IOException;
  * @version 1.39.0
  * @since 2021-08-03
  */
+@Disabled("Need ZooKeeper dependencies")
 public class ZooKeeperNameResolverTest {
 
     @Test

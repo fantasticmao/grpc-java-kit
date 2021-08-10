@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
  * @version 1.39.0
  * @since 2021/8/5
  */
-@Disabled
+@Disabled("Need ZooKeeper dependencies")
 public class ZooKeeperNameResolverExecutorTest {
 
     @Test
