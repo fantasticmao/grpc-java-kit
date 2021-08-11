@@ -7,9 +7,9 @@
 ## 依赖关系
 
 ```text
-+-----------------+   +-----------------+
-| grpc-kit-client |   | grpc-kit-server |
-+-----------------+   +-----------------+
++---------------+   +-----------------+
+| grpc-kit-stub |   | grpc-kit-server |
++---------------+   +-----------------+
 
 +-----------------------+   +-----------------------+   +------------------+
 | grpc-kit-nameresolver |   | grpc-kit-loadbalancer |   | grpc-kit-monitor |
@@ -24,12 +24,12 @@
 
 ### RPC 通信
 
-- [x] 原生 grpc-java
+- [x] 原生 [gRPC-Java](https://github.com/grpc/grpc-java)
 
 ### 服务治理
 
 - 服务注册、服务发现
-    - [ ] 多租户
+    - [ ] 分组
     - [ ] ZooKeeper、Consul
 - 负载均衡、流量管理
     - [ ] 轮训、随机、加权随机
@@ -37,6 +37,6 @@
     - [ ] 超时重试、限流熔断、服务降级
     - [ ] 策略下发
 - 可观测性
-    - [ ] 监控告警(Grafana + Webhook)
+    - [ ] 监控告警(Grafana + Webhooks)
     - [ ] 调用链路（OpenTracing）
     - [ ] gRPC 调用的吞吐、延迟、状态码分布
