@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 /**
  * ZooKeeperNameResolverExecutorTest
  *
- * @author maomao
+ * @author fantasticmao
  * @version 1.39.0
  * @since 2021/8/5
  */

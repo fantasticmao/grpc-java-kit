@@ -5,7 +5,7 @@ import io.grpc.NameResolver;
 /**
  * ConsulNameResolver
  *
- * @author maomao
+ * @author fantasticmao
  * @version 1.39.0
  * @see io.grpc.internal.DnsNameResolver
  * @since 2021-08-03

@@ -1,30 +1,30 @@
 package cn.fantasticmao.grpckit.nameresolver;
 
 import cn.fantasticmao.grpckit.common.config.GrpcKitConfig;
-import cn.fantasticmao.grpckit.common.constant.Constant;
+import cn.fantasticmao.grpckit.common.config.GrpcKitConfigKey;
 import com.google.common.base.Preconditions;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * ZooKeeperNameResolverExecutor
  *
- * @author maomao
+ * @author fantasticmao
  * @version 1.39.0
  * @since 2021/8/5
  */
 public class ZooKeeperNameResolverExecutor implements ServiceNameResolver.Registry, ServiceNameResolver.Discovery {
     private static volatile ZooKeeperNameResolverExecutor instance;
 
-    private static final Logger LOGGER = Logger.getLogger(ZooKeeperNameResolverExecutor.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(ZooKeeperNameResolverExecutor.class);
     private final CuratorFramework client;
 
     public static ZooKeeperNameResolverExecutor getInstance() {
@@ -39,23 +39,11 @@ public class ZooKeeperNameResolverExecutor implements ServiceNameResolver.Regist
     }
 
     private ZooKeeperNameResolverExecutor() {
-        String connectString = GrpcKitConfig.getInstance().getValue(Constant.ConfigKey.ZOOKEEPER_CONNECT_STRING);
+        String connectString = GrpcKitConfig.getInstance().getValue(GrpcKitConfigKey.ZOOKEEPER_CONNECT_STRING);
         Preconditions.checkNotNull(connectString, "ZooKeeper connect string can not be null");
 
-        int sessionTimeout;
-        int defaultSessionTimeout = 5_000;
-        String sessionTimeoutStr = GrpcKitConfig.getInstance().getValue(Constant.ConfigKey.ZOOKEEPER_SESSION_TIMEOUT,
-            String.valueOf(defaultSessionTimeout));
-        try {
-            sessionTimeout = Integer.parseInt(sessionTimeoutStr);
-        } catch (NumberFormatException e) {
-            if (LOGGER.isLoggable(Level.WARNING)) {
-                LOGGER.log(Level.WARNING, "ZooKeeper session timeout number format error, fallback to " +
-                    defaultSessionTimeout + " ms", e);
-            }
-            sessionTimeout = defaultSessionTimeout;
-        }
-
+        int sessionTimeout = GrpcKitConfig.getInstance().getIntValue(GrpcKitConfigKey.ZOOKEEPER_SESSION_TIMEOUT,
+            5_000);
         RetryPolicy retryPolicy = new ExponentialBackoffRetry(5_000, 3);
         this.client = CuratorFrameworkFactory.builder()
             .connectString(connectString)
@@ -67,7 +55,7 @@ public class ZooKeeperNameResolverExecutor implements ServiceNameResolver.Regist
         try {
             client.blockUntilConnected(5, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            LOGGER.log(Level.SEVERE, "Connect to ZooKeeper error", e);
+            LOGGER.error("Connect to ZooKeeper error", e);
             throw new RuntimeException(e);
         }
     }

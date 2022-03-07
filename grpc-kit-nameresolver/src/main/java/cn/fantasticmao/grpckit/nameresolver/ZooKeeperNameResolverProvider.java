@@ -3,21 +3,21 @@ package cn.fantasticmao.grpckit.nameresolver;
 import com.google.common.base.Preconditions;
 import io.grpc.NameResolver;
 import io.grpc.NameResolverProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URI;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * A provider for {@link ZooKeeperNameResolver}.
  *
- * @author maomao
+ * @author fantasticmao
  * @version 1.39.0
  * @see io.grpc.internal.DnsNameResolverProvider
  * @since 2021-07-31
  */
 public class ZooKeeperNameResolverProvider extends NameResolverProvider {
-    private static final Logger LOGGER = Logger.getLogger(ZooKeeperNameResolverProvider.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(ZooKeeperNameResolverProvider.class);
     private static final String SCHEME = "zookeeper";
 
     public ZooKeeperNameResolverProvider() {
@@ -29,7 +29,7 @@ public class ZooKeeperNameResolverProvider extends NameResolverProvider {
             Class.forName("org.apache.curator.framework.CuratorFramework");
             return true;
         } catch (ClassNotFoundException e) {
-            LOGGER.log(Level.FINE, "Unable to load ZooKeeper NameResolver", e);
+            LOGGER.error("Unable to load ZooKeeper NameResolver", e);
             return false;
         }
     }
