@@ -1,10 +1,15 @@
 package cn.fantasticmao.grpckit.examples.hello;
 
+import cn.fantasticmao.grpckit.examples.proto.GreeterServiceGrpc;
+import cn.fantasticmao.grpckit.examples.proto.HelloRequest;
+import cn.fantasticmao.grpckit.examples.proto.HelloResponse;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
@@ -16,9 +21,10 @@ import java.io.IOException;
  * @since 2021-07-31
  */
 public class GreeterServiceTest {
+    private static final Logger LOGGER = LoggerFactory.getLogger(GreeterServiceTest.class);
 
     @Test
-    public void greeting() throws IOException {
+    public void sayHello() throws IOException {
         final String host = "localhost";
         final int port = 50051;
 
@@ -27,7 +33,7 @@ public class GreeterServiceTest {
             .addService(new GreeterServiceImpl())
             .build();
         server.start();
-        System.out.println("Server *** started, listening on " + port);
+        LOGGER.info("Server *** started, listening on {}", port);
 
         try {
             ManagedChannel channel = ManagedChannelBuilder
@@ -35,15 +41,15 @@ public class GreeterServiceTest {
                 .usePlaintext()
                 .build();
             GreeterServiceGrpc.GreeterServiceBlockingStub stub = GreeterServiceGrpc.newBlockingStub(channel);
-            GreeterProto.HelloRequest request = GreeterProto.HelloRequest.newBuilder()
+            HelloRequest request = HelloRequest.newBuilder()
                 .setName("fantasticmao")
                 .build();
-            System.out.println("Client *** greeting, name: " + request.getName());
-            GreeterProto.HelloResponse response = stub.sayHello(request);
-            System.out.println("Client *** receive a new message: " + response.getMessage());
+            LOGGER.info("Client *** greeting, name: {}", request.getName());
+            HelloResponse response = stub.sayHello(request);
+            LOGGER.info("Client *** receive a new message: {}", response.getMessage());
         } finally {
             server.shutdown();
-            System.out.println("Server *** terminated");
+            LOGGER.info("Server *** terminated");
         }
     }
 }

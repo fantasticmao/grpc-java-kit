@@ -5,22 +5,6 @@
 [![Maven Central](https://img.shields.io/maven-central/v/cn.fantasticmao.grpc-kit/grpc-kit-all.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22cn.fantasticmao.grpc-kit%22)
 [![image](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/fantasticmao/grpc-java-kit/blob/main/LICENSE)
 
-## 依赖关系
-
-```text
-+---------------+   +-----------------+
-| grpc-kit-stub |   | grpc-kit-server |
-+---------------+   +-----------------+
-
-+-----------------------+   +-----------------------+   +------------------+
-| grpc-kit-nameresolver |   | grpc-kit-loadbalancer |   | grpc-kit-monitor |
-+-----------------------+   +-----------------------+   +------------------+
-
-+-----------------+
-| grpc-kit-common |
-+-----------------+
-```
-
 ## 特性列表
 
 ### RPC 通信
@@ -34,10 +18,12 @@
   - [ ] ZooKeeper、Consul
 - 负载均衡、流量管理
   - [ ] 轮训、随机、加权随机
-  - [ ] 认证授权、流量着色
-  - [ ] 超时重试、限流熔断
-  - [ ] 服务降级、策略下发
+  - [ ] 流量染色
+  - [ ] 认证授权
+- 容错设计
+  - [ ] 超时重试、快速失败
+  - [ ] 限流、熔断、降级
+  - [ ] 故障检测、策略下发
 - 可观测性
   - [ ] 监控告警(Grafana + Prometheus)
   - [ ] 调用链路（OpenTracing）
-  - [ ] gRPC 调用的吞吐、延迟、状态码分布

@@ -46,10 +46,7 @@
 
     <modules>
         <module>grpc-kit-examples</module>
-        <module>grpc-kit-common</module>
-        <module>grpc-kit-loadbalancer</module>
-        <module>grpc-kit-nameresolver</module>
-        <module>grpc-kit-monitor</module>
+        <module>grpc-kit-kernel</module>
     </modules>
 
     <properties>
@@ -146,25 +143,7 @@
         <dependencies>
             <dependency>
                 <groupId>cn.fantasticmao.grpc-kit</groupId>
-                <artifactId>grpc-kit-common</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>cn.fantasticmao.grpc-kit</groupId>
-                <artifactId>grpc-kit-loadbalancer</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>cn.fantasticmao.grpc-kit</groupId>
-                <artifactId>grpc-kit-nameresolver</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>cn.fantasticmao.grpc-kit</groupId>
-                <artifactId>grpc-kit-monitor</artifactId>
+                <artifactId>grpc-kit-kernel</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -181,6 +160,13 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>${slf4j.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-simple</artifactId>
+                <version>${slf4j.version}</version>
+                <scope>test</scope>
             </dependency>
 
             <dependency>
