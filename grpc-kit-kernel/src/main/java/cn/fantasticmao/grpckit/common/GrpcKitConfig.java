@@ -43,6 +43,7 @@ public class GrpcKitConfig {
     private void load() {
         URL configUrl = Thread.currentThread().getContextClassLoader().getResource(Constant.CONFIG_FILE_PATH);
         if (configUrl == null) {
+            // TODO throw exception
             LOGGER.warn("Not exists grpc-kit config file: \"{}\"", Constant.CONFIG_FILE_PATH);
             return;
         }
@@ -50,6 +51,7 @@ public class GrpcKitConfig {
         try (FileInputStream in = new FileInputStream(configUrl.getPath())) {
             properties.load(in);
         } catch (IOException e) {
+            // TODO throw exception
             LOGGER.error("Load grpc-kit config file: \"{}\" error", Constant.CONFIG_FILE_PATH, e);
         }
     }

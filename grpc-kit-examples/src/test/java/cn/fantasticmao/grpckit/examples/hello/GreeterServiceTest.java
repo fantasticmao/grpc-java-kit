@@ -1,5 +1,7 @@
 package cn.fantasticmao.grpckit.examples.hello;
 
+import cn.fantasticmao.grpckit.common.GrpcKitConfig;
+import cn.fantasticmao.grpckit.common.GrpcKitConfigKey;
 import cn.fantasticmao.grpckit.examples.proto.GreeterServiceGrpc;
 import cn.fantasticmao.grpckit.examples.proto.HelloRequest;
 import cn.fantasticmao.grpckit.examples.proto.HelloResponse;
@@ -7,11 +9,13 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * GreeterServiceTest
@@ -20,6 +24,7 @@ import java.io.IOException;
  * @version 1.39.0
  * @since 2021-07-31
  */
+@Disabled
 public class GreeterServiceTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(GreeterServiceTest.class);
 
@@ -36,11 +41,14 @@ public class GreeterServiceTest {
         LOGGER.info("Server *** started, listening on {}", port);
 
         try {
+            final String connectString = GrpcKitConfig.getInstance()
+                .getValue(GrpcKitConfigKey.ZOOKEEPER_CONNECT_STRING);
             ManagedChannel channel = ManagedChannelBuilder
-                .forAddress(host, port)
+                .forTarget(("zookeeper://" + connectString + "/example_service"))
                 .usePlaintext()
                 .build();
-            GreeterServiceGrpc.GreeterServiceBlockingStub stub = GreeterServiceGrpc.newBlockingStub(channel);
+            GreeterServiceGrpc.GreeterServiceBlockingStub stub = GreeterServiceGrpc.newBlockingStub(channel)
+                .withDeadlineAfter(5, TimeUnit.SECONDS);
             HelloRequest request = HelloRequest.newBuilder()
                 .setName("fantasticmao")
                 .build();

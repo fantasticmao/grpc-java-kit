@@ -8,8 +8,7 @@ package cn.fantasticmao.grpckit.common;
  * @since 2022/3/7
  */
 public enum GrpcKitConfigKey {
-    ZOOKEEPER_CONNECT_STRING("nameresolver.zookeeper.connect-string"),
-    ZOOKEEPER_SESSION_TIMEOUT("nameresolver.zookeeper.session-timeout");
+    ZOOKEEPER_CONNECT_STRING("nameresolver.zookeeper.connect-string");
 
     public final String code;
 

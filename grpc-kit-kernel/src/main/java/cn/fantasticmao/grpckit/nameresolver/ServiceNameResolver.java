@@ -11,13 +11,13 @@ public interface ServiceNameResolver {
 
     interface Registry {
 
-        void doRegistry(String path, String data) throws Exception;
+        void doRegistry(String path, String data);
 
     }
 
     interface Discovery {
 
-        String lookup(String path) throws Exception;
+        String lookup(String path);
 
     }
 }
