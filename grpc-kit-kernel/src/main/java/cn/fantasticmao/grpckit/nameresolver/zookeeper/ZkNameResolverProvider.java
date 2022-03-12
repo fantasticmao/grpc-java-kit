@@ -44,12 +44,7 @@ public class ZkNameResolverProvider extends NameResolverProvider {
         if (!SCHEME.equalsIgnoreCase(targetUri.getScheme())) {
             return null;
         }
-
-        // TODO check arguments
-        String connectString = targetUri.getAuthority();
-        int sessionTimeout = 5_000;
-        String serviceName = targetUri.getPath();
-        return new ZkNameResolver(connectString, sessionTimeout, serviceName);
+        return new ZkNameResolver(targetUri, args);
     }
 
     @Override

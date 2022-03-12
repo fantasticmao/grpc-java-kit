@@ -1,5 +1,9 @@
 package cn.fantasticmao.grpckit.nameresolver;
 
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.util.List;
+
 /**
  * ServiceNameResolver
  *
@@ -11,13 +15,13 @@ public interface ServiceNameResolver {
 
     interface Registry {
 
-        void doRegistry(String path, String data);
+        void doRegistry(String serviceName, SocketAddress address);
 
     }
 
     interface Discovery {
 
-        String lookup(String path);
+        List<InetSocketAddress> lookup(String serviceName);
 
     }
 }

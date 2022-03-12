@@ -43,12 +43,14 @@ public class GreeterServiceTest {
         try {
             final String connectString = GrpcKitConfig.getInstance()
                 .getValue(GrpcKitConfigKey.ZOOKEEPER_CONNECT_STRING);
+            final int timeout = GrpcKitConfig.getInstance()
+                .getIntValue(GrpcKitConfigKey.GRPC_CLIENT_TIMEOUT, 5_000);
             ManagedChannel channel = ManagedChannelBuilder
                 .forTarget(("zookeeper://" + connectString + "/example_service"))
                 .usePlaintext()
                 .build();
             GreeterServiceGrpc.GreeterServiceBlockingStub stub = GreeterServiceGrpc.newBlockingStub(channel)
-                .withDeadlineAfter(5, TimeUnit.SECONDS);
+                .withDeadlineAfter(timeout, TimeUnit.MILLISECONDS);
             HelloRequest request = HelloRequest.newBuilder()
                 .setName("fantasticmao")
                 .build();
