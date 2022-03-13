@@ -1,7 +1,6 @@
 package cn.fantasticmao.grpckit;
 
 import io.grpc.NameResolver;
-import io.grpc.NameResolverProvider;
 
 import java.net.InetSocketAddress;
 import java.util.List;
@@ -24,15 +23,4 @@ public abstract class ServiceDiscovery extends NameResolver {
      */
     protected abstract List<InetSocketAddress> lookup(String serviceName);
 
-    /**
-     * A provider for {@link ServiceDiscovery}.
-     *
-     * @author fantasticmao
-     * @version 1.39.0
-     * @see io.grpc.internal.DnsNameResolverProvider
-     * @since 2022-03-13
-     */
-    public abstract static class Provider extends NameResolverProvider {
-        protected static final int DEFAULT_PRIORITY = 5;
-    }
 }

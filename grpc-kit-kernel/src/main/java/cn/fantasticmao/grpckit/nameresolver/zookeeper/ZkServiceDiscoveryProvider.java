@@ -1,6 +1,6 @@
 package cn.fantasticmao.grpckit.nameresolver.zookeeper;
 
-import cn.fantasticmao.grpckit.ServiceDiscovery;
+import cn.fantasticmao.grpckit.ServiceDiscoveryProvider;
 import io.grpc.NameResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +14,7 @@ import java.net.URI;
  * @version 1.39.0
  * @since 2021-07-31
  */
-public class ZkServiceDiscoveryProvider extends ServiceDiscovery.Provider implements ZkServiceBased {
+public class ZkServiceDiscoveryProvider extends ServiceDiscoveryProvider implements ZkServiceBased {
     private static final Logger LOGGER = LoggerFactory.getLogger(ZkServiceDiscoveryProvider.class);
 
     public ZkServiceDiscoveryProvider() {

@@ -1,6 +1,7 @@
 package cn.fantasticmao.grpckit.support;
 
 import cn.fantasticmao.grpckit.ServiceRegistry;
+import cn.fantasticmao.grpckit.ServiceRegistryProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,9 +22,9 @@ public interface ServerBuddy {
     Logger LOGGER = LoggerFactory.getLogger(ServerBuddy.class);
 
     static void registerService(String serviceUri, int port) {
-        ServiceLoader<ServiceRegistry.Provider> providers
-            = ServiceLoader.load(ServiceRegistry.Provider.class);
-        List<ServiceRegistry.Provider> providerList = providers.stream()
+        ServiceLoader<ServiceRegistryProvider> providers
+            = ServiceLoader.load(ServiceRegistryProvider.class);
+        List<ServiceRegistryProvider> providerList = providers.stream()
             .map(ServiceLoader.Provider::get)
             .sorted()
             .collect(Collectors.toList());
@@ -31,7 +32,7 @@ public interface ServerBuddy {
         URI uri = URI.create(serviceUri);
         // FIXME
         InetSocketAddress address = new InetSocketAddress("127.0.0.1", port);
-        for (ServiceRegistry.Provider provider : providerList) {
+        for (ServiceRegistryProvider provider : providerList) {
             if (!provider.isAvailable()) {
                 continue;
             }

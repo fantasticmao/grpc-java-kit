@@ -1,6 +1,7 @@
 package cn.fantasticmao.grpckit.nameresolver.zookeeper;
 
 import cn.fantasticmao.grpckit.ServiceRegistry;
+import cn.fantasticmao.grpckit.ServiceRegistryProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +14,7 @@ import java.net.URI;
  * @version 1.39.0
  * @since 2022-03-13
  */
-public class ZkServiceRegistryProvider extends ServiceRegistry.Provider implements ZkServiceBased {
+public class ZkServiceRegistryProvider extends ServiceRegistryProvider implements ZkServiceBased {
     private static final Logger LOGGER = LoggerFactory.getLogger(ZkServiceRegistryProvider.class);
 
     public ZkServiceRegistryProvider() {
