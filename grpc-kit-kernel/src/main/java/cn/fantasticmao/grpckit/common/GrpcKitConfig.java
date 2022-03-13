@@ -43,16 +43,13 @@ public class GrpcKitConfig {
     private void load() {
         URL configUrl = Thread.currentThread().getContextClassLoader().getResource(Constant.CONFIG_FILE_PATH);
         if (configUrl == null) {
-            // TODO throw exception
-            LOGGER.warn("Not exists grpc-kit config file: \"{}\"", Constant.CONFIG_FILE_PATH);
-            return;
+            throw new GrpcKitException("Load grpc-kit config error, " + Constant.CONFIG_FILE_PATH + " file not exists");
         }
 
         try (FileInputStream in = new FileInputStream(configUrl.getPath())) {
             properties.load(in);
         } catch (IOException e) {
-            // TODO throw exception
-            LOGGER.error("Load grpc-kit config file: \"{}\" error", Constant.CONFIG_FILE_PATH, e);
+            throw new GrpcKitException("Load grpc-kit config error, file path: " + Constant.CONFIG_FILE_PATH, e);
         }
     }
 
@@ -72,8 +69,7 @@ public class GrpcKitConfig {
         try {
             return Integer.valueOf(value);
         } catch (NumberFormatException e) {
-            LOGGER.error("Convert grpc-kit config value \"{}\" to Integer error, fall back to default value \"{}\"",
-                value, defaultValue, e);
+            LOGGER.error("Convert value {} to Integer error, falling back to: {}", value, defaultValue, e);
             return defaultValue;
         }
     }

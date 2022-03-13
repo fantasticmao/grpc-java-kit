@@ -2,6 +2,7 @@ package cn.fantasticmao.grpckit.nameresolver.zookeeper;
 
 import cn.fantasticmao.grpckit.common.GrpcKitConfig;
 import cn.fantasticmao.grpckit.common.GrpcKitConfigKey;
+import cn.fantasticmao.grpckit.common.GrpcKitException;
 import cn.fantasticmao.grpckit.nameresolver.ServiceNameResolver;
 import io.grpc.EquivalentAddressGroup;
 import io.grpc.NameResolver;
@@ -14,7 +15,6 @@ import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 import java.net.URI;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -57,9 +57,7 @@ public class ZkNameResolver extends NameResolver implements ServiceNameResolver.
         try {
             this.zkClient.blockUntilConnected(5, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            LOGGER.error("Connect to ZooKeeper error", e);
-            // TODO throw exception
-            throw new RuntimeException(e);
+            throw new GrpcKitException("Connect to ZooKeeper error", e);
         }
 
         List<EquivalentAddressGroup> servers = this.lookup(serviceName).stream()
@@ -78,34 +76,36 @@ public class ZkNameResolver extends NameResolver implements ServiceNameResolver.
 
     @Override
     public List<InetSocketAddress> lookup(String serviceName) {
+        String root = "/grpc-java";
+        String group = "/server/default";
+        String path = root + serviceName + group;
+
+        final List<String> serverList;
         try {
-            String root = "/grpc-java";
-            String group = "/server/default";
-            String path = root + serviceName + group;
-            List<String> serverList = this.zkClient.getChildren().forPath(path);
-            return serverList.stream()
-                .map(address -> {
-                    String[] authorities = address.split(":");
-                    final String host = authorities[0];
-                    int port;
-                    if (authorities.length > 1) {
-                        try {
-                            port = Integer.parseInt(authorities[1]);
-                        } catch (NumberFormatException e) {
-                            // falling back to default port
-                            port = GrpcKitConfig.getInstance().getIntValue(GrpcKitConfigKey.GRPC_SERVER_PORT, 50051);
-                            LOGGER.warn("Parse port in address: {} error, falling back to: {}", address, port, e);
-                        }
-                    } else {
-                        // use default port
-                        port = GrpcKitConfig.getInstance().getIntValue(GrpcKitConfigKey.GRPC_SERVER_PORT, 50051);
-                    }
-                    return new InetSocketAddress(host, port);
-                })
-                .collect(Collectors.toList());
+            serverList = this.zkClient.getChildren().forPath(path);
         } catch (Exception e) {
-            LOGGER.error("ZooKeeper client error", e);
-            return Collections.emptyList();
+            throw new GrpcKitException("Get server list from ZooKeeper error", e);
         }
+        return serverList.stream()
+            .map(address -> {
+                String[] authorities = address.split(":");
+                final String host = authorities[0];
+                int port;
+                if (authorities.length > 1) {
+                    try {
+                        port = Integer.parseInt(authorities[1]);
+                    } catch (NumberFormatException e) {
+                        // falling back to default port
+                        port = GrpcKitConfig.getInstance().getIntValue(GrpcKitConfigKey.GRPC_SERVER_PORT, 50051);
+                        LOGGER.warn("Parse port in address: {} error, falling back to: {}", address, port, e);
+                    }
+                } else {
+                    // use default port
+                    port = GrpcKitConfig.getInstance().getIntValue(GrpcKitConfigKey.GRPC_SERVER_PORT, 50051);
+                }
+                return new InetSocketAddress(host, port);
+            })
+            .collect(Collectors.toList());
+
     }
 }

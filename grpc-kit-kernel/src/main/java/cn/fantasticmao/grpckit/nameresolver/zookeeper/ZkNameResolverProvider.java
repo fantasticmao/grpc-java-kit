@@ -28,7 +28,7 @@ public class ZkNameResolverProvider extends NameResolverProvider {
             Class.forName("org.apache.curator.framework.CuratorFramework");
             return true;
         } catch (ClassNotFoundException e) {
-            LOGGER.error("Unable to load ZooKeeper NameResolver", e);
+            LOGGER.error("Unable to load ZooKeeper NameResolver, can't found dependency: curator-framework", e);
             return false;
         }
     }
