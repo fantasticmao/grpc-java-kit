@@ -1,10 +1,11 @@
 package cn.fantasticmao.grpckit.examples.hello;
 
-import cn.fantasticmao.grpckit.common.GrpcKitConfig;
-import cn.fantasticmao.grpckit.common.GrpcKitConfigKey;
+import cn.fantasticmao.grpckit.GrpcKitConfig;
+import cn.fantasticmao.grpckit.GrpcKitConfigKey;
 import cn.fantasticmao.grpckit.examples.proto.GreeterServiceGrpc;
 import cn.fantasticmao.grpckit.examples.proto.HelloRequest;
 import cn.fantasticmao.grpckit.examples.proto.HelloResponse;
+import cn.fantasticmao.grpckit.support.ServerBuddy;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.Server;
@@ -30,23 +31,25 @@ public class GreeterServiceTest {
 
     @Test
     public void sayHello() throws IOException {
-        final String host = "localhost";
         final int port = 50051;
+        final String zkConnectString = GrpcKitConfig.getInstance()
+            .getValue(GrpcKitConfigKey.ZOOKEEPER_CONNECT_STRING);
+        final String serviceName = "example_service";
+        final String serviceUri = "zookeeper://" + zkConnectString + "/" + serviceName;
 
         Server server = ServerBuilder
             .forPort(port)
             .addService(new GreeterServiceImpl())
             .build();
         server.start();
+        ServerBuddy.registerService(serviceUri, port);
         LOGGER.info("Server *** started, listening on {}", port);
 
         try {
-            final String connectString = GrpcKitConfig.getInstance()
-                .getValue(GrpcKitConfigKey.ZOOKEEPER_CONNECT_STRING);
             final int timeout = GrpcKitConfig.getInstance()
                 .getIntValue(GrpcKitConfigKey.GRPC_CLIENT_TIMEOUT, 5_000);
             ManagedChannel channel = ManagedChannelBuilder
-                .forTarget(("zookeeper://" + connectString + "/example_service"))
+                .forTarget(serviceUri)
                 .usePlaintext()
                 .build();
             GreeterServiceGrpc.GreeterServiceBlockingStub stub = GreeterServiceGrpc.newBlockingStub(channel)
@@ -59,7 +62,7 @@ public class GreeterServiceTest {
             LOGGER.info("Client *** receive a new message: {}", response.getMessage());
         } finally {
             server.shutdown();
-            LOGGER.info("Server *** terminated");
+            LOGGER.info("Server *** shutdown and terminated");
         }
     }
 }

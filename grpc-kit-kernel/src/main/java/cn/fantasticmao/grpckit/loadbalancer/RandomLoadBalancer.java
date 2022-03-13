@@ -1,7 +1,7 @@
-package cn.fantasticmao.grpckit.loadbalance;
+package cn.fantasticmao.grpckit.loadbalancer;
 
 /**
- * RandomLoadBalance
+ * Random service load balancer.
  *
  * @author fantasticmao
  * @version 1.39.0

@@ -1,7 +1,7 @@
-package cn.fantasticmao.grpckit.common;
+package cn.fantasticmao.grpckit;
 
 /**
- * GrpcKitConfigKey
+ * Keys for {@link GrpcKitConfig}.
  *
  * @author fantasticmao
  * @since 1.39.0

@@ -1,6 +1,5 @@
-package cn.fantasticmao.grpckit.common;
+package cn.fantasticmao.grpckit;
 
-import cn.fantasticmao.grpckit.constant.Constant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,7 +11,7 @@ import java.net.URL;
 import java.util.Properties;
 
 /**
- * GrpcKitConfig
+ * Read configs from the specified file.
  *
  * @author fantasticmao
  * @version 1.39.0

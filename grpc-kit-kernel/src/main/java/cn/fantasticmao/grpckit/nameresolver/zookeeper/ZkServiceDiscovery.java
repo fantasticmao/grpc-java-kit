@@ -1,9 +1,9 @@
 package cn.fantasticmao.grpckit.nameresolver.zookeeper;
 
-import cn.fantasticmao.grpckit.common.GrpcKitConfig;
-import cn.fantasticmao.grpckit.common.GrpcKitConfigKey;
-import cn.fantasticmao.grpckit.common.GrpcKitException;
-import cn.fantasticmao.grpckit.nameresolver.ServiceNameResolver;
+import cn.fantasticmao.grpckit.GrpcKitConfig;
+import cn.fantasticmao.grpckit.GrpcKitConfigKey;
+import cn.fantasticmao.grpckit.GrpcKitException;
+import cn.fantasticmao.grpckit.ServiceDiscovery;
 import io.grpc.EquivalentAddressGroup;
 import io.grpc.NameResolver;
 import org.apache.curator.RetryPolicy;
@@ -20,22 +20,20 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
- * A ZooKeeper-based {@link NameResolver}.
+ * A ZooKeeper based {@link ServiceDiscovery}.
  *
  * @author fantasticmao
  * @version 1.39.0
- * @see io.grpc.internal.DnsNameResolver
- * @see <a href="https://zookeeper.apache.org/">Apache ZooKeeper</a>
  * @since 2021-07-31
  */
-public class ZkNameResolver extends NameResolver implements ServiceNameResolver.Discovery {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ZkNameResolver.class);
+class ZkServiceDiscovery extends ServiceDiscovery implements ZkServiceBased {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ZkServiceDiscovery.class);
 
     private final String connectString;
     private final String serviceName;
     private final CuratorFramework zkClient;
 
-    public ZkNameResolver(URI targetUri, NameResolver.Args args) {
+    ZkServiceDiscovery(URI targetUri, NameResolver.Args args) {
         this.connectString = targetUri.getAuthority();
         this.serviceName = targetUri.getPath();
 
@@ -71,20 +69,19 @@ public class ZkNameResolver extends NameResolver implements ServiceNameResolver.
 
     @Override
     public void shutdown() {
-        zkClient.close();
+        if (this.zkClient != null) {
+            this.zkClient.close();
+        }
     }
 
     @Override
-    public List<InetSocketAddress> lookup(String serviceName) {
-        String root = "/grpc-java";
-        String group = "/server/default";
-        String path = root + serviceName + group;
-
+    protected List<InetSocketAddress> lookup(String serviceName) {
+        final String path = getServerPath(serviceName);
         final List<String> serverList;
         try {
             serverList = this.zkClient.getChildren().forPath(path);
         } catch (Exception e) {
-            throw new GrpcKitException("Get server list from ZooKeeper error", e);
+            throw new GrpcKitException("Get server list error", e);
         }
         return serverList.stream()
             .map(address -> {
@@ -106,6 +103,5 @@ public class ZkNameResolver extends NameResolver implements ServiceNameResolver.
                 return new InetSocketAddress(host, port);
             })
             .collect(Collectors.toList());
-
     }
 }

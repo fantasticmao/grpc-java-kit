@@ -1,7 +1,7 @@
-package cn.fantasticmao.grpckit.common;
+package cn.fantasticmao.grpckit;
 
 /**
- * GrpcKitException
+ * Wrap exceptions in gRPC Java Kit.
  *
  * @author fantasticmao
  * @version 1.39.0

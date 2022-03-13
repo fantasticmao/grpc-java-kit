@@ -1,7 +1,7 @@
-package cn.fantasticmao.grpckit.constant;
+package cn.fantasticmao.grpckit;
 
 /**
- * Constant
+ * Some constants.
  *
  * @author fantasticmao
  * @version 1.39.0
