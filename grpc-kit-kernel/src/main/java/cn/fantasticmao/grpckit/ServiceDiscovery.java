@@ -6,7 +6,8 @@ import java.net.InetSocketAddress;
 import java.util.List;
 
 /**
- * Discover available service instances, implemented by using gRPC plugins.
+ * Discover available service instances, implemented by using gRPC {@link io.grpc.NameResolver}
+ * and {@link io.grpc.NameResolverProvider} plugins.
  *
  * @author fantasticmao
  * @version 1.39.0

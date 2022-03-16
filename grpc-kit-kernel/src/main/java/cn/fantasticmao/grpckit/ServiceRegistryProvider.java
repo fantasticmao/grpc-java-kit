@@ -1,5 +1,6 @@
 package cn.fantasticmao.grpckit;
 
+import javax.annotation.Nullable;
 import java.net.URI;
 
 /**
@@ -12,6 +13,7 @@ import java.net.URI;
 public abstract class ServiceRegistryProvider implements Comparable<ServiceRegistryProvider> {
     protected static final int DEFAULT_PRIORITY = 5;
 
+    @Nullable
     public abstract ServiceRegistry newServiceRegistry(URI serviceUri);
 
     public abstract String getDefaultScheme();

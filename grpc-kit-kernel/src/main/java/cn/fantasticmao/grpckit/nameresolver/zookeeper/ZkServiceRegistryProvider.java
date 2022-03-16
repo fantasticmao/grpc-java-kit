@@ -5,6 +5,7 @@ import cn.fantasticmao.grpckit.ServiceRegistryProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import java.net.URI;
 
 /**
@@ -20,6 +21,7 @@ public class ZkServiceRegistryProvider extends ServiceRegistryProvider implement
     public ZkServiceRegistryProvider() {
     }
 
+    @Nullable
     @Override
     public ServiceRegistry newServiceRegistry(URI serviceUri) {
         if (!SCHEME.equalsIgnoreCase(serviceUri.getScheme())) {

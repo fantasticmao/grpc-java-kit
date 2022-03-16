@@ -4,7 +4,9 @@ import java.io.Closeable;
 import java.net.InetSocketAddress;
 
 /**
- * Register service instance, the implementation is independent of gRPC.
+ * Register service instance, the implementation is independent of gRPC, and will
+ * be called by {@link cn.fantasticmao.grpckit.support.ServerBuddy} after the
+ * {@link io.grpc.Server} started.
  *
  * @author fantasticmao
  * @version 1.39.0
