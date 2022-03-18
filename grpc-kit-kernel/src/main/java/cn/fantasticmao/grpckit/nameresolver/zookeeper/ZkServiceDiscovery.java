@@ -1,7 +1,6 @@
 package cn.fantasticmao.grpckit.nameresolver.zookeeper;
 
 import cn.fantasticmao.grpckit.GrpcKitConfig;
-import cn.fantasticmao.grpckit.GrpcKitConfigKey;
 import cn.fantasticmao.grpckit.GrpcKitException;
 import cn.fantasticmao.grpckit.ServiceDiscovery;
 import io.grpc.EquivalentAddressGroup;
@@ -93,12 +92,12 @@ class ZkServiceDiscovery extends ServiceDiscovery implements ZkServiceBased {
                         port = Integer.parseInt(authorities[1]);
                     } catch (NumberFormatException e) {
                         // falling back to default port
-                        port = GrpcKitConfig.getInstance().getIntValue(GrpcKitConfigKey.GRPC_SERVER_PORT, 50051);
+                        port = GrpcKitConfig.getInstance().getGrpc().getServer().getPort();
                         LOGGER.warn("Parse port in address: {} error, falling back to: {}", address, port, e);
                     }
                 } else {
                     // use default port
-                    port = GrpcKitConfig.getInstance().getIntValue(GrpcKitConfigKey.GRPC_SERVER_PORT, 50051);
+                    port = GrpcKitConfig.getInstance().getGrpc().getServer().getPort();
                 }
                 return new InetSocketAddress(host, port);
             })

@@ -1,0 +1,9 @@
+grpc:
+  server:
+    port: 50051
+  client:
+    timeout: 5000
+
+nameResolver:
+  zookeeper:
+    connectString: "localhost:2181"

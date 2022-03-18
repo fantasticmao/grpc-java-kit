@@ -1,14 +1,12 @@
 package cn.fantasticmao.grpckit;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.Getter;
+import lombok.Setter;
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.constructor.Constructor;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.URL;
-import java.util.Properties;
+import java.io.InputStream;
 
 /**
  * Read configs from the specified file.
@@ -17,59 +15,63 @@ import java.util.Properties;
  * @version 1.39.0
  * @since 2021-08-04
  */
-public class GrpcKitConfig {
+@Getter
+@Setter
+public final class GrpcKitConfig {
     private static volatile GrpcKitConfig instance;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(GrpcKitConfig.class);
-    private final Properties properties;
 
     public static GrpcKitConfig getInstance() {
         if (instance == null) {
             synchronized (GrpcKitConfig.class) {
                 if (instance == null) {
-                    instance = new GrpcKitConfig();
-                    instance.load();
+                    instance = load();
                 }
             }
         }
         return instance;
     }
 
-    private GrpcKitConfig() {
-        this.properties = new Properties();
-    }
-
-    private void load() {
-        URL configUrl = Thread.currentThread().getContextClassLoader().getResource(Constant.CONFIG_FILE_PATH);
-        if (configUrl == null) {
-            throw new GrpcKitException("Load grpc-kit config error, " + Constant.CONFIG_FILE_PATH + " file not exists");
-        }
-
-        try (FileInputStream in = new FileInputStream(configUrl.getPath())) {
-            properties.load(in);
+    private static GrpcKitConfig load() {
+        Yaml yaml = new Yaml(new Constructor(GrpcKitConfig.class));
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        try (InputStream input = classLoader.getResourceAsStream(Constant.CONFIG_FILE_PATH)) {
+            return yaml.load(input);
         } catch (IOException e) {
-            throw new GrpcKitException("Load grpc-kit config error, file path: " + Constant.CONFIG_FILE_PATH, e);
+            throw new GrpcKitException("Load " + Constant.CONFIG_FILE_PATH + " config error", e);
         }
     }
 
-    @Nullable
-    public String getValue(GrpcKitConfigKey key) {
-        return properties.getProperty(key.code);
+    private Grpc grpc;
+    private NameResolver nameResolver;
+
+    @Getter
+    @Setter
+    public static class Grpc {
+        private Server server;
+        private Client client;
+
+        @Getter
+        @Setter
+        public static class Server {
+            private Integer port = 50051;
+        }
+
+        @Getter
+        @Setter
+        public static class Client {
+            private Integer timeout = 5_000;
+        }
     }
 
-    @Nonnull
-    public String getValue(GrpcKitConfigKey key, @Nonnull String defaultValue) {
-        return properties.getProperty(key.code, defaultValue);
-    }
+    @Getter
+    @Setter
+    public static class NameResolver {
+        private Zookeeper zookeeper;
 
-    @Nonnull
-    public Integer getIntValue(GrpcKitConfigKey key, @Nonnull Integer defaultValue) {
-        String value = properties.getProperty(key.code, String.valueOf(defaultValue));
-        try {
-            return Integer.valueOf(value);
-        } catch (NumberFormatException e) {
-            LOGGER.error("Convert value {} to Integer error, falling back to: {}", value, defaultValue, e);
-            return defaultValue;
+        @Getter
+        @Setter
+        public static class Zookeeper {
+            private String connectString;
         }
     }
 }

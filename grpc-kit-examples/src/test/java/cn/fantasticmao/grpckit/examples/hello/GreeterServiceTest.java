@@ -1,7 +1,6 @@
 package cn.fantasticmao.grpckit.examples.hello;
 
 import cn.fantasticmao.grpckit.GrpcKitConfig;
-import cn.fantasticmao.grpckit.GrpcKitConfigKey;
 import cn.fantasticmao.grpckit.examples.proto.GreeterServiceGrpc;
 import cn.fantasticmao.grpckit.examples.proto.HelloRequest;
 import cn.fantasticmao.grpckit.examples.proto.HelloResponse;
@@ -32,8 +31,8 @@ public class GreeterServiceTest {
     @Test
     public void sayHello() throws IOException {
         final int port = 50051;
-        final String zkConnectString = GrpcKitConfig.getInstance()
-            .getValue(GrpcKitConfigKey.ZOOKEEPER_CONNECT_STRING);
+        final String zkConnectString = GrpcKitConfig.getInstance().getNameResolver().getZookeeper()
+            .getConnectString();
         final String serviceName = "example_service";
         final String serviceUri = "zookeeper://" + zkConnectString + "/" + serviceName;
 
@@ -46,8 +45,7 @@ public class GreeterServiceTest {
         LOGGER.info("Server *** started, listening on {}", port);
 
         try {
-            final int timeout = GrpcKitConfig.getInstance()
-                .getIntValue(GrpcKitConfigKey.GRPC_CLIENT_TIMEOUT, 5_000);
+            final int timeout = GrpcKitConfig.getInstance().getGrpc().getClient().getTimeout();
             ManagedChannel channel = ManagedChannelBuilder
                 .forTarget(serviceUri)
                 .usePlaintext()

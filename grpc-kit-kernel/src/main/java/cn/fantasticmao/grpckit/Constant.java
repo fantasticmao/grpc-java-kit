@@ -8,5 +8,5 @@ package cn.fantasticmao.grpckit;
  * @since 2021-08-04
  */
 public interface Constant {
-    String CONFIG_FILE_PATH = "grpc-kit.properties";
+    String CONFIG_FILE_PATH = System.getProperty("cn.fantasticmao.grpckit.config", "grpc-kit.yaml");
 }
