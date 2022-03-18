@@ -1,5 +1,6 @@
 package cn.fantasticmao.grpckit;
 
+import javax.annotation.Nonnull;
 import java.io.Closeable;
 import java.net.InetSocketAddress;
 
@@ -21,7 +22,7 @@ public abstract class ServiceRegistry implements Closeable {
      * @param address     service address
      * @return if succeed
      */
-    public abstract boolean doRegister(String serviceName, InetSocketAddress address);
+    public abstract boolean doRegister(@Nonnull String serviceName, InetSocketAddress address);
 
     @Override
     public abstract void close();

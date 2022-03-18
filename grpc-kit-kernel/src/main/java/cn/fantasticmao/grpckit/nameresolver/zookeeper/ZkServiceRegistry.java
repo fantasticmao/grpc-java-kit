@@ -10,6 +10,7 @@ import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
@@ -39,16 +40,17 @@ class ZkServiceRegistry extends ServiceRegistry implements ZkServiceBased {
     }
 
     @Override
-    public boolean doRegister(String serviceName, InetSocketAddress address) {
+    public boolean doRegister(@Nonnull String serviceName, InetSocketAddress address) {
         try {
             this.zkClient.blockUntilConnected(5, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             throw new GrpcKitException("Connect to ZooKeeper error", e);
         }
 
+        final String group = GrpcKitConfig.getInstance().getGrpc().getServer().getGroup();
         final String host = address.getAddress().getHostAddress();
         final int port = address.getPort();
-        final String path = newServerNodePath(serviceName, host, port);
+        final String path = newServerNodePath(serviceName, group, host, port);
         final Stat stat;
         try {
             stat = this.zkClient.checkExists().forPath(path);

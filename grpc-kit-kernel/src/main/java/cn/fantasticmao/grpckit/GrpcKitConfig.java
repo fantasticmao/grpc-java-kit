@@ -53,6 +53,7 @@ public final class GrpcKitConfig {
         @Getter
         @Setter
         public static class Server {
+            private String group = "default";
             private Integer port = 50051;
             private Integer weight = 100;
             private String tag = "";
@@ -62,6 +63,7 @@ public final class GrpcKitConfig {
         @Getter
         @Setter
         public static class Client {
+            private String group = "default";
             private Integer timeout = 5_000;
         }
     }

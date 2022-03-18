@@ -2,6 +2,7 @@ package cn.fantasticmao.grpckit;
 
 import io.grpc.NameResolver;
 
+import javax.annotation.Nonnull;
 import java.net.InetSocketAddress;
 import java.util.List;
 
@@ -22,6 +23,6 @@ public abstract class ServiceDiscovery extends NameResolver {
      * @param serviceName service name
      * @return service node list
      */
-    protected abstract List<InetSocketAddress> lookup(String serviceName);
+    protected abstract List<InetSocketAddress> lookup(@Nonnull String serviceName);
 
 }

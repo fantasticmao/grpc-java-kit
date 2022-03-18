@@ -1,5 +1,7 @@
 package cn.fantasticmao.grpckit.nameresolver.zookeeper;
 
+import javax.annotation.Nonnull;
+
 /**
  * ZooKeeper based operations.
  * <p>
@@ -23,19 +25,20 @@ package cn.fantasticmao.grpckit.nameresolver.zookeeper;
  */
 public interface ZkServiceBased {
     String SCHEME = "zookeeper";
-    String PATH_ROOT = "/grpc-java";
-    String PATH_GROUP_SERVER = "/default/server";
-    String PATH_GROUP_CLIENT = "/default/client";
+    String PATH_ROOT = "grpc-java";
+    String PATH_SERVER = "server";
+    String PATH_CLIENT = "client";
 
-    default String getServerPath(String serviceName) {
-        return PATH_ROOT + serviceName + PATH_GROUP_SERVER;
+    default String getServerPath(@Nonnull String serviceName, @Nonnull String group) {
+        return String.format("/%s/%s/%s/%s", PATH_ROOT, serviceName, group, PATH_SERVER);
     }
 
-    default String newServerNodePath(String serviceName, String host, int port) {
-        return PATH_ROOT + serviceName + PATH_GROUP_SERVER + "/" + host + ":" + port;
+    default String newServerNodePath(@Nonnull String serviceName, @Nonnull String group,
+                                     @Nonnull String host, int port) {
+        return String.format("/%s/%s/%s/%s/%s:%d", PATH_ROOT, serviceName, group, PATH_SERVER, host, port);
     }
 
-    default String getClientPath(String serviceName) {
-        return PATH_ROOT + serviceName + PATH_GROUP_CLIENT;
+    default String getClientPath(@Nonnull String serviceName, @Nonnull String group) {
+        return String.format("/%s/%s/%s/%s", PATH_ROOT, serviceName, group, PATH_CLIENT);
     }
 }

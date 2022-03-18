@@ -12,6 +12,7 @@ import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.util.List;
@@ -74,8 +75,9 @@ class ZkServiceDiscovery extends ServiceDiscovery implements ZkServiceBased {
     }
 
     @Override
-    protected List<InetSocketAddress> lookup(String serviceName) {
-        final String path = getServerPath(serviceName);
+    protected List<InetSocketAddress> lookup(@Nonnull String serviceName) {
+        final String group = GrpcKitConfig.getInstance().getGrpc().getServer().getGroup();
+        final String path = getServerPath(serviceName, group);
         final List<String> serverList;
         try {
             serverList = this.zkClient.getChildren().forPath(path);
