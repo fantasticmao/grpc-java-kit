@@ -47,7 +47,7 @@ class ZkServiceRegistry extends ServiceRegistry implements ZkServiceBased {
             throw new GrpcKitException("Connect to ZooKeeper error", e);
         }
 
-        final String group = GrpcKitConfig.getInstance().getGrpc().getServer().getGroup();
+        final String group = GrpcKitConfig.getInstance().getGrpc().getGroup();
         final String host = address.getAddress().getHostAddress();
         final int port = address.getPort();
         final String path = newServerNodePath(serviceName, group, host, port);

@@ -13,7 +13,7 @@ import java.net.InetAddress;
  * @version 1.39.0
  * @since 2022-03-18
  */
-class NetUtilTest {
+public class NetUtilTest {
 
     @Test
     public void getLocalAddress() throws IOException {

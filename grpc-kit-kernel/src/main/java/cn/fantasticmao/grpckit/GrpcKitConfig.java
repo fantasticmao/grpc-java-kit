@@ -41,19 +41,19 @@ public final class GrpcKitConfig {
         }
     }
 
-    private Grpc grpc;
-    private NameResolver nameResolver;
+    private Grpc grpc = new Grpc();
+    private NameResolver nameResolver = new NameResolver();
 
     @Getter
     @Setter
     public static class Grpc {
-        private Server server;
-        private Client client;
+        private String group = "default";
+        private Server server = new Server();
+        private Client client = new Client();
 
         @Getter
         @Setter
         public static class Server {
-            private String group = "default";
             private Integer port = 50051;
             private Integer weight = 100;
             private String tag = "";
@@ -63,7 +63,6 @@ public final class GrpcKitConfig {
         @Getter
         @Setter
         public static class Client {
-            private String group = "default";
             private Integer timeout = 5_000;
         }
     }
@@ -71,12 +70,12 @@ public final class GrpcKitConfig {
     @Getter
     @Setter
     public static class NameResolver {
-        private Zookeeper zookeeper;
+        private Zookeeper zookeeper = new Zookeeper();
 
         @Getter
         @Setter
         public static class Zookeeper {
-            private String connectString;
+            private String connectString = "";
         }
     }
 }

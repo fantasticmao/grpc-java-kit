@@ -1,8 +1,10 @@
 grpc:
+  group: "dev"
   server:
-    port: 50051
+    port: 8080
     weight: 70
-    tag: "dev"
+    tag: "debug"
+    # interfaceName: en0
   client:
     timeout: 5000
 

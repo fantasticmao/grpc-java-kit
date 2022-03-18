@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
  * @version 1.39.0
  * @since 2022-03-19
  */
-class ZkServiceBasedTest {
+public class ZkServiceBasedTest {
     private final ZkServiceBased zkService = new ZkServiceBased() {
     };
 

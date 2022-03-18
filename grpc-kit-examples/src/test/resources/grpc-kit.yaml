@@ -2,7 +2,6 @@ grpc:
   server:
     port: 50051
     weight: 70
-    tag: "dev"
   client:
     timeout: 5000
 

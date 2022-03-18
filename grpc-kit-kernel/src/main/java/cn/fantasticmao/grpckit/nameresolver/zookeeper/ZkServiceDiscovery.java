@@ -76,7 +76,7 @@ class ZkServiceDiscovery extends ServiceDiscovery implements ZkServiceBased {
 
     @Override
     protected List<InetSocketAddress> lookup(@Nonnull String serviceName) {
-        final String group = GrpcKitConfig.getInstance().getGrpc().getServer().getGroup();
+        final String group = GrpcKitConfig.getInstance().getGrpc().getGroup();
         final String path = getServerPath(serviceName, group);
         final List<String> serverList;
         try {
