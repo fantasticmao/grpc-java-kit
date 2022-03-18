@@ -64,6 +64,7 @@
         <google.protobuf.version>3.15.3</google.protobuf.version>
         <google.protoc.version>3.15.3</google.protoc.version>
         <google.grpc.version>1.39.0</google.grpc.version>
+        <google.gson.version>2.9.0</google.gson.version>
 
         <curator5.version>5.2.0</curator5.version>
         <snakeyaml.version>1.30</snakeyaml.version>
@@ -219,6 +220,13 @@
                 <groupId>io.grpc</groupId>
                 <artifactId>grpc-stub</artifactId>
                 <version>${google.grpc.version}</version>
+            </dependency>
+
+            <!-- Google Gson dependency -->
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>${google.gson.version}</version>
             </dependency>
 
             <!-- Curator (ZooKeeper) dependency -->

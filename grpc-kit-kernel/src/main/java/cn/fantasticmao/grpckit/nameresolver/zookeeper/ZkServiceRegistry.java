@@ -1,7 +1,6 @@
 package cn.fantasticmao.grpckit.nameresolver.zookeeper;
 
-import cn.fantasticmao.grpckit.GrpcKitException;
-import cn.fantasticmao.grpckit.ServiceRegistry;
+import cn.fantasticmao.grpckit.*;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -13,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -62,11 +62,14 @@ class ZkServiceRegistry extends ServiceRegistry implements ZkServiceBased {
             throw new GrpcKitException(message);
         }
 
+        GrpcKitConfig.Grpc.Server serverConf = GrpcKitConfig.getInstance().getGrpc().getServer();
+        ServiceMetadata metadata = new ServiceMetadata(serverConf.getWeight(), serverConf.getTag(), Constant.VERSION);
+        String metadataJson = Constant.GSON.toJson(metadata);
         try {
             String createdPath = this.zkClient.create()
                 .creatingParentsIfNeeded()
                 .withMode(CreateMode.EPHEMERAL)
-                .forPath(path, null);
+                .forPath(path, metadataJson.getBytes(StandardCharsets.UTF_8));
             LOGGER.info("Create new server node for path: {}", createdPath);
             return true;
         } catch (Exception e) {

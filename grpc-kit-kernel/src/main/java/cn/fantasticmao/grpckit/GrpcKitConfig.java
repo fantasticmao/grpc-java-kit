@@ -54,6 +54,8 @@ public final class GrpcKitConfig {
         @Setter
         public static class Server {
             private Integer port = 50051;
+            private Integer weight = 100;
+            private String tag = "";
         }
 
         @Getter

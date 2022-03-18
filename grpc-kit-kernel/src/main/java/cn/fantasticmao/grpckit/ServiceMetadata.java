@@ -1,5 +1,8 @@
 package cn.fantasticmao.grpckit;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Service metadata
  *
@@ -7,6 +10,8 @@ package cn.fantasticmao.grpckit;
  * @version 1.39.0
  * @since 2022-03-14
  */
+@Getter
+@Setter
 public class ServiceMetadata {
     /**
      * Weights for selecting services in load balancing
@@ -26,29 +31,9 @@ public class ServiceMetadata {
     public ServiceMetadata() {
     }
 
-    // getter and setter
-
-    public Integer getWeight() {
-        return weight;
-    }
-
-    public void setWeight(Integer weight) {
+    public ServiceMetadata(Integer weight, String tag, String version) {
         this.weight = weight;
-    }
-
-    public String getTag() {
-        return tag;
-    }
-
-    public void setTag(String tag) {
         this.tag = tag;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
         this.version = version;
     }
 }
