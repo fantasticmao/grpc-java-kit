@@ -1,0 +1,11 @@
+grpc:
+  server:
+    port: 50051
+    weight: 70
+    tag: "dev"
+  client:
+    timeout: 5000
+
+nameResolver:
+  zookeeper:
+    connectString: "localhost:2181"

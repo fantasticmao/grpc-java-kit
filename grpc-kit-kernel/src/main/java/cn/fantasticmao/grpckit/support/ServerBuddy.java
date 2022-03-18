@@ -1,12 +1,12 @@
 package cn.fantasticmao.grpckit.support;
 
+import cn.fantasticmao.grpckit.GrpcKitException;
 import cn.fantasticmao.grpckit.ServiceRegistry;
 import cn.fantasticmao.grpckit.ServiceRegistryProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.InetSocketAddress;
-import java.net.URI;
+import java.net.*;
 import java.util.List;
 import java.util.ServiceLoader;
 import java.util.stream.Collectors;
@@ -29,9 +29,15 @@ public interface ServerBuddy {
             .sorted()
             .collect(Collectors.toList());
 
-        URI uri = URI.create(serviceUri);
-        // FIXME
-        InetSocketAddress address = new InetSocketAddress("127.0.0.1", port);
+        final InetAddress address;
+        try {
+            address = NetUtil.getLocalAddress();
+        } catch (SocketException | UnknownHostException e) {
+            throw new GrpcKitException("Get local address error", e);
+        }
+        final InetSocketAddress socketAddress = new InetSocketAddress(address, port);
+        final URI uri = URI.create(serviceUri);
+
         for (ServiceRegistryProvider provider : providerList) {
             if (!provider.isAvailable()) {
                 continue;
@@ -42,7 +48,7 @@ public interface ServerBuddy {
                 }
 
                 String serviceName = uri.getPath();
-                boolean result = registry.doRegister(serviceName, address);
+                boolean result = registry.doRegister(serviceName, socketAddress);
                 if (!result) {
                     LOGGER.error("Register service failed, name: {}", serviceName);
                 }
