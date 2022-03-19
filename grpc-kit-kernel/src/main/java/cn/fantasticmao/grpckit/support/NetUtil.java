@@ -56,7 +56,7 @@ public class NetUtil {
 
         // pick the prefer Network Interface
         String preferInterface = GrpcKitConfig.getInstance().getGrpc().getServer().getInterfaceName();
-        if (preferInterface != null && preferInterface.length() != 0) {
+        if (preferInterface != null) {
             for (NetworkInterface networkInterface : validNetworkInterfaces) {
                 if (Objects.equals(networkInterface.getDisplayName(), preferInterface)) {
                     validNetworkInterfaces = Collections.singletonList(networkInterface);

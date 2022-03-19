@@ -2,10 +2,6 @@ package cn.fantasticmao.grpckit;
 
 import io.grpc.NameResolver;
 
-import javax.annotation.Nonnull;
-import java.net.InetSocketAddress;
-import java.util.List;
-
 /**
  * Discover available service instances, implemented by using gRPC {@link io.grpc.NameResolver}
  * and {@link io.grpc.NameResolverProvider} plugins.
@@ -18,11 +14,18 @@ import java.util.List;
 public abstract class ServiceDiscovery extends NameResolver {
 
     /**
-     * Discover available service instances
-     *
-     * @param serviceName service name
-     * @return service node list
+     * {@inheritDoc}
      */
-    protected abstract List<InetSocketAddress> lookup(@Nonnull String serviceName);
+    public abstract String getServiceAuthority();
+
+    /**
+     * {@inheritDoc}
+     */
+    public abstract void start(Listener2 listener);
+
+    /**
+     * {@inheritDoc}
+     */
+    public abstract void shutdown();
 
 }

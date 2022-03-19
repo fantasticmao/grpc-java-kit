@@ -38,11 +38,11 @@ public class ZkServiceDiscoveryProvider extends ServiceDiscoveryProvider impleme
     }
 
     @Override
-    public NameResolver newNameResolver(URI targetUri, NameResolver.Args args) {
-        if (!SCHEME.equalsIgnoreCase(targetUri.getScheme())) {
+    public NameResolver newNameResolver(URI serviceUri, NameResolver.Args args) {
+        if (!SCHEME.equalsIgnoreCase(serviceUri.getScheme())) {
             return null;
         }
-        return new ZkServiceDiscovery(targetUri, args);
+        return new ZkServiceDiscovery(serviceUri, args);
     }
 
     @Override

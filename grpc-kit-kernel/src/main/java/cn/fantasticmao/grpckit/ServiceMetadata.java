@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Service metadata
+ * Service metadata.
  *
  * @author fantasticmao
  * @version 1.39.0

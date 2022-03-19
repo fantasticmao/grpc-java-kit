@@ -30,10 +30,6 @@ public class ZkServiceRegistryProvider extends ServiceRegistryProvider implement
         return new ZkServiceRegistry(serviceUri);
     }
 
-    public String getDefaultScheme() {
-        return SCHEME;
-    }
-
     @Override
     public boolean isAvailable() {
         try {

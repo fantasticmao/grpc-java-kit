@@ -1,13 +1,10 @@
 grpc:
   group: "dev"
+  registryUri: "zookeeper://localhost:2181"
   server:
     port: 8080
     weight: 70
     tag: "debug"
     # interfaceName: en0
   client:
-    timeout: 5000
-
-nameResolver:
-  zookeeper:
-    connectString: "localhost:2181"
+    timeoutMs: 5000

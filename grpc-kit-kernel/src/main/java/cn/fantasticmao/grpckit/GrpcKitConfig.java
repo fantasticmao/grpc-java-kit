@@ -42,12 +42,12 @@ public final class GrpcKitConfig {
     }
 
     private Grpc grpc = new Grpc();
-    private NameResolver nameResolver = new NameResolver();
 
     @Getter
     @Setter
     public static class Grpc {
         private String group = "default";
+        private String registryUri = null;
         private Server server = new Server();
         private Client client = new Client();
 
@@ -57,25 +57,13 @@ public final class GrpcKitConfig {
             private Integer port = 50051;
             private Integer weight = 100;
             private String tag = "";
-            private String interfaceName = "";
+            private String interfaceName = null;
         }
 
         @Getter
         @Setter
         public static class Client {
-            private Integer timeout = 5_000;
-        }
-    }
-
-    @Getter
-    @Setter
-    public static class NameResolver {
-        private Zookeeper zookeeper = new Zookeeper();
-
-        @Getter
-        @Setter
-        public static class Zookeeper {
-            private String connectString = "";
+            private Integer timeoutMs = 5_000;
         }
     }
 }

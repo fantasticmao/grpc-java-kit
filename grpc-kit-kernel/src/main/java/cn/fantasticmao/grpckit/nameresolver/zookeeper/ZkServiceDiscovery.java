@@ -12,7 +12,6 @@ import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nonnull;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.util.List;
@@ -30,12 +29,12 @@ class ZkServiceDiscovery extends ServiceDiscovery implements ZkServiceBased {
     private static final Logger LOGGER = LoggerFactory.getLogger(ZkServiceDiscovery.class);
 
     private final String connectString;
-    private final String serviceName;
+    private final String servicePath;
     private final CuratorFramework zkClient;
 
-    ZkServiceDiscovery(URI targetUri, NameResolver.Args args) {
-        this.connectString = targetUri.getAuthority();
-        this.serviceName = targetUri.getPath();
+    ZkServiceDiscovery(URI serviceUri, NameResolver.Args args) {
+        this.connectString = serviceUri.getAuthority();
+        this.servicePath = serviceUri.getPath();
 
         RetryPolicy retryPolicy = new ExponentialBackoffRetry(5_000, 3);
         this.zkClient = CuratorFrameworkFactory.builder()
@@ -58,7 +57,7 @@ class ZkServiceDiscovery extends ServiceDiscovery implements ZkServiceBased {
             throw new GrpcKitException("Connect to ZooKeeper error", e);
         }
 
-        List<EquivalentAddressGroup> servers = this.lookup(serviceName).stream()
+        List<EquivalentAddressGroup> servers = this.lookup().stream()
             .map(EquivalentAddressGroup::new)
             .collect(Collectors.toList());
         ResolutionResult result = ResolutionResult.newBuilder()
@@ -74,10 +73,8 @@ class ZkServiceDiscovery extends ServiceDiscovery implements ZkServiceBased {
         }
     }
 
-    @Override
-    protected List<InetSocketAddress> lookup(@Nonnull String serviceName) {
-        final String group = GrpcKitConfig.getInstance().getGrpc().getGroup();
-        final String path = getServerPath(serviceName, group);
+    private List<InetSocketAddress> lookup() {
+        final String path = PATH_ROOT + this.servicePath;
         final List<String> serverList;
         try {
             serverList = this.zkClient.getChildren().forPath(path);
