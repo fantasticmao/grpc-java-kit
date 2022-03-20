@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
+import org.yaml.snakeyaml.error.YAMLException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,8 +37,8 @@ public final class GrpcKitConfig {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         try (InputStream input = classLoader.getResourceAsStream(Constant.CONFIG_FILE_PATH)) {
             return yaml.load(input);
-        } catch (IOException e) {
-            throw new GrpcKitException("Load " + Constant.CONFIG_FILE_PATH + " config error", e);
+        } catch (IOException | YAMLException e) {
+            throw new GrpcKitException("Load config " + Constant.CONFIG_FILE_PATH + " error", e);
         }
     }
 

@@ -32,7 +32,44 @@ public class GreeterServiceTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(GreeterServiceTest.class);
 
     @Test
-    public void server() throws IOException, InterruptedException {
+    public void server_1() throws IOException, InterruptedException {
+        System.setProperty("cn.fantasticmao.grpckit.config", "grpc-kit-server-1.yaml");
+
+        final BindableService service = new GreeterServiceImpl();
+
+        final String serviceName = ServiceBuddy.getServiceName(service);
+        final String serviceGroup = GrpcKitConfig.getInstance().getGrpc().getGroup();
+        final String registryUri = GrpcKitConfig.getInstance().getGrpc().getRegistryUri();
+        Assertions.assertNotNull(registryUri);
+
+        final InetAddress address;
+        try {
+            address = NetUtil.getLocalAddress();
+        } catch (SocketException | UnknownHostException e) {
+            throw new GrpcKitException("Get local address error", e);
+        }
+
+        final int port = GrpcKitConfig.getInstance().getGrpc().getServer().getPort();
+        URI serviceUri = UriUtil.newServiceUri(URI.create(registryUri), serviceName, serviceGroup, address, port);
+
+        Server server = ServerBuilder
+            .forPort(port)
+            .addService(service)
+            .build();
+        server.start();
+
+        GrpcKitConfig.Grpc.Server serverConf = GrpcKitConfig.getInstance().getGrpc().getServer();
+        ServiceMetadata metadata = new ServiceMetadata(serverConf.getWeight(), serverConf.getTag(), Constant.VERSION);
+        ServiceBuddy.registerService(serviceUri, metadata);
+        LOGGER.info("Server *** started, listening on {}", port);
+
+        server.awaitTermination();
+    }
+
+    @Test
+    public void server_2() throws IOException, InterruptedException {
+        System.setProperty("cn.fantasticmao.grpckit.config", "grpc-kit-server-2.yaml");
+
         final BindableService service = new GreeterServiceImpl();
 
         final String serviceName = ServiceBuddy.getServiceName(service);
@@ -66,6 +103,8 @@ public class GreeterServiceTest {
 
     @Test
     public void client() {
+        System.setProperty("cn.fantasticmao.grpckit.config", "grpc-kit-client.yaml");
+
         final String serviceName = GreeterServiceGrpc.SERVICE_NAME;
         final String serviceGroup = GrpcKitConfig.getInstance().getGrpc().getGroup();
         final String registryUri = GrpcKitConfig.getInstance().getGrpc().getRegistryUri();
@@ -76,6 +115,7 @@ public class GreeterServiceTest {
 
         ManagedChannel channel = ManagedChannelBuilder
             .forTarget(serviceUri.toString())
+            .defaultLoadBalancingPolicy("round_robin")
             .usePlaintext()
             .build();
         GreeterServiceGrpc.GreeterServiceBlockingStub stub = GreeterServiceGrpc.newBlockingStub(channel)
@@ -83,8 +123,10 @@ public class GreeterServiceTest {
         HelloRequest request = HelloRequest.newBuilder()
             .setName("fantasticmao")
             .build();
-        LOGGER.info("Client *** greeting, name: {}", request.getName());
-        HelloResponse response = stub.sayHello(request);
-        LOGGER.info("Client *** receive a new message: {}", response.getMessage());
+        for (int i = 0; i < 10; i++) {
+            LOGGER.info("Client *** greeting, name: {}", request.getName());
+            HelloResponse response = stub.sayHello(request);
+            LOGGER.info("Client *** receive a new message: {}", response.getMessage());
+        }
     }
 }

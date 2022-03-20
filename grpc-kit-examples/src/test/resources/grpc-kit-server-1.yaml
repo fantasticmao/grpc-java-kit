@@ -3,5 +3,3 @@ grpc:
   server:
     port: 50051
     weight: 70
-  client:
-    timeoutMs: 5000

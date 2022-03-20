@@ -1,0 +1,4 @@
+grpc:
+  registryUri: "zookeeper://localhost:2181"
+  client:
+    timeoutMs: 5000
