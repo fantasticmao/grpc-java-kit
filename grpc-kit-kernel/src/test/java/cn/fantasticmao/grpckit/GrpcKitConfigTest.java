@@ -16,13 +16,16 @@ public class GrpcKitConfigTest {
     public void getInstance() {
         GrpcKitConfig config = GrpcKitConfig.getInstance();
         Assertions.assertEquals("dev", config.getGrpc().getGroup());
-        Assertions.assertEquals("zookeeper://localhost:2181", config.getGrpc().getRegistryUri());
-
         Assertions.assertEquals(8080, config.getGrpc().getServer().getPort());
-        Assertions.assertEquals(70, config.getGrpc().getServer().getWeight());
+        Assertions.assertEquals(5, config.getGrpc().getServer().getWeight());
         Assertions.assertEquals("debug", config.getGrpc().getServer().getTag());
         Assertions.assertNull(config.getGrpc().getServer().getInterfaceName());
+        Assertions.assertEquals(5_000, config.getGrpc().getClient().getTimeout());
 
-        Assertions.assertEquals(5000, config.getGrpc().getClient().getTimeoutMs());
+        Assertions.assertEquals("zookeeper://localhost:2181", config.getNameResolver().getRegistry());
+        Assertions.assertEquals(500, config.getNameResolver().getTimeout());
+
+        Assertions.assertEquals(1, config.getLoadBalancer().getMaxFails());
+        Assertions.assertEquals(30_000, config.getLoadBalancer().getFailTimeout());
     }
 }

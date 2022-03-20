@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * Service metadata.
+ * The metadata of service instance.
  *
  * @author fantasticmao
  * @version 1.39.0
@@ -14,17 +14,17 @@ import lombok.Setter;
 @Setter
 public class ServiceMetadata {
     /**
-     * Weights for selecting services in load balancing
+     * The weight of the server, used in service load balancing.
      */
-    private Integer weight;
+    private int weight = 1;
 
     /**
-     * Tags for selecting services in load balancing
+     * The tag of the server, used in service load balancing.
      */
     private String tag;
 
     /**
-     * Back up the gRPC version
+     * The gRPC version, for backup only.
      */
     private String version;
 

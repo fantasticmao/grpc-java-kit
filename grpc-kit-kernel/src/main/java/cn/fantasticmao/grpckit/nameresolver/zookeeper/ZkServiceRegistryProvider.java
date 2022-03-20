@@ -43,6 +43,7 @@ public class ZkServiceRegistryProvider extends ServiceRegistryProvider implement
 
     @Override
     public int priority() {
-        return DEFAULT_PRIORITY - 1;
+        // greater than the default value
+        return DEFAULT_PRIORITY + 1;
     }
 }

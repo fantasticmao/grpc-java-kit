@@ -1,7 +1,7 @@
 package cn.fantasticmao.grpckit.nameresolver.zookeeper;
 
 /**
- * ZooKeeper based operations.
+ * Service discovery and registry based on ZooKeeper.
  * <p>
  * Data model in ZooKeeper:
  * <pre>
@@ -21,7 +21,7 @@ package cn.fantasticmao.grpckit.nameresolver.zookeeper;
  * @see <a href="https://zookeeper.apache.org/">Apache ZooKeeper</a>
  * @since 2022-03-13
  */
-public interface ZkServiceBased {
+interface ZkServiceBased {
     String SCHEME = "zookeeper";
 
     String PATH_ROOT = "/grpc-java";

@@ -39,7 +39,7 @@ public interface UriUtil {
      * @param name        service name
      * @param group       service group
      * @param address     local host address
-     * @param port        listen port
+     * @param port        listening port
      * @see cn.fantasticmao.grpckit.ServiceRegistry
      * @see cn.fantasticmao.grpckit.ServiceRegistryProvider
      */

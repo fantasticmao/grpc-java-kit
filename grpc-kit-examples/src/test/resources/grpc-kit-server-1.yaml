@@ -1,5 +1,6 @@
 grpc:
-  registryUri: "zookeeper://localhost:2181"
   server:
     port: 50051
-    weight: 70
+
+nameResolver:
+  registry: "zookeeper://localhost:2181"

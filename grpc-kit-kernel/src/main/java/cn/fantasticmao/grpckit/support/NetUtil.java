@@ -13,10 +13,10 @@ import java.util.*;
  * @version 1.39.0
  * @since 2022-03-18
  */
-public class NetUtil {
-    private static final Boolean PREFER_IPV6_ADDRESSES = Boolean.getBoolean("java.net.preferIPv6Addresses");
+public interface NetUtil {
+    Boolean PREFER_IPV6_ADDRESSES = Boolean.getBoolean("java.net.preferIPv6Addresses");
 
-    public static InetAddress getLocalAddress() throws SocketException, UnknownHostException {
+    static InetAddress getLocalAddress() throws SocketException, UnknownHostException {
         List<NetworkInterface> validNetworkInterfaces = getValidNetworkInterfaces();
         for (NetworkInterface networkInterface : validNetworkInterfaces) {
             Enumeration<InetAddress> addresses = networkInterface.getInetAddresses();
@@ -41,7 +41,7 @@ public class NetUtil {
         throw new SocketException("Failed to found valid Network Interfaces");
     }
 
-    private static List<NetworkInterface> getValidNetworkInterfaces() throws SocketException {
+    static List<NetworkInterface> getValidNetworkInterfaces() throws SocketException {
         List<NetworkInterface> validNetworkInterfaces = new LinkedList<>();
         // get valid Network Interfaces
         Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();

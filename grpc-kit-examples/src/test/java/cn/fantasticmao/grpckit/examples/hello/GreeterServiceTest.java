@@ -39,8 +39,9 @@ public class GreeterServiceTest {
 
         final String serviceName = ServiceBuddy.getServiceName(service);
         final String serviceGroup = GrpcKitConfig.getInstance().getGrpc().getGroup();
-        final String registryUri = GrpcKitConfig.getInstance().getGrpc().getRegistryUri();
-        Assertions.assertNotNull(registryUri);
+
+        final String registry = GrpcKitConfig.getInstance().getNameResolver().getRegistry();
+        Assertions.assertNotNull(registry);
 
         final InetAddress address;
         try {
@@ -50,7 +51,7 @@ public class GreeterServiceTest {
         }
 
         final int port = GrpcKitConfig.getInstance().getGrpc().getServer().getPort();
-        URI serviceUri = UriUtil.newServiceUri(URI.create(registryUri), serviceName, serviceGroup, address, port);
+        URI serviceUri = UriUtil.newServiceUri(URI.create(registry), serviceName, serviceGroup, address, port);
 
         Server server = ServerBuilder
             .forPort(port)
@@ -74,8 +75,9 @@ public class GreeterServiceTest {
 
         final String serviceName = ServiceBuddy.getServiceName(service);
         final String serviceGroup = GrpcKitConfig.getInstance().getGrpc().getGroup();
-        final String registryUri = GrpcKitConfig.getInstance().getGrpc().getRegistryUri();
-        Assertions.assertNotNull(registryUri);
+
+        final String registry = GrpcKitConfig.getInstance().getNameResolver().getRegistry();
+        Assertions.assertNotNull(registry);
 
         final InetAddress address;
         try {
@@ -85,7 +87,7 @@ public class GreeterServiceTest {
         }
 
         final int port = GrpcKitConfig.getInstance().getGrpc().getServer().getPort();
-        URI serviceUri = UriUtil.newServiceUri(URI.create(registryUri), serviceName, serviceGroup, address, port);
+        URI serviceUri = UriUtil.newServiceUri(URI.create(registry), serviceName, serviceGroup, address, port);
 
         Server server = ServerBuilder
             .forPort(port)
@@ -107,15 +109,16 @@ public class GreeterServiceTest {
 
         final String serviceName = GreeterServiceGrpc.SERVICE_NAME;
         final String serviceGroup = GrpcKitConfig.getInstance().getGrpc().getGroup();
-        final String registryUri = GrpcKitConfig.getInstance().getGrpc().getRegistryUri();
-        Assertions.assertNotNull(registryUri);
 
-        URI serviceUri = UriUtil.newServiceUri(URI.create(registryUri), serviceName, serviceGroup);
-        final int timeout = GrpcKitConfig.getInstance().getGrpc().getClient().getTimeoutMs();
+        final String registry = GrpcKitConfig.getInstance().getNameResolver().getRegistry();
+        Assertions.assertNotNull(registry);
+
+        URI serviceUri = UriUtil.newServiceUri(URI.create(registry), serviceName, serviceGroup);
+        final int timeout = GrpcKitConfig.getInstance().getGrpc().getClient().getTimeout();
 
         ManagedChannel channel = ManagedChannelBuilder
             .forTarget(serviceUri.toString())
-            .defaultLoadBalancingPolicy("round_robin")
+            .defaultLoadBalancingPolicy(ServiceLoadBalancer.Policy.ROUND_ROBIN.name)
             .usePlaintext()
             .build();
         GreeterServiceGrpc.GreeterServiceBlockingStub stub = GreeterServiceGrpc.newBlockingStub(channel)

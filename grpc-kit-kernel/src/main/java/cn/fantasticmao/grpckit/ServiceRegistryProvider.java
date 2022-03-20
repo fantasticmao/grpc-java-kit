@@ -33,12 +33,12 @@ public abstract class ServiceRegistryProvider implements Comparable<ServiceRegis
 
     @Override
     public int compareTo(ServiceRegistryProvider that) {
-        int i = this.priority() - that.priority();
+        int i = that.priority() - this.priority();
         if (i != 0) {
             return i;
         } else {
-            return this.getClass().getSimpleName()
-                .compareTo(that.getClass().getSimpleName());
+            return that.getClass().getSimpleName()
+                .compareTo(this.getClass().getSimpleName());
         }
     }
 }

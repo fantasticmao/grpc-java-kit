@@ -43,20 +43,21 @@ public final class GrpcKitConfig {
     }
 
     private Grpc grpc = new Grpc();
+    private NameResolver nameResolver = new NameResolver();
+    private LoadBalancer loadBalancer = new LoadBalancer();
 
     @Getter
     @Setter
     public static class Grpc {
         private String group = "default";
-        private String registryUri = null;
         private Server server = new Server();
         private Client client = new Client();
 
         @Getter
         @Setter
         public static class Server {
-            private Integer port = 50051;
-            private Integer weight = 100;
+            private int port = 50051;
+            private int weight = 1;
             private String tag = "";
             private String interfaceName = null;
         }
@@ -64,7 +65,21 @@ public final class GrpcKitConfig {
         @Getter
         @Setter
         public static class Client {
-            private Integer timeoutMs = 5_000;
+            private int timeout = 2_000;
         }
+    }
+
+    @Getter
+    @Setter
+    public static class NameResolver {
+        private String registry = null;
+        private int timeout = 500;
+    }
+
+    @Getter
+    @Setter
+    public static class LoadBalancer {
+        private int maxFails = 1;
+        private int failTimeout = 10_000;
     }
 }

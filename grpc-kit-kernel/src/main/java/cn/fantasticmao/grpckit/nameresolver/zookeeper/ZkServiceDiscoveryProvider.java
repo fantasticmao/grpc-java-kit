@@ -33,8 +33,8 @@ public class ZkServiceDiscoveryProvider extends ServiceDiscoveryProvider impleme
 
     @Override
     protected int priority() {
-        // less than the default value
-        return DEFAULT_PRIORITY - 1;
+        // greater than the default value
+        return DEFAULT_PRIORITY + 1;
     }
 
     @Override
