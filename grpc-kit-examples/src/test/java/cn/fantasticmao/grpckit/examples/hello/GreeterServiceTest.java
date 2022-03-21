@@ -60,7 +60,8 @@ public class GreeterServiceTest {
         server.start();
 
         GrpcKitConfig.Grpc.Server serverConf = GrpcKitConfig.getInstance().getGrpc().getServer();
-        ServiceMetadata metadata = new ServiceMetadata(serverConf.getWeight(), serverConf.getTag(), Constant.VERSION);
+        ServiceMetadata metadata = new ServiceMetadata(address.getHostAddress(), port, serverConf.getWeight(),
+            serverConf.getTag(), Constant.VERSION);
         ServiceBuddy.registerService(serviceUri, metadata);
         LOGGER.info("Server *** started, listening on {}", port);
 
@@ -96,7 +97,8 @@ public class GreeterServiceTest {
         server.start();
 
         GrpcKitConfig.Grpc.Server serverConf = GrpcKitConfig.getInstance().getGrpc().getServer();
-        ServiceMetadata metadata = new ServiceMetadata(serverConf.getWeight(), serverConf.getTag(), Constant.VERSION);
+        ServiceMetadata metadata = new ServiceMetadata(address.getHostAddress(), port, serverConf.getWeight(),
+            serverConf.getTag(), Constant.VERSION);
         ServiceBuddy.registerService(serviceUri, metadata);
         LOGGER.info("Server *** started, listening on {}", port);
 

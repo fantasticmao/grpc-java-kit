@@ -1,9 +1,9 @@
 package cn.fantasticmao.grpckit.nameresolver.zookeeper;
 
-import cn.fantasticmao.grpckit.GrpcKitConfig;
+import cn.fantasticmao.grpckit.Constant;
 import cn.fantasticmao.grpckit.GrpcKitException;
 import cn.fantasticmao.grpckit.ServiceDiscovery;
-import io.grpc.EquivalentAddressGroup;
+import cn.fantasticmao.grpckit.ServiceMetadata;
 import io.grpc.NameResolver;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
@@ -12,11 +12,11 @@ import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.InetSocketAddress;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 /**
  * A ZooKeeper based {@link ServiceDiscovery}.
@@ -33,6 +33,8 @@ class ZkServiceDiscovery extends ServiceDiscovery implements ZkServiceBased {
     private final CuratorFramework zkClient;
 
     ZkServiceDiscovery(URI serviceUri, NameResolver.Args args) {
+        super(args.getOffloadExecutor());
+
         this.connectString = serviceUri.getAuthority();
         this.servicePath = serviceUri.getPath();
 
@@ -42,6 +44,12 @@ class ZkServiceDiscovery extends ServiceDiscovery implements ZkServiceBased {
             .retryPolicy(retryPolicy)
             .build();
         this.zkClient.start();
+
+        try {
+            this.zkClient.blockUntilConnected(5, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            throw new GrpcKitException("Connect to ZooKeeper error, connect string: " + this.connectString, e);
+        }
     }
 
     @Override
@@ -50,20 +58,28 @@ class ZkServiceDiscovery extends ServiceDiscovery implements ZkServiceBased {
     }
 
     @Override
-    public void start(Listener2 listener) {
+    public List<ServiceMetadata> lookup() {
+        final String path = PATH_ROOT + this.servicePath;
+        final List<String> serverList;
         try {
-            this.zkClient.blockUntilConnected(5, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            throw new GrpcKitException("Connect to ZooKeeper error", e);
+            serverList = this.zkClient.getChildren().forPath(path);
+        } catch (Exception e) {
+            throw new GrpcKitException("Get server list error, for path: " + path, e);
         }
 
-        List<EquivalentAddressGroup> servers = this.lookup().stream()
-            .map(EquivalentAddressGroup::new)
-            .collect(Collectors.toList());
-        ResolutionResult result = ResolutionResult.newBuilder()
-            .setAddresses(servers)
-            .build();
-        listener.onResult(result);
+        final List<ServiceMetadata> serviceMetadataList = new ArrayList<>(serverList.size());
+        for (String serverPath : serverList) {
+            final String metadataJson;
+            try {
+                byte[] bytes = this.zkClient.getData().forPath(path + "/" + serverPath);
+                metadataJson = new String(bytes, StandardCharsets.UTF_8);
+            } catch (Exception e) {
+                throw new GrpcKitException("Get server metadata error, for path: " + serverPath, e);
+            }
+            ServiceMetadata metadata = Constant.GSON.fromJson(metadataJson, ServiceMetadata.class);
+            serviceMetadataList.add(metadata);
+        }
+        return serviceMetadataList;
     }
 
     @Override
@@ -71,35 +87,5 @@ class ZkServiceDiscovery extends ServiceDiscovery implements ZkServiceBased {
         if (this.zkClient != null) {
             this.zkClient.close();
         }
-    }
-
-    private List<InetSocketAddress> lookup() {
-        final String path = PATH_ROOT + this.servicePath;
-        final List<String> serverList;
-        try {
-            serverList = this.zkClient.getChildren().forPath(path);
-        } catch (Exception e) {
-            throw new GrpcKitException("Get server list error", e);
-        }
-        return serverList.stream()
-            .map(address -> {
-                String[] authorities = address.split(":");
-                final String host = authorities[0];
-                int port;
-                if (authorities.length > 1) {
-                    try {
-                        port = Integer.parseInt(authorities[1]);
-                    } catch (NumberFormatException e) {
-                        // falling back to default port
-                        port = GrpcKitConfig.getInstance().getGrpc().getServer().getPort();
-                        LOGGER.warn("Parse port in address: {} error, falling back to: {}", address, port, e);
-                    }
-                } else {
-                    // use default port
-                    port = GrpcKitConfig.getInstance().getGrpc().getServer().getPort();
-                }
-                return new InetSocketAddress(host, port);
-            })
-            .collect(Collectors.toList());
     }
 }

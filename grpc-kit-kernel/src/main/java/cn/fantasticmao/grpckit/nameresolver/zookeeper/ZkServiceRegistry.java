@@ -40,26 +40,26 @@ class ZkServiceRegistry extends ServiceRegistry implements ZkServiceBased {
             .retryPolicy(retryPolicy)
             .build();
         this.zkClient.start();
+
+        try {
+            this.zkClient.blockUntilConnected(5, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            throw new GrpcKitException("Connect to ZooKeeper error, connect string: " + connectString, e);
+        }
     }
 
     @Override
     public boolean doRegister(ServiceMetadata metadata) {
-        try {
-            this.zkClient.blockUntilConnected(5, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            throw new GrpcKitException("Connect to ZooKeeper error", e);
-        }
-
         final String path = PATH_ROOT + this.servicePath;
         final Stat stat;
         try {
             stat = this.zkClient.checkExists().forPath(path);
         } catch (Exception e) {
-            throw new GrpcKitException("Exists service node error", e);
+            throw new GrpcKitException("Exists service node error, for path: " + this.servicePath, e);
         }
 
         if (stat != null) {
-            throw new GrpcKitException("Already exists service node, path: " + this.servicePath);
+            throw new GrpcKitException("Already exists service node, for path: " + this.servicePath);
         }
 
         String metadataJson = Constant.GSON.toJson(metadata);
@@ -71,7 +71,7 @@ class ZkServiceRegistry extends ServiceRegistry implements ZkServiceBased {
             LOGGER.info("Create new service node for path: {}", createdPath);
             return true;
         } catch (Exception e) {
-            throw new GrpcKitException("Create service node error", e);
+            throw new GrpcKitException("Create service node error, for metadata: " + metadataJson, e);
         }
     }
 

@@ -1,7 +1,10 @@
 package cn.fantasticmao.grpckit;
 
+import io.grpc.Attributes;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.net.InetSocketAddress;
 
 /**
  * The metadata of service instance.
@@ -13,6 +16,16 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ServiceMetadata {
+    /**
+     * The host of the server.
+     */
+    private String host;
+
+    /**
+     * The port of the server.
+     */
+    private int port;
+
     /**
      * The weight of the server, used in service load balancing.
      */
@@ -28,12 +41,29 @@ public class ServiceMetadata {
      */
     private String version;
 
+    public static final Attributes.Key<Integer> KEY_WEIGHT = Attributes.Key.create("weight");
+    public static final Attributes.Key<String> KEY_TAG = Attributes.Key.create("tag");
+
     public ServiceMetadata() {
     }
 
-    public ServiceMetadata(Integer weight, String tag, String version) {
+    public ServiceMetadata(String host, int port, Integer weight, String tag,
+                           String version) {
+        this.host = host;
+        this.port = port;
         this.weight = weight;
         this.tag = tag;
         this.version = version;
+    }
+
+    public InetSocketAddress toAddress() {
+        return new InetSocketAddress(this.host, this.port);
+    }
+
+    public Attributes toAttributes() {
+        return Attributes.newBuilder()
+            .set(KEY_WEIGHT, this.weight)
+            .set(KEY_TAG, this.tag)
+            .build();
     }
 }
