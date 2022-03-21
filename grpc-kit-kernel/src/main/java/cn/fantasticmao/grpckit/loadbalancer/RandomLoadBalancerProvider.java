@@ -8,13 +8,14 @@ import io.grpc.LoadBalancer;
  *
  * @author fantasticmao
  * @version 1.39.0
+ * @see cn.fantasticmao.grpckit.ServiceLoadBalancer.Policy#WEIGHTED_RANDOM
  * @since 2022-03-20
  */
 public class RandomLoadBalancerProvider extends ServiceLoadBalancerProvider {
 
     @Override
     public boolean isAvailable() {
-        return false;
+        return true;
     }
 
     @Override
@@ -30,6 +31,6 @@ public class RandomLoadBalancerProvider extends ServiceLoadBalancerProvider {
 
     @Override
     public LoadBalancer newLoadBalancer(LoadBalancer.Helper helper) {
-        return null;
+        return new RandomLoadBalancer(helper);
     }
 }

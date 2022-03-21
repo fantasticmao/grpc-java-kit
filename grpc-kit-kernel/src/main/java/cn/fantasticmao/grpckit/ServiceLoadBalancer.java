@@ -1,6 +1,7 @@
 package cn.fantasticmao.grpckit;
 
 import io.grpc.LoadBalancer;
+import io.grpc.Status;
 
 /**
  * Service load balancer, implemented by using gRPC {@link io.grpc.LoadBalancer}
@@ -11,6 +12,21 @@ import io.grpc.LoadBalancer;
  * @since 2022-03-20
  */
 public abstract class ServiceLoadBalancer extends LoadBalancer {
+
+    /**
+     * {@inheritDoc}
+     */
+    public abstract void handleResolvedAddresses(ResolvedAddresses resolvedAddresses);
+
+    /**
+     * {@inheritDoc}
+     */
+    public abstract void handleNameResolutionError(Status error);
+
+    /**
+     * {@inheritDoc}
+     */
+    public abstract void shutdown();
 
     public enum Policy {
         /**

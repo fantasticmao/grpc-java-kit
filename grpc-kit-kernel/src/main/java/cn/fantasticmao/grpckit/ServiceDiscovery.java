@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  */
 public abstract class ServiceDiscovery extends NameResolver {
     @Nullable
-    protected Executor executor;
+    protected final Executor executor;
 
     public ServiceDiscovery(@Nullable Executor executor) {
         this.executor = executor;

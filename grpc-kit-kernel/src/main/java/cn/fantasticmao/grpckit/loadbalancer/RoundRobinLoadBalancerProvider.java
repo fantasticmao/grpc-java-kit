@@ -8,6 +8,7 @@ import io.grpc.LoadBalancer;
  *
  * @author fantasticmao
  * @version 1.39.0
+ * @see cn.fantasticmao.grpckit.ServiceLoadBalancer.Policy#WEIGHTED_ROUND_ROBIN
  * @since 2022-03-20
  */
 public class RoundRobinLoadBalancerProvider extends ServiceLoadBalancerProvider {

@@ -1,6 +1,7 @@
 package cn.fantasticmao.grpckit.loadbalancer;
 
 import cn.fantasticmao.grpckit.ServiceLoadBalancer;
+import io.grpc.LoadBalancer;
 import io.grpc.Status;
 
 /**
@@ -8,13 +9,22 @@ import io.grpc.Status;
  *
  * @author fantasticmao
  * @version 1.39.0
- * @see io.grpc.LoadBalancer
  * @since 2022-03-08
  */
 class RandomLoadBalancer extends ServiceLoadBalancer {
+    private final LoadBalancer.Helper helper;
+
+    public RandomLoadBalancer(Helper helper) {
+        this.helper = helper;
+    }
 
     @Override
     public void handleNameResolutionError(Status error) {
+
+    }
+
+    @Override
+    public void handleResolvedAddresses(ResolvedAddresses resolvedAddresses) {
 
     }
 

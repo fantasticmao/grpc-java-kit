@@ -18,6 +18,11 @@ class RoundRobinLoadBalancer extends ServiceLoadBalancer {
     }
 
     @Override
+    public void handleResolvedAddresses(ResolvedAddresses resolvedAddresses) {
+
+    }
+
+    @Override
     public void shutdown() {
 
     }
