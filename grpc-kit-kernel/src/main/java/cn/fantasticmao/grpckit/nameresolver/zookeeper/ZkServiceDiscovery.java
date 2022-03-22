@@ -5,10 +5,7 @@ import cn.fantasticmao.grpckit.GrpcKitException;
 import cn.fantasticmao.grpckit.ServiceDiscovery;
 import cn.fantasticmao.grpckit.ServiceMetadata;
 import io.grpc.NameResolver;
-import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.CuratorFrameworkFactory;
-import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,12 +17,25 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * A ZooKeeper based {@link ServiceDiscovery}.
+ * <p>
+ * Data model in ZooKeeper:
+ * <pre>
+ *                      grpc-java
+ *                      /       \
+ *                 service-1  service-2
+ *                   /
+ *               default(group)
+ *                /    \
+ *             server client
+ *             /    \
+ * 192.168.1.1:8080 192.168.1.2:8080
+ * </pre>
  *
  * @author fantasticmao
  * @version 1.39.0
  * @since 2021-07-31
  */
-class ZkServiceDiscovery extends ServiceDiscovery implements ZkServiceBased {
+class ZkServiceDiscovery extends ServiceDiscovery {
     private static final Logger LOGGER = LoggerFactory.getLogger(ZkServiceDiscovery.class);
 
     private final String connectString;
@@ -37,13 +47,7 @@ class ZkServiceDiscovery extends ServiceDiscovery implements ZkServiceBased {
 
         this.connectString = serviceUri.getAuthority();
         this.servicePath = serviceUri.getPath();
-
-        RetryPolicy retryPolicy = new ExponentialBackoffRetry(5_000, 3);
-        this.zkClient = CuratorFrameworkFactory.builder()
-            .connectString(connectString)
-            .retryPolicy(retryPolicy)
-            .build();
-        this.zkClient.start();
+        this.zkClient = ZkClientHolder.get(this.connectString);
 
         try {
             this.zkClient.blockUntilConnected(5, TimeUnit.SECONDS);
@@ -59,7 +63,7 @@ class ZkServiceDiscovery extends ServiceDiscovery implements ZkServiceBased {
 
     @Override
     public List<ServiceMetadata> lookup() {
-        final String path = PATH_ROOT + this.servicePath;
+        final String path = this.servicePath;
         final List<String> serverList;
         try {
             serverList = this.zkClient.getChildren().forPath(path);
@@ -84,8 +88,6 @@ class ZkServiceDiscovery extends ServiceDiscovery implements ZkServiceBased {
 
     @Override
     public void shutdown() {
-        if (this.zkClient != null) {
-            this.zkClient.close();
-        }
+        LOGGER.warn("Shutdown {}", this.getClass().getName());
     }
 }

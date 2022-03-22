@@ -4,10 +4,7 @@ import cn.fantasticmao.grpckit.Constant;
 import cn.fantasticmao.grpckit.GrpcKitException;
 import cn.fantasticmao.grpckit.ServiceMetadata;
 import cn.fantasticmao.grpckit.ServiceRegistry;
-import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.CuratorFrameworkFactory;
-import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
@@ -19,12 +16,25 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * A ZooKeeper based {@link ServiceRegistry}.
+ * <p>
+ * Data model in ZooKeeper:
+ * <pre>
+ *                      grpc-java
+ *                      /       \
+ *                 service-1  service-2
+ *                   /
+ *               default(group)
+ *                /    \
+ *             server client
+ *             /    \
+ * 192.168.1.1:8080 192.168.1.2:8080
+ * </pre>
  *
  * @author fantasticmao
  * @version 1.39.0
  * @since 2022-03-13
  */
-class ZkServiceRegistry extends ServiceRegistry implements ZkServiceBased {
+class ZkServiceRegistry extends ServiceRegistry {
     private static final Logger LOGGER = LoggerFactory.getLogger(ZkServiceRegistry.class);
 
     private final String servicePath;
@@ -33,13 +43,8 @@ class ZkServiceRegistry extends ServiceRegistry implements ZkServiceBased {
     ZkServiceRegistry(URI serviceUri) {
         this.servicePath = serviceUri.getPath();
 
-        final String connectString = serviceUri.getAuthority();
-        RetryPolicy retryPolicy = new ExponentialBackoffRetry(5_000, 3);
-        this.zkClient = CuratorFrameworkFactory.builder()
-            .connectString(connectString)
-            .retryPolicy(retryPolicy)
-            .build();
-        this.zkClient.start();
+        String connectString = serviceUri.getAuthority();
+        this.zkClient = ZkClientHolder.get(connectString);
 
         try {
             this.zkClient.blockUntilConnected(5, TimeUnit.SECONDS);
@@ -50,7 +55,7 @@ class ZkServiceRegistry extends ServiceRegistry implements ZkServiceBased {
 
     @Override
     public boolean doRegister(ServiceMetadata metadata) {
-        final String path = PATH_ROOT + this.servicePath;
+        final String path = this.servicePath;
         final Stat stat;
         try {
             stat = this.zkClient.checkExists().forPath(path);
@@ -77,9 +82,6 @@ class ZkServiceRegistry extends ServiceRegistry implements ZkServiceBased {
 
     @Override
     public void close() {
-        if (this.zkClient != null) {
-            // FIXME close when server shutdown
-            // this.zkClient.close();
-        }
+        LOGGER.warn("Shutdown {}", this.getClass().getName());
     }
 }

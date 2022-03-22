@@ -14,8 +14,9 @@ import java.net.URI;
  * @version 1.39.0
  * @since 2021-07-31
  */
-public class ZkServiceDiscoveryProvider extends ServiceDiscoveryProvider implements ZkServiceBased {
+public class ZkServiceDiscoveryProvider extends ServiceDiscoveryProvider {
     private static final Logger LOGGER = LoggerFactory.getLogger(ZkServiceDiscoveryProvider.class);
+    private static final String SCHEME = "zookeeper";
 
     public ZkServiceDiscoveryProvider() {
     }

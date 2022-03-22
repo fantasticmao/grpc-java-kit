@@ -15,8 +15,9 @@ import java.net.URI;
  * @version 1.39.0
  * @since 2022-03-13
  */
-public class ZkServiceRegistryProvider extends ServiceRegistryProvider implements ZkServiceBased {
+public class ZkServiceRegistryProvider extends ServiceRegistryProvider {
     private static final Logger LOGGER = LoggerFactory.getLogger(ZkServiceRegistryProvider.class);
+    private static final String SCHEME = "zookeeper";
 
     public ZkServiceRegistryProvider() {
     }
