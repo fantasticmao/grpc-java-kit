@@ -34,18 +34,15 @@ public abstract class ServiceDiscovery extends NameResolver {
      * {@inheritDoc}
      */
     public void start(Listener2 listener) {
+        Future<List<ServiceMetadata>> future = this.executor != null
+            ? CompletableFuture.supplyAsync(this::lookup, this.executor)
+            : CompletableFuture.supplyAsync(this::lookup);
+        int timeout = GrpcKitConfig.getInstance().getNameResolver().getTimeout();
         final List<ServiceMetadata> serviceMetadataList;
-        if (this.executor != null) {
-            CompletableFuture<List<ServiceMetadata>> future
-                = CompletableFuture.supplyAsync(this::lookup, this.executor);
-            int timeout = GrpcKitConfig.getInstance().getNameResolver().getTimeout();
-            try {
-                serviceMetadataList = future.get(timeout, TimeUnit.MILLISECONDS);
-            } catch (InterruptedException | ExecutionException | TimeoutException e) {
-                throw new GrpcKitException("Service Discovery error", e);
-            }
-        } else {
-            serviceMetadataList = this.lookup();
+        try {
+            serviceMetadataList = future.get(timeout, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
+            throw new GrpcKitException("Service Discovery error", e);
         }
 
         List<EquivalentAddressGroup> servers = serviceMetadataList.stream()
