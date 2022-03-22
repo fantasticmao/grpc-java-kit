@@ -77,7 +77,6 @@ public final class GrpcKitConfig {
     public static class NameResolver {
         @Nullable
         private String registry = null;
-        private int timeout = 500;
     }
 
     @Getter

@@ -9,6 +9,7 @@ import io.grpc.Status;
  *
  * @author fantasticmao
  * @version 1.39.0
+ * @see io.grpc.internal.AutoConfiguredLoadBalancerFactory.AutoConfiguredLoadBalancer
  * @since 2022-03-20
  */
 public abstract class ServiceLoadBalancer extends LoadBalancer {

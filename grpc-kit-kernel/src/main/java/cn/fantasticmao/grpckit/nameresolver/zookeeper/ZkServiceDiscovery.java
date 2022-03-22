@@ -4,6 +4,7 @@ import cn.fantasticmao.grpckit.Constant;
 import cn.fantasticmao.grpckit.GrpcKitException;
 import cn.fantasticmao.grpckit.ServiceDiscovery;
 import cn.fantasticmao.grpckit.ServiceMetadata;
+import io.grpc.EquivalentAddressGroup;
 import io.grpc.NameResolver;
 import org.apache.curator.framework.CuratorFramework;
 import org.slf4j.Logger;
@@ -14,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * A ZooKeeper based {@link ServiceDiscovery}.
@@ -42,9 +44,10 @@ class ZkServiceDiscovery extends ServiceDiscovery {
     private final String servicePath;
     private final CuratorFramework zkClient;
 
-    ZkServiceDiscovery(URI serviceUri, NameResolver.Args args) {
-        super(args.getOffloadExecutor());
+    private boolean resolving = false;
+    private NameResolver.Listener2 listener;
 
+    ZkServiceDiscovery(URI serviceUri, NameResolver.Args args) {
         this.connectString = serviceUri.getAuthority();
         this.servicePath = serviceUri.getPath();
         this.zkClient = ZkClientHolder.get(this.connectString);
@@ -62,7 +65,44 @@ class ZkServiceDiscovery extends ServiceDiscovery {
     }
 
     @Override
-    public List<ServiceMetadata> lookup() {
+    public void start(Listener2 listener) {
+        if (this.listener != null) {
+            LOGGER.warn("Already started {}", this.getClass().getName());
+            return;
+        }
+        this.listener = listener;
+        this.resolve();
+    }
+
+    @Override
+    public void refresh() {
+        if (this.listener == null) {
+            LOGGER.warn("Not started {}", this.getClass().getName());
+            return;
+        }
+        this.resolve();
+    }
+
+    @Override
+    public void shutdown() {
+        LOGGER.info("Shutdown {}", this.getClass().getName());
+    }
+
+    private void resolve() {
+        if (this.resolving) {
+            LOGGER.warn("Already resolved {}", this.getClass().getName());
+            return;
+        }
+
+        this.resolving = true;
+        try {
+            this.lookUp();
+        } finally {
+            this.resolving = false;
+        }
+    }
+
+    private void lookUp() {
         final String path = this.servicePath;
         final List<String> serverList;
         try {
@@ -83,11 +123,14 @@ class ZkServiceDiscovery extends ServiceDiscovery {
             ServiceMetadata metadata = Constant.GSON.fromJson(metadataJson, ServiceMetadata.class);
             serviceMetadataList.add(metadata);
         }
-        return serviceMetadataList;
+
+        List<EquivalentAddressGroup> servers = serviceMetadataList.stream()
+            .map(ServiceMetadata::toAddressGroup)
+            .collect(Collectors.toList());
+        ResolutionResult result = ResolutionResult.newBuilder()
+            .setAddresses(servers)
+            .build();
+        this.listener.onResult(result);
     }
 
-    @Override
-    public void shutdown() {
-        LOGGER.warn("Shutdown {}", this.getClass().getName());
-    }
 }

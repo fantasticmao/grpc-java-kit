@@ -81,7 +81,7 @@ class ZkServiceRegistry extends ServiceRegistry {
     }
 
     @Override
-    public void close() {
-        LOGGER.warn("Shutdown {}", this.getClass().getName());
+    public void shutdown() {
+        LOGGER.info("Shutdown {}", this.getClass().getName());
     }
 }

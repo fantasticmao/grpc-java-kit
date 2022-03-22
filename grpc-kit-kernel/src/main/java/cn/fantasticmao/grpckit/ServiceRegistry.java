@@ -20,7 +20,11 @@ public abstract class ServiceRegistry implements Closeable {
      */
     public abstract boolean doRegister(ServiceMetadata metadata);
 
+    public abstract void shutdown();
+
     @Override
-    public abstract void close();
+    public void close() {
+        this.shutdown();
+    }
 
 }

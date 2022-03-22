@@ -25,7 +25,6 @@ public class GrpcKitConfigTest {
         Assertions.assertEquals(5_000, config.getGrpc().getClient().getTimeout());
 
         Assertions.assertEquals("zookeeper://localhost:2181", config.getNameResolver().getRegistry());
-        Assertions.assertEquals(500, config.getNameResolver().getTimeout());
 
         Assertions.assertEquals(1, config.getLoadBalancer().getMaxFails());
         Assertions.assertEquals(30_000, config.getLoadBalancer().getFailTimeout());

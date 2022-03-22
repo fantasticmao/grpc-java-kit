@@ -15,7 +15,7 @@ public class RandomLoadBalancerProvider extends ServiceLoadBalancerProvider {
 
     @Override
     public boolean isAvailable() {
-        return true;
+        return false;
     }
 
     @Override

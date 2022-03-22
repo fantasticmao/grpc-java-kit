@@ -2,6 +2,7 @@ package cn.fantasticmao.grpckit.nameresolver.zookeeper;
 
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
+import org.apache.curator.framework.imps.CuratorFrameworkState;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,8 +43,10 @@ class ZkClientHolder {
     static {
         Runtime.getRuntime().addShutdownHook(new Thread(() ->
             CLIENT_CACHE.forEach((connectString, client) -> {
-                LOGGER.info("Close ZooKeeper client for connect string: {}", connectString);
-                client.close();
+                if (CuratorFrameworkState.STARTED == client.getState()) {
+                    LOGGER.info("Close ZooKeeper connection for: {}", connectString);
+                    client.close();
+                }
             })
         ));
     }

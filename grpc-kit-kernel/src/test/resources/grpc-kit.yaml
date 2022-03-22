@@ -12,7 +12,6 @@ grpc:
 
 nameResolver:
   registry: "zookeeper://localhost:2181"
-  timeout: 500
 
 loadBalancer:
   maxFails: 1

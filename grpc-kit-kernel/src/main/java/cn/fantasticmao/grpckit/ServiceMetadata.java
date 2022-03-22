@@ -1,6 +1,7 @@
 package cn.fantasticmao.grpckit;
 
 import io.grpc.Attributes;
+import io.grpc.EquivalentAddressGroup;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -62,14 +63,12 @@ public class ServiceMetadata {
         this.version = version;
     }
 
-    public InetSocketAddress toAddress() {
-        return new InetSocketAddress(this.host, this.port);
-    }
-
-    public Attributes toAttributes() {
-        return Attributes.newBuilder()
+    public EquivalentAddressGroup toAddressGroup() {
+        InetSocketAddress address = new InetSocketAddress(this.host, this.port);
+        Attributes attributes = Attributes.newBuilder()
             .set(KEY_WEIGHT, this.weight)
             .set(KEY_TAG, this.tag)
             .build();
+        return new EquivalentAddressGroup(address, attributes);
     }
 }
