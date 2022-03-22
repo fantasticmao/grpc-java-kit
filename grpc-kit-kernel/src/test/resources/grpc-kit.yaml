@@ -1,3 +1,5 @@
+name: "example_service"
+
 grpc:
   group: "dev"
   server:

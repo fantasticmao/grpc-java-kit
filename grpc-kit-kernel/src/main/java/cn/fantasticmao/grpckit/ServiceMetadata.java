@@ -37,6 +37,11 @@ public class ServiceMetadata {
     private String tag;
 
     /**
+     * The application name, for backup only.
+     */
+    private String name;
+
+    /**
      * The gRPC version, for backup only.
      */
     private String version;
@@ -48,11 +53,12 @@ public class ServiceMetadata {
     }
 
     public ServiceMetadata(String host, int port, Integer weight, String tag,
-                           String version) {
+                           String name, String version) {
         this.host = host;
         this.port = port;
         this.weight = weight;
         this.tag = tag;
+        this.name = name;
         this.version = version;
     }
 

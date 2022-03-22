@@ -6,6 +6,7 @@ import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.error.YAMLException;
 
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -42,6 +43,8 @@ public final class GrpcKitConfig {
         }
     }
 
+    @Nullable
+    private String name = null;
     private Grpc grpc = new Grpc();
     private NameResolver nameResolver = new NameResolver();
     private LoadBalancer loadBalancer = new LoadBalancer();
@@ -72,6 +75,7 @@ public final class GrpcKitConfig {
     @Getter
     @Setter
     public static class NameResolver {
+        @Nullable
         private String registry = null;
         private int timeout = 500;
     }

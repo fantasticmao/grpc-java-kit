@@ -35,6 +35,9 @@ public class GreeterServiceTest {
     public void server_1() throws IOException, InterruptedException {
         System.setProperty("cn.fantasticmao.grpckit.config", "grpc-kit-server-1.yaml");
 
+        final String appName = GrpcKitConfig.getInstance().getName();
+        Assertions.assertNotNull(appName);
+
         final BindableService service = new GreeterServiceImpl();
 
         final String serviceName = ServiceBuddy.getServiceName(service);
@@ -61,7 +64,7 @@ public class GreeterServiceTest {
 
         GrpcKitConfig.Grpc.Server serverConf = GrpcKitConfig.getInstance().getGrpc().getServer();
         ServiceMetadata metadata = new ServiceMetadata(address.getHostAddress(), port, serverConf.getWeight(),
-            serverConf.getTag(), Constant.VERSION);
+            serverConf.getTag(), appName, Constant.VERSION);
         ServiceBuddy.registerService(serviceUri, metadata);
         LOGGER.info("Server *** started, listening on {}", port);
 
@@ -72,6 +75,9 @@ public class GreeterServiceTest {
     public void server_2() throws IOException, InterruptedException {
         System.setProperty("cn.fantasticmao.grpckit.config", "grpc-kit-server-2.yaml");
 
+        final String appName = GrpcKitConfig.getInstance().getName();
+        Assertions.assertNotNull(appName);
+
         final BindableService service = new GreeterServiceImpl();
 
         final String serviceName = ServiceBuddy.getServiceName(service);
@@ -98,7 +104,7 @@ public class GreeterServiceTest {
 
         GrpcKitConfig.Grpc.Server serverConf = GrpcKitConfig.getInstance().getGrpc().getServer();
         ServiceMetadata metadata = new ServiceMetadata(address.getHostAddress(), port, serverConf.getWeight(),
-            serverConf.getTag(), Constant.VERSION);
+            serverConf.getTag(), appName, Constant.VERSION);
         ServiceBuddy.registerService(serviceUri, metadata);
         LOGGER.info("Server *** started, listening on {}", port);
 
@@ -108,6 +114,9 @@ public class GreeterServiceTest {
     @Test
     public void client() {
         System.setProperty("cn.fantasticmao.grpckit.config", "grpc-kit-client.yaml");
+
+        final String appName = GrpcKitConfig.getInstance().getName();
+        Assertions.assertNotNull(appName);
 
         final String serviceName = GreeterServiceGrpc.SERVICE_NAME;
         final String serviceGroup = GrpcKitConfig.getInstance().getGrpc().getGroup();
@@ -120,6 +129,7 @@ public class GreeterServiceTest {
 
         ManagedChannel channel = ManagedChannelBuilder
             .forTarget(serviceUri.toString())
+            .userAgent(appName)
             .defaultLoadBalancingPolicy(ServiceLoadBalancer.Policy.ROUND_ROBIN.name)
             .usePlaintext()
             .build();

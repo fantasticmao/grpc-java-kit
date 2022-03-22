@@ -15,6 +15,8 @@ public class GrpcKitConfigTest {
     @Test
     public void getInstance() {
         GrpcKitConfig config = GrpcKitConfig.getInstance();
+        Assertions.assertEquals("example_service", config.getName());
+
         Assertions.assertEquals("dev", config.getGrpc().getGroup());
         Assertions.assertEquals(8080, config.getGrpc().getServer().getPort());
         Assertions.assertEquals(5, config.getGrpc().getServer().getWeight());
