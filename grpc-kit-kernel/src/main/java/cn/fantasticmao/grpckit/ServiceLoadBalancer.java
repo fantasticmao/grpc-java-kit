@@ -1,7 +1,9 @@
 package cn.fantasticmao.grpckit;
 
-import io.grpc.LoadBalancer;
-import io.grpc.Status;
+import cn.fantasticmao.grpckit.support.ValRef;
+import io.grpc.*;
+
+import javax.annotation.Nonnull;
 
 /**
  * Service load balancer, implemented by using gRPC {@link io.grpc.LoadBalancer}
@@ -13,6 +15,12 @@ import io.grpc.Status;
  * @since 2022-03-20
  */
 public abstract class ServiceLoadBalancer extends LoadBalancer {
+    /**
+     * Keep value references in {@link Attributes} of {@link LoadBalancer.Subchannel}, so that it can be modified.
+     */
+    public static final Attributes.Key<ValRef<ConnectivityStateInfo>> KEY_REF_STATE = Attributes.Key.create("state");
+    public static final Attributes.Key<ValRef<Integer>> KEY_REF_WEIGHT = Attributes.Key.create("weight");
+    public static final Attributes.Key<ValRef<String>> KEY_REF_TAG = Attributes.Key.create("tag");
 
     /**
      * {@inheritDoc}
@@ -28,6 +36,32 @@ public abstract class ServiceLoadBalancer extends LoadBalancer {
      * {@inheritDoc}
      */
     public abstract void shutdown();
+
+    /**
+     * Get the value of a specified key in {@link Attributes} of {@link EquivalentAddressGroup}.
+     */
+    @Nonnull
+    public static <T> T getAttribute(EquivalentAddressGroup addressGroup, Attributes.Key<T> key) {
+        T attribute = addressGroup.getAttributes().get(key);
+        if (attribute == null) {
+            String message = String.format("Attribute '%s' in addressGroup can not be null.", key);
+            throw new NullPointerException(message);
+        }
+        return attribute;
+    }
+
+    /**
+     * Get the {@link ValRef} of a specified key in {@link Attributes} of {@link LoadBalancer.Subchannel}.
+     */
+    @Nonnull
+    public static <T> ValRef<T> getValRef(Subchannel subChannel, Attributes.Key<ValRef<T>> key) {
+        ValRef<T> ref = subChannel.getAttributes().get(key);
+        if (ref == null) {
+            String message = String.format("Attribute '%s' in subChannel can not be null.", key);
+            throw new NullPointerException(message);
+        }
+        return ref;
+    }
 
     public enum Policy {
         /**

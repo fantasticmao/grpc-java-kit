@@ -1,5 +1,6 @@
 package cn.fantasticmao.grpckit.loadbalancer;
 
+import cn.fantasticmao.grpckit.ServiceLoadBalancer;
 import cn.fantasticmao.grpckit.ServiceLoadBalancerProvider;
 import io.grpc.LoadBalancer;
 
@@ -8,7 +9,6 @@ import io.grpc.LoadBalancer;
  *
  * @author fantasticmao
  * @version 1.39.0
- * @see cn.fantasticmao.grpckit.ServiceLoadBalancer.Policy#WEIGHTED_ROUND_ROBIN
  * @since 2022-03-20
  */
 public class RoundRobinLoadBalancerProvider extends ServiceLoadBalancerProvider {
@@ -20,17 +20,17 @@ public class RoundRobinLoadBalancerProvider extends ServiceLoadBalancerProvider 
 
     @Override
     public int getPriority() {
-        // greater than the default value
+        // greater than the default value.
         return DEFAULT_PRIORITY + 1;
     }
 
     @Override
     public String getPolicyName() {
-        return "weighted_round_robin";
+        return ServiceLoadBalancer.Policy.WEIGHTED_ROUND_ROBIN.name;
     }
 
     @Override
     public LoadBalancer newLoadBalancer(LoadBalancer.Helper helper) {
-        return null;
+        return new RoundRobinLoadBalancer();
     }
 }

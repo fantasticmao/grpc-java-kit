@@ -1,5 +1,6 @@
 package cn.fantasticmao.grpckit.loadbalancer;
 
+import cn.fantasticmao.grpckit.ServiceLoadBalancer;
 import cn.fantasticmao.grpckit.ServiceLoadBalancerProvider;
 import io.grpc.LoadBalancer;
 
@@ -8,25 +9,24 @@ import io.grpc.LoadBalancer;
  *
  * @author fantasticmao
  * @version 1.39.0
- * @see cn.fantasticmao.grpckit.ServiceLoadBalancer.Policy#WEIGHTED_RANDOM
  * @since 2022-03-20
  */
 public class RandomLoadBalancerProvider extends ServiceLoadBalancerProvider {
 
     @Override
     public boolean isAvailable() {
-        return false;
+        return true;
     }
 
     @Override
     public int getPriority() {
-        // greater than the default value
+        // greater than the default value.
         return DEFAULT_PRIORITY + 1;
     }
 
     @Override
     public String getPolicyName() {
-        return "weighted_random";
+        return ServiceLoadBalancer.Policy.WEIGHTED_RANDOM.name;
     }
 
     @Override

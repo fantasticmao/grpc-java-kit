@@ -30,12 +30,12 @@ public class ServiceMetadata {
     /**
      * The weight of the server, used in service load balancing.
      */
-    private int weight = 1;
+    private int weight = DEFAULT_WEIGHT;
 
     /**
      * The tag of the server, used in service load balancing.
      */
-    private String tag;
+    private String tag = DEFAULT_TAG;
 
     /**
      * The application name, for backup only.
@@ -47,8 +47,8 @@ public class ServiceMetadata {
      */
     private String version;
 
-    public static final Attributes.Key<Integer> KEY_WEIGHT = Attributes.Key.create("weight");
-    public static final Attributes.Key<String> KEY_TAG = Attributes.Key.create("tag");
+    public static final int DEFAULT_WEIGHT = 1;
+    public static final String DEFAULT_TAG = "";
 
     public ServiceMetadata() {
     }
@@ -66,8 +66,8 @@ public class ServiceMetadata {
     public EquivalentAddressGroup toAddressGroup() {
         InetSocketAddress address = new InetSocketAddress(this.host, this.port);
         Attributes attributes = Attributes.newBuilder()
-            .set(KEY_WEIGHT, this.weight)
-            .set(KEY_TAG, this.tag)
+            .set(ServiceDiscovery.KEY_WEIGHT, this.weight)
+            .set(ServiceDiscovery.KEY_TAG, this.tag)
             .build();
         return new EquivalentAddressGroup(address, attributes);
     }

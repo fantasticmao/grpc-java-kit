@@ -43,7 +43,7 @@ public interface NetUtil {
 
     static List<NetworkInterface> getValidNetworkInterfaces() throws SocketException {
         List<NetworkInterface> validNetworkInterfaces = new LinkedList<>();
-        // get valid Network Interfaces
+        // get valid Network Interfaces.
         Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
         while (networkInterfaces.hasMoreElements()) {
             NetworkInterface networkInterface = networkInterfaces.nextElement();
@@ -54,7 +54,7 @@ public interface NetUtil {
             validNetworkInterfaces.add(networkInterface);
         }
 
-        // pick the prefer Network Interface
+        // pick the favor Network Interface.
         String preferInterface = GrpcKitConfig.getInstance().getGrpc().getServer().getInterfaceName();
         if (preferInterface != null) {
             for (NetworkInterface networkInterface : validNetworkInterfaces) {
