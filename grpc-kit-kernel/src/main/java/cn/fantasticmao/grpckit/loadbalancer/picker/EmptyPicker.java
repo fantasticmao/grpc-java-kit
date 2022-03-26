@@ -3,6 +3,8 @@ package cn.fantasticmao.grpckit.loadbalancer.picker;
 import io.grpc.LoadBalancer;
 import io.grpc.Status;
 
+import javax.annotation.concurrent.ThreadSafe;
+
 /**
  * The empty {@link io.grpc.LoadBalancer.SubchannelPicker}.
  *
@@ -10,6 +12,7 @@ import io.grpc.Status;
  * @version 1.39.0
  * @since 2022-03-24
  */
+@ThreadSafe
 public class EmptyPicker extends LoadBalancer.SubchannelPicker {
     private final Status status;
 

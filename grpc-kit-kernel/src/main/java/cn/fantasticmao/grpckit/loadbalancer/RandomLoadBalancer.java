@@ -1,9 +1,9 @@
 package cn.fantasticmao.grpckit.loadbalancer;
 
-import cn.fantasticmao.grpckit.ServiceDiscovery;
 import cn.fantasticmao.grpckit.ServiceLoadBalancer;
 import cn.fantasticmao.grpckit.loadbalancer.picker.FailingPicker;
 import cn.fantasticmao.grpckit.loadbalancer.picker.WeightedRandomPicker;
+import cn.fantasticmao.grpckit.support.AttributeUtil;
 import cn.fantasticmao.grpckit.support.ValRef;
 import io.grpc.*;
 import org.slf4j.Logger;
@@ -56,22 +56,22 @@ class RandomLoadBalancer extends ServiceLoadBalancer {
         for (Map.Entry<List<SocketAddress>, EquivalentAddressGroup> latestEntry : latestAddressGroupMap.entrySet()) {
             final List<SocketAddress> addressList = latestEntry.getKey();
             final EquivalentAddressGroup addressGroup = latestEntry.getValue();
-            final Integer weight = RandomLoadBalancer.getAttribute(addressGroup, ServiceDiscovery.KEY_WEIGHT);
-            final String tag = RandomLoadBalancer.getAttribute(addressGroup, ServiceDiscovery.KEY_TAG);
+            final Integer weight = AttributeUtil.getAttribute(addressGroup, AttributeUtil.KEY_WEIGHT);
+            final String tag = AttributeUtil.getAttribute(addressGroup, AttributeUtil.KEY_TAG);
 
             Subchannel existingSubChannel = subChannelMap.get(addressList);
             // update existed subChannel.
             if (existingSubChannel != null) {
                 existingSubChannel.updateAddresses(Collections.singletonList(addressGroup));
-                RandomLoadBalancer.getValRef(existingSubChannel, KEY_REF_WEIGHT).value = weight;
-                RandomLoadBalancer.getValRef(existingSubChannel, KEY_REF_TAG).value = tag;
+                AttributeUtil.getValRef(existingSubChannel, AttributeUtil.KEY_REF_WEIGHT).value = weight;
+                AttributeUtil.getValRef(existingSubChannel, AttributeUtil.KEY_REF_TAG).value = tag;
                 continue;
             }
             // create a new subChannel for new addresses.
             Attributes.Builder subChannelAttrs = addressGroup.getAttributes().toBuilder()
-                .set(KEY_REF_STATE, new ValRef<>(ConnectivityStateInfo.forNonError(IDLE)))
-                .set(KEY_REF_WEIGHT, new ValRef<>(weight))
-                .set(KEY_REF_TAG, new ValRef<>(tag));
+                .set(AttributeUtil.KEY_REF_STATE, new ValRef<>(ConnectivityStateInfo.forNonError(IDLE)))
+                .set(AttributeUtil.KEY_REF_WEIGHT, new ValRef<>(weight))
+                .set(AttributeUtil.KEY_REF_TAG, new ValRef<>(tag));
             final Subchannel subChannel = helper.createSubchannel(CreateSubchannelArgs.newBuilder()
                 .setAddresses(addressGroup)
                 .setAttributes(subChannelAttrs.build())
@@ -106,7 +106,7 @@ class RandomLoadBalancer extends ServiceLoadBalancer {
 
     private void shutdownSubChannel(Subchannel subChannel) {
         subChannel.shutdown();
-        ValRef<ConnectivityStateInfo> stateRef = RandomLoadBalancer.getValRef(subChannel, KEY_REF_STATE);
+        ValRef<ConnectivityStateInfo> stateRef = AttributeUtil.getValRef(subChannel, AttributeUtil.KEY_REF_STATE);
         stateRef.value = ConnectivityStateInfo.forNonError(SHUTDOWN);
     }
 
@@ -116,7 +116,7 @@ class RandomLoadBalancer extends ServiceLoadBalancer {
         boolean isConnecting = false;
         Status aggStatus = Status.OK.withDescription("no subChannels ready");
         for (Subchannel subChannel : subChannelMap.values()) {
-            ValRef<ConnectivityStateInfo> stateRef = RandomLoadBalancer.getValRef(subChannel, KEY_REF_STATE);
+            ValRef<ConnectivityStateInfo> stateRef = AttributeUtil.getValRef(subChannel, AttributeUtil.KEY_REF_STATE);
             if (stateRef.value.getState() == READY) {
                 readySubChannelList.add(subChannel);
             }
@@ -152,7 +152,7 @@ class RandomLoadBalancer extends ServiceLoadBalancer {
      *        +------+    +------------+    +-------+
      *           ^              |               |
      *           |              v               v
-     *           +---------------+--------------+
+     *           +--------------+---------------+
      *                    IDLE TIMEOUT
      * </pre>
      */
@@ -178,7 +178,8 @@ class RandomLoadBalancer extends ServiceLoadBalancer {
                 subChannel.requestConnection();
             }
 
-            ValRef<ConnectivityStateInfo> currentStateRef = RandomLoadBalancer.getValRef(subChannel, KEY_REF_STATE);
+            ValRef<ConnectivityStateInfo> currentStateRef = AttributeUtil.getValRef(subChannel,
+                AttributeUtil.KEY_REF_STATE);
             if (currentStateRef.value.getState() == TRANSIENT_FAILURE) {
                 if (newState.getState() == CONNECTING || newState.getState() == IDLE) {
                     return;

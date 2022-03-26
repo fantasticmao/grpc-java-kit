@@ -1,18 +1,16 @@
 package cn.fantasticmao.grpckit.loadbalancer.picker;
 
 import cn.fantasticmao.grpckit.Constant;
-import cn.fantasticmao.grpckit.ServiceLoadBalancer;
+import cn.fantasticmao.grpckit.support.AttributeUtil;
 import cn.fantasticmao.grpckit.support.ValRef;
 import io.grpc.LoadBalancer;
 
 import javax.annotation.concurrent.ThreadSafe;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
-
-import static cn.fantasticmao.grpckit.ServiceLoadBalancer.KEY_REF_TAG;
-import static cn.fantasticmao.grpckit.ServiceLoadBalancer.KEY_REF_WEIGHT;
 
 /**
  * The weighted random {@link io.grpc.LoadBalancer.SubchannelPicker}, choose a
@@ -30,7 +28,7 @@ public class WeightedRandomPicker extends LoadBalancer.SubchannelPicker {
     private final List<LoadBalancer.Subchannel> list;
 
     public WeightedRandomPicker(List<LoadBalancer.Subchannel> list) {
-        this.list = list;
+        this.list = Collections.unmodifiableList(list);
     }
 
     @Override
@@ -65,12 +63,12 @@ public class WeightedRandomPicker extends LoadBalancer.SubchannelPicker {
     }
 
     private String getTag(LoadBalancer.Subchannel subChannel) {
-        ValRef<String> tagRef = ServiceLoadBalancer.getValRef(subChannel, KEY_REF_TAG);
+        ValRef<String> tagRef = AttributeUtil.getValRef(subChannel, AttributeUtil.KEY_REF_TAG);
         return tagRef.value;
     }
 
     private int getWeight(LoadBalancer.Subchannel subChannel) {
-        ValRef<Integer> weightRef = ServiceLoadBalancer.getValRef(subChannel, KEY_REF_WEIGHT);
+        ValRef<Integer> weightRef = AttributeUtil.getValRef(subChannel, AttributeUtil.KEY_REF_WEIGHT);
         return weightRef.value;
     }
 }

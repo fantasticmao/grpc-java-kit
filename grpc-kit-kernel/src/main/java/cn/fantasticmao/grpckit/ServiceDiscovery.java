@@ -1,6 +1,5 @@
 package cn.fantasticmao.grpckit;
 
-import io.grpc.Attributes;
 import io.grpc.NameResolver;
 
 /**
@@ -13,8 +12,6 @@ import io.grpc.NameResolver;
  * @since 2022-03-13
  */
 public abstract class ServiceDiscovery extends NameResolver {
-    public static final Attributes.Key<Integer> KEY_WEIGHT = Attributes.Key.create("weight");
-    public static final Attributes.Key<String> KEY_TAG = Attributes.Key.create("tag");
 
     /**
      * {@inheritDoc}
