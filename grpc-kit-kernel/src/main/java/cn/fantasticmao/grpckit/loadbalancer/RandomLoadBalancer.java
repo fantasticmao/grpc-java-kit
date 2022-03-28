@@ -155,6 +155,22 @@ class RandomLoadBalancer extends ServiceLoadBalancer {
      *           +--------------+---------------+
      *                    IDLE TIMEOUT
      * </pre>
+     * <p>
+     * The following list lists the legal transitions from one state to another and corresponding reasons:
+     * <ul>
+     *     <li><b>IDLE</b> to <b>CONNECTING</b>: Any new RPC activity on the channel</li>
+     *     <li><b>CONNECTING</b> to <b>CONNECTING</b>: Incremental progress during connection establishment</li>
+     *     <li><b>CONNECTING</b> to <b>READY</b>: All steps needed to establish a connection succeeded</li>
+     *     <li><b>CONNECTING</b> to <b>TRANSIENT_FAILURE</b>: Any failure in any of the steps needed to establish connection</li>
+     *     <li><b>CONNECTING</b> to <b>IDLE</b>: No RPC activity on channel for IDLE_TIMEOUT</li>
+     *     <li><b>READY</b> to <b>READY</b>: Incremental successful communication on established channel.</li>
+     *     <li><b>READY</b> to <b>TRANSIENT_FAILURE</b>: Any failure encountered while expecting successful communication on established channel</li>
+     *     <li><b>READY</b> to <b>IDLE</b>: No RPC activity on channel for IDLE_TIMEOUT OR upon receiving a GOAWAY while there are no pending RPCs</li>
+     *     <li><b>TRANSIENT_FAILURE</b> to <b>CONNECTING</b>: Wait time required to implement (exponential) backoff is over</li>
+     * </ul>
+     *
+     * @see ConnectivityState
+     * @see <a href="https://github.com/grpc/grpc/blob/master/doc/connectivity-semantics-and-api.md">gRPC Connectivity Semantics and API</a>
      */
     @NotThreadSafe
     final class StateListener implements LoadBalancer.SubchannelStateListener {

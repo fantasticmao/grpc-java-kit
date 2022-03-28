@@ -13,7 +13,7 @@ import java.io.Closeable;
 public abstract class ServiceRegistry implements Closeable {
 
     /**
-     * Register service instance.
+     * Register service instances.
      *
      * @param metadata service metadata
      * @return if succeed

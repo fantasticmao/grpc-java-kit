@@ -8,7 +8,7 @@ import io.grpc.LoadBalancer;
 import javax.annotation.Nonnull;
 
 /**
- * A class related to {@link Attributes}.
+ * A util class for the {@link Attributes gRPC Attributes}.
  *
  * @author fantasticmao
  * @version 1.39.0
@@ -19,7 +19,7 @@ public interface AttributeUtil {
     Attributes.Key<String> KEY_TAG = Attributes.Key.create("tag");
 
     /**
-     * Get the value of a specified key in {@link Attributes} of {@link EquivalentAddressGroup}.
+     * Get the value of a specific key in the {@link Attributes} of a {@link EquivalentAddressGroup}.
      */
     @Nonnull
     static <T> T getAttribute(EquivalentAddressGroup addressGroup, Attributes.Key<T> key) {
@@ -32,7 +32,7 @@ public interface AttributeUtil {
     }
 
     /**
-     * Keep the {@link ValRef value reference} in {@link Attributes} of
+     * Keep the {@link ValRef value reference} in a {@link Attributes} of the
      * {@link LoadBalancer.Subchannel}, so that it can be modified.
      */
     Attributes.Key<ValRef<Integer>> KEY_REF_WEIGHT = Attributes.Key.create("weight");
@@ -40,7 +40,7 @@ public interface AttributeUtil {
     Attributes.Key<ValRef<ConnectivityStateInfo>> KEY_REF_STATE = Attributes.Key.create("state");
 
     /**
-     * Get the {@link ValRef} of a specified key in {@link Attributes} of {@link LoadBalancer.Subchannel}.
+     * Get the {@link ValRef} of a specific key in a {@link Attributes} of the {@link LoadBalancer.Subchannel}.
      */
     @Nonnull
     static <T> ValRef<T> getValRef(LoadBalancer.Subchannel subChannel, Attributes.Key<ValRef<T>> key) {

@@ -14,7 +14,8 @@ import java.util.stream.Collectors;
 
 /**
  * The weighted random {@link io.grpc.LoadBalancer.SubchannelPicker}, choose a
- * {@link LoadBalancer.Subchannel} for weighted random load balancer.
+ * {@link LoadBalancer.Subchannel} randomly for a load balancer, and taking into
+ * account weights of servers.
  *
  * @author fantasticmao
  * @version 1.39.0

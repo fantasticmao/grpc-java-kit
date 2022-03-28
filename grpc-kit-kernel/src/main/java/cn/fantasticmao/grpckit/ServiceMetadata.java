@@ -9,7 +9,7 @@ import lombok.Setter;
 import java.net.InetSocketAddress;
 
 /**
- * The metadata of service instance.
+ * Metadata of service instances.
  *
  * @author fantasticmao
  * @version 1.39.0
@@ -19,22 +19,22 @@ import java.net.InetSocketAddress;
 @Setter
 public class ServiceMetadata {
     /**
-     * The host of the server.
+     * The host of a service instance.
      */
     private String host;
 
     /**
-     * The port of the server.
+     * The port of a service instance.
      */
     private int port;
 
     /**
-     * The weight of the server, used in service load balancing.
+     * The weight of a service instance, and will be used in service load balancing.
      */
     private int weight = DEFAULT_WEIGHT;
 
     /**
-     * The tag of the server, used in service load balancing.
+     * The tag of a service instance, and will be used in service load balancing.
      */
     private String tag = DEFAULT_TAG;
 

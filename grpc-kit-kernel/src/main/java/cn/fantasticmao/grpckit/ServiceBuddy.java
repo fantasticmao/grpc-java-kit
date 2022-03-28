@@ -11,7 +11,7 @@ import java.util.ServiceLoader;
 import java.util.stream.Collectors;
 
 /**
- * A class related to gRPC service.
+ * A util class for the {@link io.grpc.Server gRPC Server}.
  *
  * @author fantasticmao
  * @version 1.39.0
@@ -21,7 +21,7 @@ public interface ServiceBuddy {
     Logger LOGGER = LoggerFactory.getLogger(ServiceBuddy.class);
 
     /**
-     * Get name of gRPC service.
+     * Get the name of a gRPC service.
      *
      * @param service gRPC service
      */
@@ -31,7 +31,7 @@ public interface ServiceBuddy {
     }
 
     /**
-     * Register service instance for the given URI.
+     * Register a service instance for the given URI.
      * <p>
      * Example URIs:
      * <ul>

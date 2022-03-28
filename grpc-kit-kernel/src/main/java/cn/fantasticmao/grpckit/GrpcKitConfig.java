@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Read configs from the specified file.
+ * Read configs from the specific file.
  *
  * @author fantasticmao
  * @version 1.39.0
