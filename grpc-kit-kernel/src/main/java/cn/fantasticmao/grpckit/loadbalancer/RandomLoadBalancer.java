@@ -1,7 +1,7 @@
 package cn.fantasticmao.grpckit.loadbalancer;
 
 import cn.fantasticmao.grpckit.ServiceLoadBalancer;
-import cn.fantasticmao.grpckit.loadbalancer.picker.FailingPicker;
+import cn.fantasticmao.grpckit.loadbalancer.picker.EmptyPicker;
 import cn.fantasticmao.grpckit.loadbalancer.picker.WeightedRandomPicker;
 import cn.fantasticmao.grpckit.support.AttributeUtil;
 import cn.fantasticmao.grpckit.support.ValRef;
@@ -36,13 +36,24 @@ class RandomLoadBalancer extends ServiceLoadBalancer {
      */
     private final Map<List<SocketAddress>, Subchannel> subChannelMap = new HashMap<>();
 
+    /**
+     * The current {@link ConnectivityState} in the {@link LoadBalancer}.
+     */
+    private ConnectivityState currentState;
+    /**
+     * The current {@link LoadBalancer.SubchannelPicker} in the {@link LoadBalancer}..
+     */
+    private LoadBalancer.SubchannelPicker currentPicker;
+
     public RandomLoadBalancer(Helper helper) {
         this.helper = helper;
     }
 
     @Override
     public void handleNameResolutionError(Status error) {
-        this.helper.updateBalancingState(TRANSIENT_FAILURE, new FailingPicker(error));
+        if (this.currentState != READY) {
+            updateBalancingState(TRANSIENT_FAILURE, new EmptyPicker(error));
+        }
     }
 
     @Override
@@ -112,9 +123,9 @@ class RandomLoadBalancer extends ServiceLoadBalancer {
 
     private void updateBalancingState() {
         // filter ready subChannels and check if there is a subChannel in connecting.
-        List<Subchannel> readySubChannelList = new LinkedList<>();
+        List<Subchannel> readySubChannelList = new ArrayList<>(subChannelMap.values().size());
         boolean isConnecting = false;
-        Status aggStatus = Status.OK.withDescription("no subChannels ready");
+        Status aggStatus = EmptyPicker.EMPTY_OK;
         for (Subchannel subChannel : subChannelMap.values()) {
             ValRef<ConnectivityStateInfo> stateRef = AttributeUtil.getValRef(subChannel, AttributeUtil.KEY_REF_STATE);
             if (stateRef.value.getState() == READY) {
@@ -123,15 +134,26 @@ class RandomLoadBalancer extends ServiceLoadBalancer {
             if (stateRef.value.getState() == CONNECTING || stateRef.value.getState() == IDLE) {
                 isConnecting = true;
             }
+            // try to find an available status
+            if (aggStatus == EmptyPicker.EMPTY_OK || !aggStatus.isOk()) {
+                aggStatus = stateRef.value.getStatus();
+            }
         }
 
         // update balancing state.
         if (!readySubChannelList.isEmpty()) {
-            this.helper.updateBalancingState(READY, new WeightedRandomPicker(readySubChannelList));
+            updateBalancingState(READY, new WeightedRandomPicker(readySubChannelList));
         } else {
-            // FIXME
-            this.helper.updateBalancingState(isConnecting ? CONNECTING : TRANSIENT_FAILURE,
-                new WeightedRandomPicker(readySubChannelList));
+            updateBalancingState(isConnecting ? CONNECTING : TRANSIENT_FAILURE,
+                new EmptyPicker(aggStatus));
+        }
+    }
+
+    private void updateBalancingState(ConnectivityState state, LoadBalancer.SubchannelPicker picker) {
+        if (this.currentState != state || this.currentPicker != picker) {
+            this.helper.updateBalancingState(state, picker);
+            currentState = state;
+            currentPicker = picker;
         }
     }
 
@@ -184,7 +206,7 @@ class RandomLoadBalancer extends ServiceLoadBalancer {
         public void onSubchannelState(ConnectivityStateInfo newState) {
             List<SocketAddress> addressList = subChannel.getAddresses().getAddresses();
             if (RandomLoadBalancer.this.subChannelMap.get(addressList) != subChannel) {
-                LOGGER.warn("The two subChannel instances are not the same when state changes.");
+                LOGGER.warn("The two subChannels are not the same when state changes.");
                 return;
             }
             if (newState.getState() == TRANSIENT_FAILURE || newState.getState() == IDLE) {

@@ -4,6 +4,7 @@ import io.grpc.LoadBalancer;
 import io.grpc.Status;
 
 import javax.annotation.concurrent.ThreadSafe;
+import java.util.Objects;
 
 /**
  * The empty {@link io.grpc.LoadBalancer.SubchannelPicker}.
@@ -16,6 +17,8 @@ import javax.annotation.concurrent.ThreadSafe;
 public class EmptyPicker extends LoadBalancer.SubchannelPicker {
     private final Status status;
 
+    public static final Status EMPTY_OK = Status.OK.withDescription("no subChannels ready");
+
     public EmptyPicker(Status status) {
         this.status = status;
     }
@@ -25,5 +28,19 @@ public class EmptyPicker extends LoadBalancer.SubchannelPicker {
         return status.isOk()
             ? LoadBalancer.PickResult.withNoResult()
             : LoadBalancer.PickResult.withError(status);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof EmptyPicker)) {
+            return false;
+        }
+        EmptyPicker that = (EmptyPicker) obj;
+        return this == that || Objects.equals(this.status, that.status);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(status);
     }
 }

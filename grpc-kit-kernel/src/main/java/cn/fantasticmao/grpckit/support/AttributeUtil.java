@@ -25,7 +25,7 @@ public interface AttributeUtil {
     static <T> T getAttribute(EquivalentAddressGroup addressGroup, Attributes.Key<T> key) {
         T attribute = addressGroup.getAttributes().get(key);
         if (attribute == null) {
-            String message = String.format("Attribute '%s' in addressGroup can not be null.", key);
+            String message = String.format("Attribute '%s' in the addressGroup '%s' can not be null.", key, addressGroup);
             throw new NullPointerException(message);
         }
         return attribute;
@@ -46,7 +46,7 @@ public interface AttributeUtil {
     static <T> ValRef<T> getValRef(LoadBalancer.Subchannel subChannel, Attributes.Key<ValRef<T>> key) {
         ValRef<T> ref = subChannel.getAttributes().get(key);
         if (ref == null) {
-            String message = String.format("Attribute '%s' in subChannel can not be null.", key);
+            String message = String.format("Attribute '%s' in the subChannel '%s' can not be null.", key, subChannel);
             throw new NullPointerException(message);
         }
         return ref;

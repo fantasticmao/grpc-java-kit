@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @ThreadSafe
 public class WeightedRandomPicker extends LoadBalancer.SubchannelPicker {
     /**
-     * Holds a snapshot of {@link io.grpc.LoadBalancer.Subchannel}es in {@link LoadBalancer}.
+     * Holds a snapshot of {@link io.grpc.LoadBalancer.Subchannel}es in a {@link LoadBalancer}.
      */
     private final List<LoadBalancer.Subchannel> list;
 
@@ -71,5 +71,19 @@ public class WeightedRandomPicker extends LoadBalancer.SubchannelPicker {
     private int getWeight(LoadBalancer.Subchannel subChannel) {
         ValRef<Integer> weightRef = AttributeUtil.getValRef(subChannel, AttributeUtil.KEY_REF_WEIGHT);
         return weightRef.value;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof WeightedRandomPicker)) {
+            return false;
+        }
+        WeightedRandomPicker that = (WeightedRandomPicker) obj;
+        return this == that || Objects.equals(list, that.list);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(list);
     }
 }
