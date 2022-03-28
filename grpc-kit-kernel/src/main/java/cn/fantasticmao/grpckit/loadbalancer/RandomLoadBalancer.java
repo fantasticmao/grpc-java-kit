@@ -79,16 +79,20 @@ class RandomLoadBalancer extends ServiceLoadBalancer {
                 continue;
             }
             // create a new subChannel for new addresses.
-            Attributes.Builder subChannelAttrs = addressGroup.getAttributes().toBuilder()
-                .set(AttributeUtil.KEY_REF_STATE, new ValRef<>(ConnectivityStateInfo.forNonError(IDLE)))
-                .set(AttributeUtil.KEY_REF_WEIGHT, new ValRef<>(weight))
-                .set(AttributeUtil.KEY_REF_TAG, new ValRef<>(tag));
             final Subchannel subChannel = helper.createSubchannel(CreateSubchannelArgs.newBuilder()
-                .setAddresses(addressGroup)
-                .setAttributes(subChannelAttrs.build())
+                .setAddresses(new EquivalentAddressGroup(addressList))
+                .setAttributes(Attributes.newBuilder()
+                    .set(AttributeUtil.KEY_REF_STATE, new ValRef<>(ConnectivityStateInfo.forNonError(IDLE)))
+                    .set(AttributeUtil.KEY_REF_WEIGHT, new ValRef<>(weight))
+                    .set(AttributeUtil.KEY_REF_TAG, new ValRef<>(tag))
+                    .build())
                 .build());
-            subChannel.start(state -> new StateListener(subChannel));
+            subChannel.start(new StateListener(subChannel));
             subChannelMap.put(addressList, subChannel);
+            LOGGER.debug("Create SubChannel by address: {} and attributes: {}", subChannel.getAddresses(),
+                subChannel.getAttributes());
+
+            // subChannel state will be changed from IDLE to CONNECTING.
             subChannel.requestConnection();
         }
 
@@ -204,6 +208,9 @@ class RandomLoadBalancer extends ServiceLoadBalancer {
 
         @Override
         public void onSubchannelState(ConnectivityStateInfo newState) {
+            LOGGER.debug("Listening state changes in SubChannel (address : {}), new state: {}",
+                subChannel.getAddresses(), newState);
+
             List<SocketAddress> addressList = subChannel.getAddresses().getAddresses();
             if (RandomLoadBalancer.this.subChannelMap.get(addressList) != subChannel) {
                 LOGGER.warn("The two subChannels are not the same when state changes.");

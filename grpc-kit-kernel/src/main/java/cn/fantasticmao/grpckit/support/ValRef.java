@@ -1,7 +1,5 @@
 package cn.fantasticmao.grpckit.support;
 
-import com.google.common.base.MoreObjects;
-
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.NotThreadSafe;
 
@@ -23,8 +21,6 @@ public class ValRef<T> {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(ValRef.class)
-            .add("value", value)
-            .toString();
+        return String.valueOf(value);
     }
 }

@@ -130,7 +130,7 @@ public class GreeterServiceTest {
         ManagedChannel channel = ManagedChannelBuilder
             .forTarget(serviceUri.toString())
             .userAgent(appName)
-            .defaultLoadBalancingPolicy(ServiceLoadBalancer.Policy.ROUND_ROBIN.name)
+            .defaultLoadBalancingPolicy(ServiceLoadBalancer.Policy.WEIGHTED_RANDOM.name)
             .usePlaintext()
             .build();
         GreeterServiceGrpc.GreeterServiceBlockingStub stub = GreeterServiceGrpc.newBlockingStub(channel)
