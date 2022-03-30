@@ -48,9 +48,12 @@ public class WeightedRandomPicker extends LoadBalancer.SubchannelPicker {
                 .filter(subChannel -> Objects.equals(this.getTag(subChannel), tag))
                 .collect(Collectors.toList());
         }
-        // if no tag is matched, then return the original subChannels.
+        // if no tag is matched, then the RPC will be buffered in the Channel,
+        // until the next picker is provided via Helper.updateBalancingState(),
+        // when the RPC will go through the same picking process again.
         if (filteredList.isEmpty()) {
-            filteredList = list;
+            LOGGER.debug("No tag is matched, the RPC will be buffered in the Channel");
+            return LoadBalancer.PickResult.withNoResult();
         }
         LOGGER.debug("SubChannels to be picked: {}", filteredList);
 
