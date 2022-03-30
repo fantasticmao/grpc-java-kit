@@ -156,6 +156,7 @@ class RandomLoadBalancer extends ServiceLoadBalancer {
     private void updateBalancingState(ConnectivityState state, LoadBalancer.SubchannelPicker picker) {
         if (this.currentState != state || this.currentPicker != picker) {
             this.helper.updateBalancingState(state, picker);
+            LOGGER.debug("Update balancing by newState: {} and newPicker: {}", state, picker);
             currentState = state;
             currentPicker = picker;
         }

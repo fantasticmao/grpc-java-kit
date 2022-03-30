@@ -1,5 +1,6 @@
 package cn.fantasticmao.grpckit.loadbalancer.picker;
 
+import com.google.common.base.MoreObjects;
 import io.grpc.LoadBalancer;
 import io.grpc.Status;
 
@@ -42,5 +43,12 @@ public class EmptyPicker extends LoadBalancer.SubchannelPicker {
     @Override
     public int hashCode() {
         return Objects.hash(status);
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(EmptyPicker.class)
+            .add("status", status)
+            .toString();
     }
 }

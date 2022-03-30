@@ -3,6 +3,7 @@ package cn.fantasticmao.grpckit.loadbalancer.picker;
 import cn.fantasticmao.grpckit.Constant;
 import cn.fantasticmao.grpckit.support.AttributeUtil;
 import cn.fantasticmao.grpckit.support.ValRef;
+import com.google.common.base.MoreObjects;
 import io.grpc.LoadBalancer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,5 +97,12 @@ public class WeightedRandomPicker extends LoadBalancer.SubchannelPicker {
     @Override
     public int hashCode() {
         return Objects.hash(list);
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(WeightedRandomPicker.class)
+            .add("list", list)
+            .toString();
     }
 }
