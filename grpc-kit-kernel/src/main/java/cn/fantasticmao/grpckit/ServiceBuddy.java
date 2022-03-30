@@ -11,7 +11,7 @@ import java.util.ServiceLoader;
 import java.util.stream.Collectors;
 
 /**
- * A util class for the {@link io.grpc.Server gRPC Server}.
+ * A util class for {@link io.grpc.Server gRPC Server}.
  *
  * @author fantasticmao
  * @version 1.39.0

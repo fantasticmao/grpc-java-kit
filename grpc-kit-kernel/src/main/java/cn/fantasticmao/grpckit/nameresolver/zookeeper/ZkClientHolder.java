@@ -44,7 +44,7 @@ class ZkClientHolder {
         Runtime.getRuntime().addShutdownHook(new Thread(() ->
             CLIENT_CACHE.forEach((connectString, client) -> {
                 if (CuratorFrameworkState.STARTED == client.getState()) {
-                    LOGGER.info("Close ZooKeeper connection for: {}", connectString);
+                    LOGGER.debug("Close ZooKeeper connection for connection string: {}", connectString);
                     client.close();
                 }
             })

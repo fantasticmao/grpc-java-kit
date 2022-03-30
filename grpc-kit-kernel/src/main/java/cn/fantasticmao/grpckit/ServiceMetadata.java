@@ -19,32 +19,32 @@ import java.net.InetSocketAddress;
 @Setter
 public class ServiceMetadata {
     /**
-     * The host of a service instance.
+     * Host of a service instance.
      */
     private String host;
 
     /**
-     * The port of a service instance.
+     * Port of a service instance.
      */
     private int port;
 
     /**
-     * The weight of a service instance, and will be used in service load balancing.
+     * Weight of a service instance, will be used in service load balancing.
      */
     private int weight = DEFAULT_WEIGHT;
 
     /**
-     * The tag of a service instance, and will be used in service load balancing.
+     * Tag of a service instance, will be used in service load balancing.
      */
     private String tag = DEFAULT_TAG;
 
     /**
-     * The application name, for backup only.
+     * Application name, for backup only.
      */
     private String name;
 
     /**
-     * The gRPC version, for backup only.
+     * Version of gRPC, for backup only.
      */
     private String version;
 

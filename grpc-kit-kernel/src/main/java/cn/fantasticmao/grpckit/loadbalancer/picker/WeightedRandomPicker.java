@@ -4,6 +4,8 @@ import cn.fantasticmao.grpckit.Constant;
 import cn.fantasticmao.grpckit.support.AttributeUtil;
 import cn.fantasticmao.grpckit.support.ValRef;
 import io.grpc.LoadBalancer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.concurrent.ThreadSafe;
 import java.util.Collections;
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
  */
 @ThreadSafe
 public class WeightedRandomPicker extends LoadBalancer.SubchannelPicker {
+    private static final Logger LOGGER = LoggerFactory.getLogger(WeightedRandomPicker.class);
     /**
      * Holds a snapshot of {@link io.grpc.LoadBalancer.Subchannel}es in a {@link LoadBalancer}.
      */
@@ -38,6 +41,8 @@ public class WeightedRandomPicker extends LoadBalancer.SubchannelPicker {
         // filter subChannels by the tag in call options.
         final String tag = args.getCallOptions().getOption(Constant.KEY_OPTION_TAG);
         if (tag != null && !tag.isBlank()) {
+            LOGGER.debug("Original subChannels: {}", filteredList);
+            LOGGER.debug("Tag in call options: {}", tag);
             filteredList = list.stream()
                 .filter(subChannel -> Objects.equals(this.getTag(subChannel), tag))
                 .collect(Collectors.toList());
@@ -46,12 +51,15 @@ public class WeightedRandomPicker extends LoadBalancer.SubchannelPicker {
         if (filteredList.isEmpty()) {
             filteredList = list;
         }
+        LOGGER.debug("SubChannels to be picked: {}", filteredList);
 
         // pick a subChannel randomly, taking into account weights of servers.
         final int weightSum = filteredList.stream()
             .mapToInt(this::getWeight)
             .sum();
         final int randomVal = ThreadLocalRandom.current().nextInt(weightSum);
+        LOGGER.debug("Next random value: {}", randomVal);
+
         int randomIndex = filteredList.size() - 1;
         for (int i = 0, sum = 0; i < filteredList.size(); i++) {
             sum += this.getWeight(filteredList.get(i));
@@ -60,7 +68,10 @@ public class WeightedRandomPicker extends LoadBalancer.SubchannelPicker {
                 break;
             }
         }
-        return LoadBalancer.PickResult.withSubchannel(filteredList.get(randomIndex));
+
+        LoadBalancer.Subchannel pickedSubChannel = filteredList.get(randomIndex);
+        LOGGER.debug("SubChannel picked: {}", pickedSubChannel);
+        return LoadBalancer.PickResult.withSubchannel(pickedSubChannel);
     }
 
     private String getTag(LoadBalancer.Subchannel subChannel) {

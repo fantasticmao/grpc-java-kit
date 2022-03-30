@@ -5,7 +5,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 /**
- * A util class for the {@link java.net.URI}.
+ * A util class for {@link java.net.URI}.
  *
  * @author fantasticmao
  * @version 1.39.0

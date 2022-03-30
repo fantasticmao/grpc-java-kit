@@ -134,6 +134,7 @@ public class GreeterServiceTest {
             .usePlaintext()
             .build();
         GreeterServiceGrpc.GreeterServiceBlockingStub stub = GreeterServiceGrpc.newBlockingStub(channel)
+            //.withOption(Constant.KEY_OPTION_TAG, "debug")
             .withDeadlineAfter(timeout, TimeUnit.MILLISECONDS);
         HelloRequest request = HelloRequest.newBuilder()
             .setName("fantasticmao")

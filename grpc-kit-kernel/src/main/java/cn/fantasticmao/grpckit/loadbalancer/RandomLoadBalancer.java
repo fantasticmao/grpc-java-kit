@@ -37,11 +37,11 @@ class RandomLoadBalancer extends ServiceLoadBalancer {
     private final Map<List<SocketAddress>, Subchannel> subChannelMap = new HashMap<>();
 
     /**
-     * The current {@link ConnectivityState} in the {@link LoadBalancer}.
+     * The current {@link ConnectivityState} in {@link LoadBalancer}.
      */
     private ConnectivityState currentState;
     /**
-     * The current {@link LoadBalancer.SubchannelPicker} in the {@link LoadBalancer}..
+     * The current {@link LoadBalancer.SubchannelPicker} in {@link LoadBalancer}..
      */
     private LoadBalancer.SubchannelPicker currentPicker;
 
@@ -89,7 +89,7 @@ class RandomLoadBalancer extends ServiceLoadBalancer {
                 .build());
             subChannel.start(new StateListener(subChannel));
             subChannelMap.put(addressList, subChannel);
-            LOGGER.debug("Create SubChannel by address: {} and attributes: {}", subChannel.getAddresses(),
+            LOGGER.debug("Create SubChannel by address group: {} and attributes: {}", subChannel.getAddresses(),
                 subChannel.getAttributes());
 
             // subChannel state will be changed from IDLE to CONNECTING.
@@ -208,7 +208,7 @@ class RandomLoadBalancer extends ServiceLoadBalancer {
 
         @Override
         public void onSubchannelState(ConnectivityStateInfo newState) {
-            LOGGER.debug("Listening state changes in SubChannel (address : {}), new state: {}",
+            LOGGER.debug("Listening state changes in SubChannel (address group: {}), new state: {}",
                 subChannel.getAddresses(), newState);
 
             List<SocketAddress> addressList = subChannel.getAddresses().getAddresses();

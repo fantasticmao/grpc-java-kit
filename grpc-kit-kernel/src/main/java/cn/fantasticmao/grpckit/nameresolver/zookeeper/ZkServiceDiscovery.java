@@ -85,7 +85,7 @@ class ZkServiceDiscovery extends ServiceDiscovery {
 
     @Override
     public void shutdown() {
-        LOGGER.info("Shutdown {}", this.getClass().getName());
+        LOGGER.debug("Shutdown {}", this.getClass().getName());
     }
 
     private void resolve() {

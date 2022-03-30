@@ -73,7 +73,7 @@ class ZkServiceRegistry extends ServiceRegistry {
                 .creatingParentsIfNeeded()
                 .withMode(CreateMode.EPHEMERAL)
                 .forPath(path, metadataJson.getBytes(StandardCharsets.UTF_8));
-            LOGGER.info("Create new service node for path: {}", createdPath);
+            LOGGER.debug("Create new service node for path: {}", createdPath);
             return true;
         } catch (Exception e) {
             throw new GrpcKitException("Create service node error, for metadata: " + metadataJson, e);
@@ -82,6 +82,6 @@ class ZkServiceRegistry extends ServiceRegistry {
 
     @Override
     public void shutdown() {
-        LOGGER.info("Shutdown {}", this.getClass().getName());
+        LOGGER.debug("Shutdown {}", this.getClass().getName());
     }
 }
