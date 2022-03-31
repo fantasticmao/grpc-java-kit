@@ -45,14 +45,7 @@ public abstract class ServiceLoadBalancer extends LoadBalancer {
         ROUND_ROBIN("round_robin"),
 
         /**
-         * The weighted round-robin balancing policy (the default policy).
-         *
-         * @see cn.fantasticmao.grpckit.loadbalancer.RoundRobinLoadBalancerProvider
-         */
-        WEIGHTED_ROUND_ROBIN("weighted_round_robin"),
-
-        /**
-         * The weighted random balancing policy.
+         * The weighted random balancing policy (the default policy).
          *
          * @see cn.fantasticmao.grpckit.loadbalancer.RandomLoadBalancerProvider
          */

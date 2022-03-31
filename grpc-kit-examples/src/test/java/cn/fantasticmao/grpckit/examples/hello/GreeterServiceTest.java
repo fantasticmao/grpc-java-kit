@@ -22,6 +22,8 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * GreeterServiceTest
+ * <p>
+ * Start a ZooKeeper container for testing: {@code docker run -d -p 2181:2181 --rm --name zookeeper-test zookeeper:3.7.0}
  *
  * @author fantasticmao
  * @version 1.39.0

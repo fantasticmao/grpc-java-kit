@@ -62,6 +62,7 @@ public final class GrpcKitConfig {
             private int port = 50051;
             private int weight = 1;
             private String tag = "";
+            @Nullable
             private String interfaceName = null;
         }
 
