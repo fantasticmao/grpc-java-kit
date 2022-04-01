@@ -52,6 +52,11 @@
         </dependency>
 
         <dependency>
+            <groupId>io.grpc</groupId>
+            <artifactId>grpc-services</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>cn.fantasticmao.grpc-kit</groupId>
             <artifactId>grpc-kit-kernel</artifactId>
         </dependency>

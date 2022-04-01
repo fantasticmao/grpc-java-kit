@@ -222,6 +222,12 @@
                 <version>${google.grpc.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>io.grpc</groupId>
+                <artifactId>grpc-services</artifactId>
+                <version>${google.grpc.version}</version>
+            </dependency>
+
             <!-- Google Gson dependency -->
             <dependency>
                 <groupId>com.google.code.gson</groupId>

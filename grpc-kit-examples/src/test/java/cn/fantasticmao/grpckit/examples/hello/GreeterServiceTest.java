@@ -7,6 +7,7 @@ import cn.fantasticmao.grpckit.examples.proto.HelloResponse;
 import cn.fantasticmao.grpckit.support.NetUtil;
 import cn.fantasticmao.grpckit.support.UriUtil;
 import io.grpc.*;
+import io.grpc.protobuf.services.ProtoReflectionService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -61,6 +62,7 @@ public class GreeterServiceTest {
         Server server = ServerBuilder
             .forPort(port)
             .addService(service)
+            .addService(ProtoReflectionService.newInstance())
             .build();
         server.start();
 
@@ -101,6 +103,7 @@ public class GreeterServiceTest {
         Server server = ServerBuilder
             .forPort(port)
             .addService(service)
+            .addService(ProtoReflectionService.newInstance())
             .build();
         server.start();
 
