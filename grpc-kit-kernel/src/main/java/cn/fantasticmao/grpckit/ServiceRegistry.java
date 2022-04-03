@@ -4,7 +4,7 @@ import java.io.Closeable;
 
 /**
  * Register service instance, the implementation is independent of gRPC, and will
- * be called by {@link ServiceBuddy} after {@link io.grpc.Server} started.
+ * be called by {@link GrpcKitFactory} after {@link io.grpc.Server} started.
  *
  * @author fantasticmao
  * @version 1.39.0

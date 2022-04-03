@@ -1,7 +1,8 @@
 name: "example_client"
 
 grpc:
-  client:
+  stub:
+    tag: "debug"
     timeout: 5_000
 
 nameResolver:

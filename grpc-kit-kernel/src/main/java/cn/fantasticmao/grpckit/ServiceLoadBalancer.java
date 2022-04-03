@@ -3,6 +3,10 @@ package cn.fantasticmao.grpckit;
 import io.grpc.LoadBalancer;
 import io.grpc.Status;
 
+import java.util.Arrays;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+
 /**
  * Service load balancer, implemented by using gRPC {@link io.grpc.LoadBalancer}
  * and {@link io.grpc.LoadBalancerProvider} plugins.
@@ -65,6 +69,13 @@ public abstract class ServiceLoadBalancer extends LoadBalancer {
 
         Policy(String name) {
             this.name = name;
+        }
+
+        public static Policy of(String name) {
+            return Arrays.stream(Policy.values())
+                .filter(e -> Objects.equals(e.name, name))
+                .findFirst()
+                .orElseThrow(() -> new NoSuchElementException("No such policy: " + name));
         }
     }
 }

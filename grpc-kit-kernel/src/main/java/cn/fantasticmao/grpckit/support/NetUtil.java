@@ -1,7 +1,6 @@
 package cn.fantasticmao.grpckit.support;
 
-import cn.fantasticmao.grpckit.GrpcKitConfig;
-
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.net.*;
 import java.util.*;
@@ -16,8 +15,8 @@ import java.util.*;
 public interface NetUtil {
     Boolean PREFER_IPV6_ADDRESSES = Boolean.getBoolean("java.net.preferIPv6Addresses");
 
-    static InetAddress getLocalAddress() throws SocketException, UnknownHostException {
-        List<NetworkInterface> validNetworkInterfaces = getValidNetworkInterfaces();
+    static InetAddress getLocalAddress(@Nullable String preferInterface) throws SocketException, UnknownHostException {
+        List<NetworkInterface> validNetworkInterfaces = getValidNetworkInterfaces(preferInterface);
         for (NetworkInterface networkInterface : validNetworkInterfaces) {
             Enumeration<InetAddress> addresses = networkInterface.getInetAddresses();
             while (addresses.hasMoreElements()) {
@@ -41,7 +40,7 @@ public interface NetUtil {
         throw new SocketException("Failed to found valid Network Interfaces");
     }
 
-    static List<NetworkInterface> getValidNetworkInterfaces() throws SocketException {
+    static List<NetworkInterface> getValidNetworkInterfaces(@Nullable String preferInterface) throws SocketException {
         List<NetworkInterface> validNetworkInterfaces = new LinkedList<>();
         // get valid Network Interfaces.
         Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
@@ -55,7 +54,6 @@ public interface NetUtil {
         }
 
         // pick the favor Network Interface.
-        String preferInterface = GrpcKitConfig.getInstance().getGrpc().getServer().getInterfaceName();
         if (preferInterface != null) {
             for (NetworkInterface networkInterface : validNetworkInterfaces) {
                 if (Objects.equals(networkInterface.getDisplayName(), preferInterface)) {

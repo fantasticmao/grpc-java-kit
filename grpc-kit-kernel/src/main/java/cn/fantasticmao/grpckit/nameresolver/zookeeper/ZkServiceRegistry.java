@@ -60,11 +60,11 @@ class ZkServiceRegistry extends ServiceRegistry {
         try {
             stat = this.zkClient.checkExists().forPath(path);
         } catch (Exception e) {
-            throw new GrpcKitException("Exists service node error, for path: " + this.servicePath, e);
+            throw new GrpcKitException("Exists service error, path: " + this.servicePath, e);
         }
 
         if (stat != null) {
-            throw new GrpcKitException("Already exists service node, for path: " + this.servicePath);
+            throw new GrpcKitException("Already exists service, path: " + this.servicePath);
         }
 
         String metadataJson = Constant.GSON.toJson(metadata);
@@ -73,10 +73,10 @@ class ZkServiceRegistry extends ServiceRegistry {
                 .creatingParentsIfNeeded()
                 .withMode(CreateMode.EPHEMERAL)
                 .forPath(path, metadataJson.getBytes(StandardCharsets.UTF_8));
-            LOGGER.debug("Create new service node for path: {}", createdPath);
+            LOGGER.debug("Create new service for path: {}", createdPath);
             return true;
         } catch (Exception e) {
-            throw new GrpcKitException("Create service node error, for metadata: " + metadataJson, e);
+            throw new GrpcKitException("Create new service error, metadata: " + metadataJson, e);
         }
     }
 

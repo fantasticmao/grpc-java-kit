@@ -6,6 +6,7 @@ import io.grpc.EquivalentAddressGroup;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
 /**
@@ -49,14 +50,15 @@ public class ServiceMetadata {
     private String version;
 
     public static final int DEFAULT_WEIGHT = 1;
+
     public static final String DEFAULT_TAG = "";
 
     public ServiceMetadata() {
     }
 
-    public ServiceMetadata(String host, int port, Integer weight, String tag,
+    public ServiceMetadata(InetAddress address, int port, Integer weight, String tag,
                            String name, String version) {
-        this.host = host;
+        this.host = address.getHostAddress();
         this.port = port;
         this.weight = weight;
         this.tag = tag;

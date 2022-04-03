@@ -17,7 +17,7 @@ public class NetUtilTest {
 
     @Test
     public void getLocalAddress() throws IOException {
-        InetAddress address = NetUtil.getLocalAddress();
+        InetAddress address = NetUtil.getLocalAddress(null);
         Assertions.assertNotNull(address);
         Assertions.assertTrue(address.isReachable(100));
     }
