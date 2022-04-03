@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
- * Factory for create and start the {@code gRPC Server, Stub and Channel}.
+ * Factory for the {@code gRPC Server, Stub and Channel}.
  *
  * @author fantasticmao
  * @version 1.39.0

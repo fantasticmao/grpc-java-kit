@@ -1,10 +1,10 @@
-name: "example_server"
+name: "unit-testing-server"
 
 grpc:
   server:
     port: 50051
     weight: 20
-    tag: debug
+    tag: "debug"
 
 nameResolver:
   registry: "zookeeper://localhost:2181"

@@ -1,21 +1,18 @@
-package cn.fantasticmao.grpckit.examples.hello;
+package cn.fantasticmao.grpckit.proto;
 
-import cn.fantasticmao.grpckit.examples.proto.GreeterServiceGrpc;
-import cn.fantasticmao.grpckit.examples.proto.HelloRequest;
-import cn.fantasticmao.grpckit.examples.proto.HelloResponse;
 import io.grpc.stub.StreamObserver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * GreeterServiceImpl
+ * GreeterService
  *
  * @author fantasticmao
  * @version 1.39.0
  * @since 2021-07-31
  */
-public class GreeterServiceImpl extends GreeterServiceGrpc.GreeterServiceImplBase {
-    private static final Logger LOGGER = LoggerFactory.getLogger(GreeterServiceImpl.class);
+public class GreeterService extends GreeterServiceGrpc.GreeterServiceImplBase {
+    private static final Logger LOGGER = LoggerFactory.getLogger(GreeterService.class);
 
     @Override
     public void sayHello(HelloRequest request, StreamObserver<HelloResponse> responseObserver) {

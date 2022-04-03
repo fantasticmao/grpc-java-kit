@@ -3,8 +3,7 @@ syntax = "proto3";
 package hello;
 
 option java_multiple_files = true;
-option java_package = "cn.fantasticmao.grpckit.examples.proto";
-option java_outer_classname = "GreeterProto";
+option java_package = "cn.fantasticmao.grpckit.proto";
 
 // The greeting service definition.
 service GreeterService {

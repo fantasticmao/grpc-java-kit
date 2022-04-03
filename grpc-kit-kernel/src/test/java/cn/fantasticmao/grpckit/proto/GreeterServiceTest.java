@@ -1,10 +1,7 @@
-package cn.fantasticmao.grpckit.examples.hello;
+package cn.fantasticmao.grpckit.proto;
 
 import cn.fantasticmao.grpckit.Constant;
 import cn.fantasticmao.grpckit.GrpcKitFactory;
-import cn.fantasticmao.grpckit.examples.proto.GreeterServiceGrpc;
-import cn.fantasticmao.grpckit.examples.proto.HelloRequest;
-import cn.fantasticmao.grpckit.examples.proto.HelloResponse;
 import io.grpc.BindableService;
 import io.grpc.Channel;
 import io.grpc.Server;
@@ -28,7 +25,7 @@ public class GreeterServiceTest {
 
     @Test
     public void server_1() throws InterruptedException {
-        final BindableService service = new GreeterServiceImpl();
+        final BindableService service = new GreeterService();
         final GrpcKitFactory factory = new GrpcKitFactory("grpc-kit-server-1.yaml");
         final Server server = factory.newAndStartServer(service.bindService());
         server.awaitTermination();
@@ -38,7 +35,7 @@ public class GreeterServiceTest {
     public void server_2() throws InterruptedException {
         System.setProperty("cn.fantasticmao.grpckit.config", "grpc-kit-server-2.yaml");
 
-        final BindableService service = new GreeterServiceImpl();
+        final BindableService service = new GreeterService();
         final GrpcKitFactory factory = new GrpcKitFactory(Constant.CONFIG_FILE_PATH);
         final Server server = factory.newAndStartServer(service.bindService());
         server.awaitTermination();
@@ -46,7 +43,7 @@ public class GreeterServiceTest {
 
     @Test
     public void stub() {
-        final GrpcKitFactory factory = new GrpcKitFactory("grpc-kit-client.yaml");
+        final GrpcKitFactory factory = new GrpcKitFactory("grpc-kit-stub.yaml");
         final Channel channel = factory.newChannel(GreeterServiceGrpc.SERVICE_NAME);
         final GreeterServiceGrpc.GreeterServiceBlockingStub stub = factory.newStub(
             GreeterServiceGrpc.GreeterServiceBlockingStub.class, channel);

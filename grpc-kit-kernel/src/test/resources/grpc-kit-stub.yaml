@@ -1,4 +1,4 @@
-name: "example_client"
+name: "unit-testing-stub"
 
 grpc:
   stub:
