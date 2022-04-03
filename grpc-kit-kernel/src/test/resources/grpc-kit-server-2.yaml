@@ -1,4 +1,4 @@
-name: "unit-testing-server"
+name: "unit-test-server"
 
 grpc:
   server:

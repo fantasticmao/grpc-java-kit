@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
  *                   /
  *               default(group)
  *                /    \
- *             server client
+ *             server  stub
  *             /    \
  * 192.168.1.1:8080 192.168.1.2:8080
  * </pre>

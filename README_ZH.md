@@ -7,14 +7,13 @@
 
 ## 特性列表
 
-### RPC 通信
-
-- [x] 原生 [gRPC-Java](https://github.com/grpc/grpc-java)
-
-### 服务治理
-
-- 服务注册、服务发现
-  - [x] 分组
+- 网络通讯 [gRPC-Java](https://github.com/grpc/grpc-java)
+- 序列化 / 反序列化 [Protocol Buffers](https://developers.google.com/protocol-buffers/docs/overview)
+- 接入方式
+  - [x] Java SE (JDK 11+)
+  - [ ] Spring Boot
+- 服务注册 / 发现
+  - [x] 服务分组
   - [x] ZooKeeper、~~Consul~~
 - 负载均衡、流量管理
   - [x] 加权随机、~~最少连接数量~~、~~最少平均耗时~~
@@ -25,5 +24,5 @@
   - [ ] 限流、熔断、降级
   - [ ] 故障检测、策略下发
 - 可观测性
-  - [ ] 监控告警(Grafana + Prometheus)
+  - [ ] 监控告警(JMX、Spring Boot Actuator)
   - [ ] 调用链路（OpenTracing）

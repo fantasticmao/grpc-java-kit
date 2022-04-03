@@ -14,12 +14,12 @@ public class GrpcKitConfigTest {
 
     @Test
     public void getInstance() {
-        GrpcKitConfig config = GrpcKitConfig.loadAndParse(Constant.CONFIG_FILE_PATH);
-        Assertions.assertEquals("example_service", config.getName());
+        GrpcKitConfig config = GrpcKitConfig.loadAndParse("grpc-kit.yaml");
+        Assertions.assertEquals("unit-test", config.getName());
         Assertions.assertEquals("dev", config.getGroup());
 
         Assertions.assertEquals(8080, config.getGrpc().getServer().getPort());
-        Assertions.assertEquals(5, config.getGrpc().getServer().getWeight());
+        Assertions.assertEquals(100, config.getGrpc().getServer().getWeight());
         Assertions.assertEquals("debug", config.getGrpc().getServer().getTag());
         Assertions.assertNull(config.getGrpc().getServer().getInterfaceName());
         Assertions.assertEquals("debug", config.getGrpc().getStub().getTag());

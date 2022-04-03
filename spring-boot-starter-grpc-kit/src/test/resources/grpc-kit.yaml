@@ -1,8 +1,9 @@
-name: "unit-test-stub"
+name: "unit-test-spring-boot"
 
 grpc:
+  server:
+    port: 50051
   stub:
-    tag: "debug"
     timeout: 5_000
 
 nameResolver:

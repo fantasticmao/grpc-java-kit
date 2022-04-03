@@ -8,6 +8,7 @@ import org.yaml.snakeyaml.error.YAMLException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -33,9 +34,12 @@ public final class GrpcKitConfig {
         Yaml yaml = new Yaml(new Constructor(GrpcKitConfig.class));
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         try (InputStream input = classLoader.getResourceAsStream(path)) {
+            if (input == null) {
+                throw new FileNotFoundException("File not found: " + path);
+            }
             return yaml.load(input);
         } catch (IOException | YAMLException e) {
-            throw new GrpcKitException("Load config " + Constant.CONFIG_FILE_PATH + " error", e);
+            throw new GrpcKitException("Load configuration from: " + path + " error", e);
         }
     }
 

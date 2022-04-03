@@ -1,10 +1,10 @@
-name: "example_service"
+name: "unit-test"
 group: "dev"
 
 grpc:
   server:
     port: 8080
-    weight: 5
+    weight: 100
     tag: "debug"
     # interfaceName: en0
   stub:

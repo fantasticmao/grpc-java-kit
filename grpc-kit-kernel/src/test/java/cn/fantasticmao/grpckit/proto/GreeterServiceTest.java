@@ -1,6 +1,5 @@
 package cn.fantasticmao.grpckit.proto;
 
-import cn.fantasticmao.grpckit.Constant;
 import cn.fantasticmao.grpckit.GrpcKitFactory;
 import io.grpc.BindableService;
 import io.grpc.Channel;
@@ -33,10 +32,8 @@ public class GreeterServiceTest {
 
     @Test
     public void server_2() throws InterruptedException {
-        System.setProperty("cn.fantasticmao.grpckit.config", "grpc-kit-server-2.yaml");
-
         final BindableService service = new GreeterService();
-        final GrpcKitFactory factory = new GrpcKitFactory(Constant.CONFIG_FILE_PATH);
+        final GrpcKitFactory factory = new GrpcKitFactory("grpc-kit-server-2.yaml");
         final Server server = factory.newAndStartServer(service.bindService());
         server.awaitTermination();
     }

@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package unit_test;
+
+option java_multiple_files = true;
+option java_package = "cn.fantasticmao.grpckit.proto";
+
+service CalculatorService {
+  rpc Add (Input) returns (Output) {}
+}
+
+message Input {
+  int32 a = 1;
+  int32 b = 2;
+}
+
+message Output {
+  int32 result = 1;
+}
