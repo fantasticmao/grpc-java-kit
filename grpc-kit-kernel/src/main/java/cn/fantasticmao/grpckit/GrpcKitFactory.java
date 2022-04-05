@@ -35,15 +35,15 @@ public class GrpcKitFactory {
     private static final Logger LOGGER = LoggerFactory.getLogger(GrpcKitFactory.class);
 
     private final GrpcKitConfig config;
-    private final InetAddress address;
+    private final InetAddress localAddress;
 
     public GrpcKitFactory(@Nonnull String path) {
         Objects.requireNonNull(path, "Path must not be null");
         this.config = GrpcKitConfig.loadAndParse(path);
-        this.config.checkNotNull();
+        this.config.validate();
         try {
             String preferInterface = this.config.getGrpc().getServer().getInterfaceName();
-            this.address = NetUtil.getLocalAddress(preferInterface);
+            this.localAddress = NetUtil.getLocalAddress(preferInterface);
         } catch (SocketException | UnknownHostException e) {
             throw new GrpcKitException("Get local address error", e);
         }
@@ -51,11 +51,11 @@ public class GrpcKitFactory {
 
     // server handling
 
-    public Server newAndStartServer(ServerServiceDefinition... services) {
+    public Server newAndStartServer(BindableService... services) {
         final int port = config.getGrpc().getServer().getPort();
         ServerBuilder<?> serverBuilder = ServerBuilder
             .forPort(port);
-        for (ServerServiceDefinition service : services) {
+        for (BindableService service : services) {
             serverBuilder.addService(service);
         }
         serverBuilder.addService(ProtoReflectionService.newInstance());
@@ -67,11 +67,11 @@ public class GrpcKitFactory {
             throw new GrpcKitException("Start gRPC server error", e);
         }
 
-        this.registerService(services);
+        this.registerService();
         return server;
     }
 
-    private void registerService(ServerServiceDefinition... services) {
+    private void registerService() {
         final String appName = Objects.requireNonNull(config.getName(),
             "Name must not be null");
         final String appGroup = config.getGroup();
@@ -81,22 +81,18 @@ public class GrpcKitFactory {
         final String registry = Objects.requireNonNull(config.getNameResolver().getRegistry(),
             "Registry of nameResolver must not be null");
 
-        final List<ServiceRegistryProvider> serviceRegistryProviders = this.getAllServiceRegistries();
-        for (ServerServiceDefinition service : services) {
-            final String serviceName = service.getServiceDescriptor().getName();
-            final ServiceMetadata metadata = new ServiceMetadata(address, serverPort, serverWeight,
-                serverTag, appName, Constant.VERSION);
-            final URI serviceUri = UriUtil.newServiceUri(URI.create(registry), serviceName,
-                appGroup, address, serverPort);
-            for (ServiceRegistryProvider provider : serviceRegistryProviders) {
-                try (ServiceRegistry serviceRegistry = provider.newServiceRegistry(serviceUri)) {
-                    if (serviceRegistry == null) {
-                        continue;
-                    }
-                    boolean result = serviceRegistry.doRegister(metadata);
-                    if (!result) {
-                        LOGGER.error("Register service failed for path: {}", serviceUri.getPath());
-                    }
+        final URI serviceUri = UriUtil.newServiceUri(URI.create(registry), appName, appGroup,
+            localAddress, serverPort);
+        final ServiceMetadata metadata = new ServiceMetadata(localAddress, serverPort, serverWeight,
+            serverTag, Constant.VERSION);
+        for (ServiceRegistryProvider provider : this.getAllServiceRegistries()) {
+            try (ServiceRegistry serviceRegistry = provider.newServiceRegistry(serviceUri)) {
+                if (serviceRegistry == null) {
+                    continue;
+                }
+                boolean result = serviceRegistry.doRegister(metadata);
+                if (!result) {
+                    LOGGER.error("Register service failed for path: {}", serviceUri.getPath());
                 }
             }
         }
@@ -158,14 +154,12 @@ public class GrpcKitFactory {
 
     // channel handling
 
-    public Channel newChannel(@Nonnull String serviceName) {
-        final String appName = Objects.requireNonNull(config.getName(),
-            "Name must not be null");
+    public Channel newChannel(String appName) {
         final String appGroup = config.getGroup();
         final String registry = Objects.requireNonNull(config.getNameResolver().getRegistry(),
             "Registry of nameResolver must not be null");
         final String policy = config.getLoadBalancer().getPolicy();
-        final URI serviceUri = UriUtil.newServiceUri(URI.create(registry), serviceName, appGroup);
+        final URI serviceUri = UriUtil.newServiceUri(URI.create(registry), appName, appGroup);
         return ManagedChannelBuilder
             .forTarget(serviceUri.toString())
             .userAgent(appName)

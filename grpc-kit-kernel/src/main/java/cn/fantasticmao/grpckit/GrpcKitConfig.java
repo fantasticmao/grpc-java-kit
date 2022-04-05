@@ -12,6 +12,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 /**
  * Read configs from the specific file.
@@ -45,9 +46,14 @@ public final class GrpcKitConfig {
         }
     }
 
-    public void checkNotNull() {
+    private static final Pattern NAME_PATTERN = Pattern.compile("[\\w]+");
+
+    public void validate() {
         if (name == null || name.isBlank()) {
             throw new NullPointerException("Name must not be null or blank");
+        }
+        if (!NAME_PATTERN.matcher(name).matches()) {
+            throw new IllegalArgumentException("Name must match the regular expression: [\\w]+");
         }
         if (nameResolver.getRegistry() == null || nameResolver.getRegistry().isBlank()) {
             throw new NullPointerException("Registry of nameResolver must not be null or blank");

@@ -26,7 +26,7 @@ public class GreeterServiceTest {
     public void server_1() throws InterruptedException {
         final BindableService service = new GreeterService();
         final GrpcKitFactory factory = new GrpcKitFactory("grpc-kit-server-1.yaml");
-        final Server server = factory.newAndStartServer(service.bindService());
+        final Server server = factory.newAndStartServer(service);
         server.awaitTermination();
     }
 
@@ -34,14 +34,14 @@ public class GreeterServiceTest {
     public void server_2() throws InterruptedException {
         final BindableService service = new GreeterService();
         final GrpcKitFactory factory = new GrpcKitFactory("grpc-kit-server-2.yaml");
-        final Server server = factory.newAndStartServer(service.bindService());
+        final Server server = factory.newAndStartServer(service);
         server.awaitTermination();
     }
 
     @Test
     public void stub() {
         final GrpcKitFactory factory = new GrpcKitFactory("grpc-kit-stub.yaml");
-        final Channel channel = factory.newChannel(GreeterServiceGrpc.SERVICE_NAME);
+        final Channel channel = factory.newChannel("unit_test_server");
         final GreeterServiceGrpc.GreeterServiceBlockingStub stub = factory.newStub(
             GreeterServiceGrpc.GreeterServiceBlockingStub.class, channel);
 

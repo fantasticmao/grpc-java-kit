@@ -1,4 +1,4 @@
-name: "unit-test-stub"
+name: "unit_test_stub"
 
 grpc:
   stub:
