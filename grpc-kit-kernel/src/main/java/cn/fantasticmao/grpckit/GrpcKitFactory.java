@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.URI;
@@ -36,7 +37,8 @@ public class GrpcKitFactory {
     private final GrpcKitConfig config;
     private final InetAddress address;
 
-    public GrpcKitFactory(String path) {
+    public GrpcKitFactory(@Nonnull String path) {
+        Objects.requireNonNull(path, "Path must not be null");
         this.config = GrpcKitConfig.loadAndParse(path);
         this.config.checkNotNull();
         try {
@@ -47,7 +49,7 @@ public class GrpcKitFactory {
         }
     }
 
-    // for server
+    // server handling
 
     public Server newAndStartServer(ServerServiceDefinition... services) {
         final int port = config.getGrpc().getServer().getPort();
@@ -70,20 +72,22 @@ public class GrpcKitFactory {
     }
 
     private void registerService(ServerServiceDefinition... services) {
-        final String appName = config.getName();
+        final String appName = Objects.requireNonNull(config.getName(),
+            "Name must not be null");
         final String appGroup = config.getGroup();
         final int serverPort = config.getGrpc().getServer().getPort();
         final int serverWeight = config.getGrpc().getServer().getWeight();
         final String serverTag = config.getGrpc().getServer().getTag();
-        final String registry = config.getNameResolver().getRegistry();
+        final String registry = Objects.requireNonNull(config.getNameResolver().getRegistry(),
+            "Registry of nameResolver must not be null");
 
         final List<ServiceRegistryProvider> serviceRegistryProviders = this.getAllServiceRegistries();
         for (ServerServiceDefinition service : services) {
             final String serviceName = service.getServiceDescriptor().getName();
             final ServiceMetadata metadata = new ServiceMetadata(address, serverPort, serverWeight,
                 serverTag, appName, Constant.VERSION);
-            final URI serviceUri = UriUtil.newServiceUri(URI.create(Objects.requireNonNull(registry)),
-                serviceName, appGroup, address, serverPort);
+            final URI serviceUri = UriUtil.newServiceUri(URI.create(registry), serviceName,
+                appGroup, address, serverPort);
             for (ServiceRegistryProvider provider : serviceRegistryProviders) {
                 try (ServiceRegistry serviceRegistry = provider.newServiceRegistry(serviceUri)) {
                     if (serviceRegistry == null) {
@@ -108,7 +112,7 @@ public class GrpcKitFactory {
             .collect(Collectors.toList());
     }
 
-    // for stub
+    // stub handling
 
     public <S extends AbstractStub<S>> S newStub(Class<S> clazz, Channel channel) {
         final AbstractStub.StubFactory<S> stubFactory = (_channel, callOptions) -> {
@@ -116,7 +120,10 @@ public class GrpcKitFactory {
             try {
                 // get private constructor
                 constructor = clazz.getDeclaredConstructor(Channel.class, CallOptions.class);
-                constructor.setAccessible(true);
+                if ((!Modifier.isPublic(constructor.getModifiers()) ||
+                    !Modifier.isPublic(constructor.getDeclaringClass().getModifiers())) && !constructor.canAccess(null)) {
+                    constructor.setAccessible(true);
+                }
             } catch (NoSuchMethodException e) {
                 throw new GrpcKitException("Get gRPC stub constructor error", e);
             }
@@ -149,15 +156,16 @@ public class GrpcKitFactory {
             .withDeadlineAfter(stubTimeout, TimeUnit.MILLISECONDS);
     }
 
-    // for channel
+    // channel handling
 
     public Channel newChannel(@Nonnull String serviceName) {
-        final String appName = config.getName();
+        final String appName = Objects.requireNonNull(config.getName(),
+            "Name must not be null");
         final String appGroup = config.getGroup();
-        final String registry = config.getNameResolver().getRegistry();
+        final String registry = Objects.requireNonNull(config.getNameResolver().getRegistry(),
+            "Registry of nameResolver must not be null");
         final String policy = config.getLoadBalancer().getPolicy();
-        final URI serviceUri = UriUtil.newServiceUri(URI.create(Objects.requireNonNull(registry)),
-            serviceName, appGroup);
+        final URI serviceUri = UriUtil.newServiceUri(URI.create(registry), serviceName, appGroup);
         return ManagedChannelBuilder
             .forTarget(serviceUri.toString())
             .userAgent(appName)

@@ -1,6 +1,5 @@
 package cn.fantasticmao.grpckit.springboot;
 
-import cn.fantasticmao.grpckit.GrpcKitFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -21,13 +20,7 @@ public class GrpcKitAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public GrpcKitFactory grpcKitFactory() {
-        return new GrpcKitFactory(configPath);
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
     public GrpcClientBeanPostProcessor clientBeanPostProcessor() {
-        return new GrpcClientBeanPostProcessor();
+        return new GrpcClientBeanPostProcessor(configPath);
     }
 }

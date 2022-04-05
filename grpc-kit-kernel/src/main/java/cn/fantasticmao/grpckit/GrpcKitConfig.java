@@ -11,6 +11,7 @@ import javax.annotation.Nullable;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 
 /**
  * Read configs from the specific file.
@@ -31,6 +32,7 @@ public final class GrpcKitConfig {
      * @throws GrpcKitException Errors during loading and parsing phases
      */
     public static GrpcKitConfig loadAndParse(@Nonnull String path) {
+        Objects.requireNonNull(path, "Path must not be null");
         Yaml yaml = new Yaml(new Constructor(GrpcKitConfig.class));
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         try (InputStream input = classLoader.getResourceAsStream(path)) {
@@ -45,10 +47,10 @@ public final class GrpcKitConfig {
 
     public void checkNotNull() {
         if (name == null || name.isBlank()) {
-            throw new NullPointerException("Name can not be null or blank");
+            throw new NullPointerException("Name must not be null or blank");
         }
         if (nameResolver.getRegistry() == null || nameResolver.getRegistry().isBlank()) {
-            throw new NullPointerException("Registry of nameResolver can not be null or blank");
+            throw new NullPointerException("Registry of nameResolver must not be null or blank");
         }
     }
 
