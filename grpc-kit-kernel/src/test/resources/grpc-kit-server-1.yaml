@@ -1,4 +1,5 @@
-name: "unit_test_server"
+app:
+  name: "unit_test_server"
 
 grpc:
   server:

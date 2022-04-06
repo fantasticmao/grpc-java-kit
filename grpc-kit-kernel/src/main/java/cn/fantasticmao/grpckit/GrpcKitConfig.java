@@ -49,29 +49,35 @@ public final class GrpcKitConfig {
     private static final Pattern NAME_PATTERN = Pattern.compile("[\\w]+");
 
     public void validate() {
-        if (name == null || name.isBlank()) {
-            throw new NullPointerException("Name must not be null or blank");
+        if (app.getName() == null || app.getName().isBlank()) {
+            throw new NullPointerException("app.name must not be null or blank");
         }
-        if (!NAME_PATTERN.matcher(name).matches()) {
-            throw new IllegalArgumentException("Name must match the regular expression: [\\w]+");
+        if (!NAME_PATTERN.matcher(app.getName()).matches()) {
+            throw new IllegalArgumentException("app.name must match the regular expression: [\\w]+");
         }
         if (nameResolver.getRegistry() == null || nameResolver.getRegistry().isBlank()) {
-            throw new NullPointerException("Registry of nameResolver must not be null or blank");
+            throw new NullPointerException("nameResolver.registry must not be null or blank");
         }
     }
 
-    @Nullable
-    private String name = null;
-    private String group = "default";
+    private App app = new App();
     private Grpc grpc = new Grpc();
     private NameResolver nameResolver = new NameResolver();
     private LoadBalancer loadBalancer = new LoadBalancer();
 
     @Getter
     @Setter
+    public static class App {
+        @Nullable
+        private String name = null;
+        private String group = "default";
+    }
+
+    @Getter
+    @Setter
     public static class Grpc {
         private Server server = new Server();
-        private Stub stub = new Stub();
+        private Client client = new Client();
 
         @Getter
         @Setter
@@ -85,7 +91,7 @@ public final class GrpcKitConfig {
 
         @Getter
         @Setter
-        public static class Stub {
+        public static class Client {
             private String tag = ServiceMetadata.DEFAULT_TAG;
             private int timeout = 2_000;
         }

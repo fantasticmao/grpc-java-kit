@@ -39,8 +39,8 @@ public class GreeterServiceTest {
     }
 
     @Test
-    public void stub() {
-        final GrpcKitFactory factory = new GrpcKitFactory("grpc-kit-stub.yaml");
+    public void client() {
+        final GrpcKitFactory factory = new GrpcKitFactory("grpc-kit-client.yaml");
         final Channel channel = factory.newChannel("unit_test_server");
         final GreeterServiceGrpc.GreeterServiceBlockingStub stub = factory.newStub(
             GreeterServiceGrpc.GreeterServiceBlockingStub.class, channel);

@@ -1,7 +1,8 @@
-name: "unit_test_stub"
+app:
+  name: "unit_test_stub"
 
 grpc:
-  stub:
+  client:
     tag: "debug"
     timeout: 5_000
 

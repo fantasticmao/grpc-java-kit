@@ -1,9 +1,10 @@
-name: "unit_test_spring_boot"
+app:
+  name: "unit_test_spring_boot"
 
 grpc:
   server:
     port: 50051
-  stub:
+  client:
     timeout: 5_000
 
 nameResolver:

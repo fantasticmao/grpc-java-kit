@@ -15,15 +15,15 @@ public class GrpcKitConfigTest {
     @Test
     public void getInstance() {
         GrpcKitConfig config = GrpcKitConfig.loadAndParse("grpc-kit.yaml");
-        Assertions.assertEquals("unit-test", config.getName());
-        Assertions.assertEquals("dev", config.getGroup());
+        Assertions.assertEquals("unit_test", config.getApp().getName());
+        Assertions.assertEquals("dev", config.getApp().getGroup());
 
         Assertions.assertEquals(8080, config.getGrpc().getServer().getPort());
         Assertions.assertEquals(100, config.getGrpc().getServer().getWeight());
         Assertions.assertEquals("debug", config.getGrpc().getServer().getTag());
         Assertions.assertNull(config.getGrpc().getServer().getInterfaceName());
-        Assertions.assertEquals("debug", config.getGrpc().getStub().getTag());
-        Assertions.assertEquals(5_000, config.getGrpc().getStub().getTimeout());
+        Assertions.assertEquals("debug", config.getGrpc().getClient().getTag());
+        Assertions.assertEquals(5_000, config.getGrpc().getClient().getTimeout());
 
         Assertions.assertEquals("zookeeper://localhost:2181", config.getNameResolver().getRegistry());
 

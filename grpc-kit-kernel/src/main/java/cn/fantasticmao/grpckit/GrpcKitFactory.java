@@ -72,14 +72,14 @@ public class GrpcKitFactory {
     }
 
     private void registerService() {
-        final String appName = Objects.requireNonNull(config.getName(),
-            "Name must not be null");
-        final String appGroup = config.getGroup();
+        final String appName = Objects.requireNonNull(config.getApp().getName(),
+            "app.name must not be null");
+        final String appGroup = config.getApp().getGroup();
         final int serverPort = config.getGrpc().getServer().getPort();
         final int serverWeight = config.getGrpc().getServer().getWeight();
         final String serverTag = config.getGrpc().getServer().getTag();
         final String registry = Objects.requireNonNull(config.getNameResolver().getRegistry(),
-            "Registry of nameResolver must not be null");
+            "nameResolver.registry must not be null");
 
         final URI serviceUri = UriUtil.newServiceUri(URI.create(registry), appName, appGroup,
             localAddress, serverPort);
@@ -146,18 +146,18 @@ public class GrpcKitFactory {
             throw new GrpcKitException("Invoke static method: " + methodName + " error", e);
         }
 
-        final String stubTag = config.getGrpc().getStub().getTag();
-        final int stubTimeout = config.getGrpc().getStub().getTimeout();
-        return stub.withOption(Constant.KEY_OPTION_TAG, stubTag)
-            .withDeadlineAfter(stubTimeout, TimeUnit.MILLISECONDS);
+        final String clientTag = config.getGrpc().getClient().getTag();
+        final int clientTimeout = config.getGrpc().getClient().getTimeout();
+        return stub.withOption(Constant.KEY_OPTION_TAG, clientTag)
+            .withDeadlineAfter(clientTimeout, TimeUnit.MILLISECONDS);
     }
 
     // channel handling
 
     public Channel newChannel(String appName) {
-        final String appGroup = config.getGroup();
+        final String appGroup = config.getApp().getGroup();
         final String registry = Objects.requireNonNull(config.getNameResolver().getRegistry(),
-            "Registry of nameResolver must not be null");
+            "nameResolver.registry must not be null");
         final String policy = config.getLoadBalancer().getPolicy();
         final URI serviceUri = UriUtil.newServiceUri(URI.create(registry), appName, appGroup);
         return ManagedChannelBuilder

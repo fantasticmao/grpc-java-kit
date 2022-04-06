@@ -23,7 +23,7 @@ public interface UriUtil {
      * @see cn.fantasticmao.grpckit.ServiceDiscoveryProvider
      */
     static URI newServiceUri(URI registryUri, String appName, String appGroup) {
-        final String path = String.format("/%s/%s/server", appName, appGroup);
+        final String path = String.format("/%s/%s/servers", appName, appGroup);
         try {
             return new URI(registryUri.getScheme(), registryUri.getUserInfo(), registryUri.getHost(),
                 registryUri.getPort(), path, registryUri.getQuery(), registryUri.getFragment());
@@ -44,7 +44,7 @@ public interface UriUtil {
      * @see cn.fantasticmao.grpckit.ServiceRegistryProvider
      */
     static URI newServiceUri(URI registryUri, String appName, String appGroup, InetAddress address, int port) {
-        final String path = String.format("/%s/%s/server/%s:%d", appName, appGroup, address.getHostAddress(), port);
+        final String path = String.format("/%s/%s/servers/%s:%d", appName, appGroup, address.getHostAddress(), port);
         try {
             return new URI(registryUri.getScheme(), registryUri.getUserInfo(), registryUri.getHost(),
                 registryUri.getPort(), path, registryUri.getQuery(), registryUri.getFragment());

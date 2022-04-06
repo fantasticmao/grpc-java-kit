@@ -1,5 +1,6 @@
-name: "unit_test"
-group: "dev"
+app:
+  name: "unit_test"
+  group: "dev"
 
 grpc:
   server:
@@ -7,7 +8,7 @@ grpc:
     weight: 100
     tag: "debug"
     # interfaceName: en0
-  stub:
+  client:
     tag: "debug"
     timeout: 5_000
 

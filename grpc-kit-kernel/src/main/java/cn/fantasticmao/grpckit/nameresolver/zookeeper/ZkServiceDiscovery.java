@@ -22,15 +22,15 @@ import java.util.stream.Collectors;
  * <p>
  * Data model in ZooKeeper:
  * <pre>
- *                      grpc-java
- *                      /       \
- *                 service-1  service-2
- *                   /
- *               default(group)
- *                /    \
- *             server  stub
- *             /    \
- * 192.168.1.1:8080 192.168.1.2:8080
+ *                       grpc-java
+ *                       /       \
+ *                    app_1     app_2
+ *                    /
+ *                default(group)
+ *                 /     \
+ *             servers clients
+ *             /     \
+ * 192.168.1.1:8080  192.168.1.2:8080
  * </pre>
  *
  * @author fantasticmao
