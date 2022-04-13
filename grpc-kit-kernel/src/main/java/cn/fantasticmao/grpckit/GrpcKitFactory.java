@@ -18,9 +18,7 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.URI;
 import java.net.UnknownHostException;
-import java.util.List;
-import java.util.Objects;
-import java.util.ServiceLoader;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -38,7 +36,7 @@ public class GrpcKitFactory {
     private final InetAddress localAddress;
 
     public GrpcKitFactory(@Nonnull String path) {
-        Objects.requireNonNull(path, "Path must not be null");
+        Objects.requireNonNull(path, "path must not be null");
         this.config = GrpcKitConfig.loadAndParse(path);
         this.config.validate();
         try {
@@ -52,6 +50,10 @@ public class GrpcKitFactory {
     // server handling
 
     public Server newAndStartServer(BindableService... services) {
+        return this.newAndStartServer(Arrays.asList(services));
+    }
+
+    public Server newAndStartServer(Collection<BindableService> services) {
         final int port = config.getGrpc().getServer().getPort();
         ServerBuilder<?> serverBuilder = ServerBuilder
             .forPort(port);
@@ -61,11 +63,17 @@ public class GrpcKitFactory {
         serverBuilder.addService(ProtoReflectionService.newInstance());
         Server server = serverBuilder.build();
         try {
-            LOGGER.debug("Starting gRPC server on port: {}", port);
             server.start();
         } catch (IOException e) {
             throw new GrpcKitException("Start gRPC server error", e);
         }
+
+        List<String> servicesNames = server.getImmutableServices().stream()
+            .map(ServerServiceDefinition::getServiceDescriptor)
+            .map(ServiceDescriptor::getName)
+            .collect(Collectors.toList());
+        LOGGER.debug("The gRPC server has been started, listening on port: {} with services: {}",
+            server.getPort(), servicesNames);
 
         this.registerService();
         return server;
@@ -92,7 +100,7 @@ public class GrpcKitFactory {
                 }
                 boolean result = serviceRegistry.doRegister(metadata);
                 if (!result) {
-                    LOGGER.error("Register service failed for path: {}", serviceUri.getPath());
+                    LOGGER.error("Register service failed for URI: {}", serviceUri);
                 }
             }
         }

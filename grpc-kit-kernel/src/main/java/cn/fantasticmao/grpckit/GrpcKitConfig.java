@@ -33,7 +33,7 @@ public final class GrpcKitConfig {
      * @throws GrpcKitException Errors during loading and parsing phases
      */
     public static GrpcKitConfig loadAndParse(@Nonnull String path) {
-        Objects.requireNonNull(path, "Path must not be null");
+        Objects.requireNonNull(path, "path must not be null");
         Yaml yaml = new Yaml(new Constructor(GrpcKitConfig.class));
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         try (InputStream input = classLoader.getResourceAsStream(path)) {

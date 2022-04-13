@@ -6,10 +6,13 @@ import cn.fantasticmao.grpckit.springboot.annotation.GrpcClient;
 import io.grpc.stub.AbstractStub;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.util.ReflectionUtils;
 
 import javax.annotation.Nonnull;
 import java.lang.reflect.Field;
+import java.util.Objects;
 
 /**
  * GrpcClientBeanPostProcessor
@@ -20,15 +23,24 @@ import java.lang.reflect.Field;
  * @see org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor
  * @since 2022-04-03
  */
-public class GrpcClientBeanPostProcessor implements BeanPostProcessor {
-    private final GrpcKitFactory grpcKitFactory;
+public class GrpcClientBeanPostProcessor implements BeanPostProcessor, ApplicationContextAware {
+    private ApplicationContext applicationContext;
 
-    public GrpcClientBeanPostProcessor(String configPath) {
-        this.grpcKitFactory = new GrpcKitFactory(configPath);
+    public GrpcClientBeanPostProcessor() {
+    }
+
+    @Override
+    public void setApplicationContext(@Nonnull ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
     }
 
     @Override
     public Object postProcessBeforeInitialization(@Nonnull Object bean, @Nonnull String beanName) throws BeansException {
+        Objects.requireNonNull(this.applicationContext, "applicationContext must not be null");
+
+        GrpcKitFactory grpcKitFactory = this.applicationContext.getBean(GrpcKitFactory.class);
+        Objects.requireNonNull(grpcKitFactory, "bean 'grpcKitFactory' in applicationContext must not be null");
+
         ReflectionUtils.doWithFields(bean.getClass(), new Callback(bean, grpcKitFactory),
             filter -> filter.isAnnotationPresent(GrpcClient.class));
         return bean;
