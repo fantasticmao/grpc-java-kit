@@ -8,7 +8,7 @@ option java_package = "cn.fantasticmao.grpckit.proto";
 // The greeting service definition.
 service GreeterService {
   // Sends a greeting
-  rpc SayHello (HelloRequest) returns (HelloResponse) {}
+  rpc SayHello (HelloRequest) returns (HelloResponse);
 }
 
 // The request message containing the user's name.

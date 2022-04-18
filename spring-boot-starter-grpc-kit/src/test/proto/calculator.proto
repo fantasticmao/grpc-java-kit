@@ -6,7 +6,8 @@ option java_multiple_files = true;
 option java_package = "cn.fantasticmao.grpckit.proto";
 
 service CalculatorService {
-  rpc Add (Input) returns (Output) {}
+  rpc Plus (Input) returns (Output);
+  rpc Minus (Input) returns (Output);
 }
 
 message Input {

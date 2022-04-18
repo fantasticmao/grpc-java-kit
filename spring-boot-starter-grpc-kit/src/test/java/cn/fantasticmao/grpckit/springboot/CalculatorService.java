@@ -16,9 +16,18 @@ import io.grpc.stub.StreamObserver;
 public class CalculatorService extends CalculatorServiceGrpc.CalculatorServiceImplBase {
 
     @Override
-    public void add(Input input, StreamObserver<Output> responseObserver) {
+    public void plus(Input input, StreamObserver<Output> responseObserver) {
         Output output = Output.newBuilder()
             .setResult(input.getA() + input.getB())
+            .build();
+        responseObserver.onNext(output);
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void minus(Input input, StreamObserver<Output> responseObserver) {
+        Output output = Output.newBuilder()
+            .setResult(input.getA() - input.getB())
             .build();
         responseObserver.onNext(output);
         responseObserver.onCompleted();
