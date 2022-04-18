@@ -4,7 +4,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.concurrent.NotThreadSafe;
 
 /**
- * Keep a value reference like {@link java.util.concurrent.atomic.AtomicReference}, and it is <b>not thread safe</b>.
+ * Keep a value reference like {@link java.util.concurrent.atomic.AtomicReference AtomicReference}.
  *
  * @author fantasticmao
  * @version 1.39.0

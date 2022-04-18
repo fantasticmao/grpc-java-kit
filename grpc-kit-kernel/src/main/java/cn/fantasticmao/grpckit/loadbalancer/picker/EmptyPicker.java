@@ -8,7 +8,7 @@ import javax.annotation.concurrent.ThreadSafe;
 import java.util.Objects;
 
 /**
- * The empty {@link io.grpc.LoadBalancer.SubchannelPicker}.
+ * The empty {@link io.grpc.LoadBalancer.SubchannelPicker SubchannelPicker}.
  *
  * @author fantasticmao
  * @version 1.39.0

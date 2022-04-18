@@ -1,9 +1,9 @@
 package cn.fantasticmao.grpckit.nameresolver.zookeeper;
 
-import cn.fantasticmao.grpckit.Constant;
 import cn.fantasticmao.grpckit.GrpcKitException;
 import cn.fantasticmao.grpckit.ServiceDiscovery;
 import cn.fantasticmao.grpckit.ServiceMetadata;
+import cn.fantasticmao.grpckit.support.GsonUtil;
 import io.grpc.EquivalentAddressGroup;
 import io.grpc.NameResolver;
 import org.apache.curator.framework.CuratorFramework;
@@ -119,7 +119,7 @@ class ZkServiceDiscovery extends ServiceDiscovery {
             } catch (Exception e) {
                 throw new GrpcKitException("Get server metadata error, for path: " + serverPath, e);
             }
-            ServiceMetadata metadata = Constant.GSON.fromJson(metadataJson, ServiceMetadata.class);
+            ServiceMetadata metadata = GsonUtil.GSON.fromJson(metadataJson, ServiceMetadata.class);
             serviceMetadataList.add(metadata);
         }
 

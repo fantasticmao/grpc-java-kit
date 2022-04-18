@@ -1,7 +1,7 @@
 package cn.fantasticmao.grpckit;
 
 /**
- * Exceptions occurs in gRPC Java Kit.
+ * Exceptions threw from gRPC Java Kit.
  *
  * @author fantasticmao
  * @version 1.39.0

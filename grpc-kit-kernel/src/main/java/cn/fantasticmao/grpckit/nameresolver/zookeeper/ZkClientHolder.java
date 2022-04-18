@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Holder for ZooKeeper Client.
+ * Hold connections to the ZooKeeper server.
  *
  * @author fantasticmao
  * @version 1.39.0

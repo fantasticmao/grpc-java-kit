@@ -1,16 +1,14 @@
 package cn.fantasticmao.grpckit;
 
-import java.io.Closeable;
-
 /**
- * Register service instance, the implementation is independent of gRPC, and will
- * be called by {@link GrpcKitFactory} after {@link io.grpc.Server} started.
+ * Register a service instance, implemented independent of the gRPC, and will
+ * be called by {@link GrpcKitFactory} when {@link io.grpc.Server gRPC Server} started.
  *
  * @author fantasticmao
  * @version 1.39.0
  * @since 2022-03-13
  */
-public abstract class ServiceRegistry implements Closeable {
+public abstract class ServiceRegistry {
 
     /**
      * Register service instances.
@@ -21,10 +19,5 @@ public abstract class ServiceRegistry implements Closeable {
     public abstract boolean doRegister(ServiceMetadata metadata);
 
     public abstract void shutdown();
-
-    @Override
-    public void close() {
-        this.shutdown();
-    }
 
 }

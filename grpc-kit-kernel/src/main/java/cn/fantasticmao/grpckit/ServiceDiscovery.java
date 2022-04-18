@@ -3,8 +3,8 @@ package cn.fantasticmao.grpckit;
 import io.grpc.NameResolver;
 
 /**
- * Discover available service instances, implemented by using gRPC {@link io.grpc.NameResolver}
- * and {@link io.grpc.NameResolverProvider} plugins.
+ * Discover available service instances, implemented by using gRPC {@link io.grpc.NameResolver NameResolver}
+ * and {@link io.grpc.NameResolverProvider NameResolverProvider} plugins.
  *
  * @author fantasticmao
  * @version 1.39.0

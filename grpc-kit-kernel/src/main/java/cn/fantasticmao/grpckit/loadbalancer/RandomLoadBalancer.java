@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 import static io.grpc.ConnectivityState.*;
 
 /**
- * The random service load balancer.
+ * Service load balancer for the {@link ServiceLoadBalancer.Policy#WEIGHTED_RANDOM weighted random} policy.
  *
  * @author fantasticmao
  * @version 1.39.0

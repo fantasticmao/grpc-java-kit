@@ -23,7 +23,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
- * Factory for the {@code gRPC Server, Stub and Channel}.
+ * Factory for the gRPC {@link Server Server}, {@link io.grpc.stub.AbstractStub Stub}
+ * and {@link io.grpc.Channel Channel}.
  *
  * @author fantasticmao
  * @version 1.39.0
@@ -94,14 +95,13 @@ public class GrpcKitFactory {
         final ServiceMetadata metadata = new ServiceMetadata(localAddress, serverPort, serverWeight,
             serverTag, Constant.VERSION);
         for (ServiceRegistryProvider provider : this.getAllServiceRegistries()) {
-            try (ServiceRegistry serviceRegistry = provider.newServiceRegistry(serviceUri)) {
-                if (serviceRegistry == null) {
-                    continue;
-                }
-                boolean result = serviceRegistry.doRegister(metadata);
-                if (!result) {
-                    LOGGER.error("Register service failed for URI: {}", serviceUri);
-                }
+            ServiceRegistry serviceRegistry = provider.newServiceRegistry(serviceUri);
+            if (serviceRegistry == null) {
+                continue;
+            }
+            boolean result = serviceRegistry.doRegister(metadata);
+            if (!result) {
+                LOGGER.error("Register service failed for URI: {}", serviceUri);
             }
         }
     }

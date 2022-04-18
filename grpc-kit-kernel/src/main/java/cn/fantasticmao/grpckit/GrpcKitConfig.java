@@ -15,7 +15,7 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 /**
- * Read configs from the specific file.
+ * Configurations used in gRPC Java Kit.
  *
  * @author fantasticmao
  * @version 1.39.0
@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
 public final class GrpcKitConfig {
 
     /**
-     * Load and parse {@link GrpcKitConfig} from the specified file path.
+     * Load and parse {@link GrpcKitConfig} from the specific file.
      *
      * @param path The config file path
      * @return A {@link GrpcKitConfig} object

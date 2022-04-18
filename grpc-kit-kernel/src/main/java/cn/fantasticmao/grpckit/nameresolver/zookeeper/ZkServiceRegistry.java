@@ -1,9 +1,9 @@
 package cn.fantasticmao.grpckit.nameresolver.zookeeper;
 
-import cn.fantasticmao.grpckit.Constant;
 import cn.fantasticmao.grpckit.GrpcKitException;
 import cn.fantasticmao.grpckit.ServiceMetadata;
 import cn.fantasticmao.grpckit.ServiceRegistry;
+import cn.fantasticmao.grpckit.support.GsonUtil;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.data.Stat;
@@ -67,7 +67,7 @@ class ZkServiceRegistry extends ServiceRegistry {
             throw new GrpcKitException("Already exists service, path: " + this.servicePath);
         }
 
-        String metadataJson = Constant.GSON.toJson(metadata);
+        String metadataJson = GsonUtil.GSON.toJson(metadata);
         try {
             String createdPath = this.zkClient.create()
                 .creatingParentsIfNeeded()

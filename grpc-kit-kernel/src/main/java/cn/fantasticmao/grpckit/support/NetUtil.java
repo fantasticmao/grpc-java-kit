@@ -6,7 +6,7 @@ import java.net.*;
 import java.util.*;
 
 /**
- * A util class for {@link java.net.NetworkInterface} and {@link java.net.InetAddress}.
+ * An util class for {@link java.net.NetworkInterface NetworkInterface} and {@link java.net.InetAddress InetAddress}.
  *
  * @author fantasticmao
  * @version 1.39.0

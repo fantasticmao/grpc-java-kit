@@ -10,7 +10,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
 /**
- * Metadata of service instances.
+ * Metadata of a service instance.
  *
  * @author fantasticmao
  * @version 1.39.0
@@ -40,7 +40,7 @@ public class ServiceMetadata {
     private String tag = DEFAULT_TAG;
 
     /**
-     * Version of gRPC, for backup only.
+     * Version of the gRPC, used for backup only.
      */
     private String version;
 
@@ -49,6 +49,7 @@ public class ServiceMetadata {
     public static final String DEFAULT_TAG = "";
 
     public ServiceMetadata() {
+        // used for JSON serializing and deserializing
     }
 
     public ServiceMetadata(InetAddress address, int port, Integer weight, String tag,

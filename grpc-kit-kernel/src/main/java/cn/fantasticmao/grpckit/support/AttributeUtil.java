@@ -8,7 +8,7 @@ import io.grpc.LoadBalancer;
 import javax.annotation.Nonnull;
 
 /**
- * A util class for {@link Attributes gRPC Attributes}.
+ * An util class for {@link Attributes gRPC Attributes}.
  *
  * @author fantasticmao
  * @version 1.39.0
