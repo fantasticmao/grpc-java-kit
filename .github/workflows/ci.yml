@@ -10,6 +10,11 @@ jobs:
   ci:
     name: Continuous Delivery
     runs-on: ubuntu-20.04
+    services:
+      zookeeper:
+        image: zookeeper:3.7.0
+        ports:
+          - 2181:2181
     steps:
       - name: Checkout Project
         uses: actions/checkout@v2
