@@ -1,11 +1,12 @@
 package cn.fantasticmao.grpckit.springboot.annotation;
 
-import org.springframework.stereotype.Service;
+import org.springframework.core.annotation.AliasFor;
+import org.springframework.stereotype.Component;
 
 import java.lang.annotation.*;
 
 /**
- * Grpc Service Annotation.
+ * Indicates that an annotated class is a "gRPC Service".
  *
  * @author fantasticmao
  * @version 1.39.0
@@ -14,7 +15,8 @@ import java.lang.annotation.*;
 @Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Service
+@Component
 public @interface GrpcService {
+    @AliasFor(annotation = Component.class)
     String value() default "";
 }

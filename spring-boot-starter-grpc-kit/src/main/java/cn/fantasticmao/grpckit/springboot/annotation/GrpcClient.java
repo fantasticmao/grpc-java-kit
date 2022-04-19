@@ -1,11 +1,9 @@
 package cn.fantasticmao.grpckit.springboot.annotation;
 
-import io.grpc.ClientInterceptor;
-
 import java.lang.annotation.*;
 
 /**
- * Grpc Client Annotation.
+ * Indicates that an annotated class is a "gRPC Client".
  *
  * @author fantasticmao
  * @version 1.39.0
@@ -21,7 +19,4 @@ public @interface GrpcClient {
 
     int timeout() default 5_000;
 
-    Class<? extends ClientInterceptor>[] interceptors() default {};
-
-    String[] interceptorNames() default {};
 }

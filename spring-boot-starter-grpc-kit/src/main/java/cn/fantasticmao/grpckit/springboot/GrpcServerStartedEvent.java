@@ -2,6 +2,7 @@ package cn.fantasticmao.grpckit.springboot;
 
 import org.springframework.context.ApplicationEvent;
 
+import java.util.Collections;
 import java.util.Set;
 
 /**
@@ -17,7 +18,10 @@ public class GrpcServerStartedEvent extends ApplicationEvent {
 
     public GrpcServerStartedEvent(Object source, Set<String> serviceNames) {
         super(source);
-        this.serviceNames = serviceNames;
+        this.serviceNames = Collections.unmodifiableSet(serviceNames);
     }
 
+    public Set<String> getServiceNames() {
+        return serviceNames;
+    }
 }
