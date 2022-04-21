@@ -7,8 +7,10 @@ import io.grpc.ManagedChannelBuilder;
 import io.grpc.internal.AbstractManagedChannelImplBuilder;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.net.URI;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 /**
  * A builder for {@link ManagedChannel gRPC ManagedChannel} instances.
@@ -31,9 +33,13 @@ public class GrpcKitChannelBuilder extends AbstractManagedChannelImplBuilder<Grp
             .defaultLoadBalancingPolicy(ServiceLoadBalancer.Policy.of(policy).name);
     }
 
-    public static GrpcKitChannelBuilder forConfig(String appName, @Nonnull GrpcKitConfig config) {
-        // TODO check appName
-        Objects.requireNonNull(config, "config must not be null");
+    public static GrpcKitChannelBuilder forConfig(@Nullable String appName, @Nonnull GrpcKitConfig config) {
+        if (appName == null || appName.isBlank()) {
+            throw new IllegalArgumentException("application name must not be null or blank");
+        }
+        if (!Pattern.compile("[\\w]+").matcher(appName).matches()) {
+            throw new IllegalArgumentException("application name must match the regular expression: [\\w]+");
+        }
         return new GrpcKitChannelBuilder(appName, config.validate());
     }
 

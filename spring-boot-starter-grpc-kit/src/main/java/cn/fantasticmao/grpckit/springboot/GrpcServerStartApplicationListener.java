@@ -73,8 +73,10 @@ public class GrpcServerStartApplicationListener implements ApplicationListener<A
             throw e;
         }
 
-        // FIXME
-        Server grpcServer = GrpcKitServerBuilder.forConfig("unit_test_spring_boot", grpcKitConfig)
+        // by default, if no application name is set, 'application' will be used.
+        // @see org.springframework.boot.context.ContextIdApplicationContextInitializer
+        final String appName = context.getId();
+        Server grpcServer = GrpcKitServerBuilder.forConfig(appName, grpcKitConfig)
             .addServices(grpcServices)
             .build();
         try {

@@ -14,7 +14,6 @@ import javax.annotation.Nullable;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Objects;
 
 /**
  * Configurations used in gRPC Java Kit.
@@ -35,7 +34,6 @@ public final class GrpcKitConfig {
      * @throws GrpcKitException Errors during loading and parsing phases
      */
     public static GrpcKitConfig loadAndParse(@Nonnull String path) {
-        Objects.requireNonNull(path, "path must not be null");
         Yaml yaml = new Yaml(new Constructor(GrpcKitConfig.class));
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         try (InputStream input = classLoader.getResourceAsStream(path)) {

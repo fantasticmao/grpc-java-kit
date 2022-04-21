@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.SocketException;
@@ -18,6 +19,7 @@ import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Objects;
 import java.util.ServiceLoader;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -40,9 +42,13 @@ public class GrpcKitServerBuilder extends AbstractServerImplBuilder<GrpcKitServe
         this.serverBuilder = ServerBuilder.forPort(config.getGrpc().getServer().getPort());
     }
 
-    public static GrpcKitServerBuilder forConfig(String appName, @Nonnull GrpcKitConfig config) {
-        // TODO check appName
-        Objects.requireNonNull(config, "config must not be null");
+    public static GrpcKitServerBuilder forConfig(@Nullable String appName, @Nonnull GrpcKitConfig config) {
+        if (appName == null || appName.isBlank()) {
+            throw new IllegalArgumentException("application name must not be null or blank");
+        }
+        if (!Pattern.compile("[\\w]+").matcher(appName).matches()) {
+            throw new IllegalArgumentException("application name must match the regular expression: [\\w]+");
+        }
         return new GrpcKitServerBuilder(appName, config.validate());
     }
 
