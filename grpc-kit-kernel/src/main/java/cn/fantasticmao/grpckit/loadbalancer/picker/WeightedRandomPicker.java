@@ -1,6 +1,5 @@
 package cn.fantasticmao.grpckit.loadbalancer.picker;
 
-import cn.fantasticmao.grpckit.Constant;
 import cn.fantasticmao.grpckit.support.AttributeUtil;
 import cn.fantasticmao.grpckit.support.ValRef;
 import com.google.common.base.MoreObjects;
@@ -13,7 +12,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
 
 /**
  * The weighted random {@link io.grpc.LoadBalancer.SubchannelPicker}, choose a
@@ -25,7 +23,7 @@ import java.util.stream.Collectors;
  * @since 2022-03-24
  */
 @ThreadSafe
-public class WeightedRandomPicker extends LoadBalancer.SubchannelPicker {
+public class WeightedRandomPicker extends AbstractWeightPicker {
     private static final Logger LOGGER = LoggerFactory.getLogger(WeightedRandomPicker.class);
     /**
      * Holds a snapshot of {@link io.grpc.LoadBalancer.Subchannel}es in a {@link LoadBalancer}.
@@ -38,16 +36,7 @@ public class WeightedRandomPicker extends LoadBalancer.SubchannelPicker {
 
     @Override
     public LoadBalancer.PickResult pickSubchannel(LoadBalancer.PickSubchannelArgs args) {
-        List<LoadBalancer.Subchannel> filteredList = list;
-        // filter subChannels by the tag in call options.
-        final String tag = args.getCallOptions().getOption(Constant.KEY_OPTION_TAG);
-        if (tag != null && !tag.isBlank()) {
-            LOGGER.debug("Original subChannels: {}", filteredList);
-            LOGGER.debug("Tag in call options: {}", tag);
-            filteredList = list.stream()
-                .filter(subChannel -> Objects.equals(this.getTag(subChannel), tag))
-                .collect(Collectors.toList());
-        }
+        List<LoadBalancer.Subchannel> filteredList = filterByTag(this.list, args);
         // if no tag is matched, then the RPC will be buffered in the Channel,
         // until the next picker is provided via Helper.updateBalancingState(),
         // when the RPC will go through the same picking process again.
@@ -76,11 +65,6 @@ public class WeightedRandomPicker extends LoadBalancer.SubchannelPicker {
         LoadBalancer.Subchannel pickedSubChannel = filteredList.get(randomIndex);
         LOGGER.debug("SubChannel picked: {}", pickedSubChannel);
         return LoadBalancer.PickResult.withSubchannel(pickedSubChannel);
-    }
-
-    private String getTag(LoadBalancer.Subchannel subChannel) {
-        ValRef<String> tagRef = AttributeUtil.getValRef(subChannel, AttributeUtil.KEY_REF_TAG);
-        return tagRef.value;
     }
 
     private int getWeight(LoadBalancer.Subchannel subChannel) {

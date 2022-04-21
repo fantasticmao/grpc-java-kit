@@ -2,6 +2,7 @@ package cn.fantasticmao.grpckit.loadbalancer;
 
 import cn.fantasticmao.grpckit.ServiceLoadBalancer;
 import cn.fantasticmao.grpckit.loadbalancer.picker.EmptyPicker;
+import cn.fantasticmao.grpckit.loadbalancer.picker.WeightRobinPicker;
 import cn.fantasticmao.grpckit.loadbalancer.picker.WeightedRandomPicker;
 import cn.fantasticmao.grpckit.support.AttributeUtil;
 import cn.fantasticmao.grpckit.support.ValRef;
@@ -59,6 +60,13 @@ class RandomLoadBalancer extends ServiceLoadBalancer {
         }
     }
 
+    /**
+     * resolvedAddresses 中含有最新的server addresses & attributes & config
+     * <li>判断server addresses对应的subChannel是否已经存在，若存在则更新subChannel的server addresses & attributes信息；否则新建subChannel</li>
+     * <li>为新建的subChannel添加状态监听器</li>
+     * <li>{@link Subchannel#requestConnection()}让新建的subChannel状态从IDLE -> CONNECTING </li>
+     * @param resolvedAddresses the resolved server addresses, attributes, and config.
+     */
     @Override
     public void handleResolvedAddresses(ResolvedAddresses resolvedAddresses) {
         List<EquivalentAddressGroup> servers = resolvedAddresses.getAddresses();
@@ -149,7 +157,9 @@ class RandomLoadBalancer extends ServiceLoadBalancer {
 
         // update balancing state.
         if (!readySubChannelList.isEmpty()) {
+            // 如果要换负载均衡策略，则可以将 WeightedRandomPicker 更换为 WeightRobinPicker
             updateBalancingState(READY, new WeightedRandomPicker(readySubChannelList));
+            //updateBalancingState(READY, new WeightRobinPicker(readySubChannelList));
         } else {
             updateBalancingState(isConnecting ? CONNECTING : TRANSIENT_FAILURE,
                 new EmptyPicker(aggStatus));

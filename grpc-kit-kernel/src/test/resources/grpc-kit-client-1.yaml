@@ -3,7 +3,7 @@ app:
 
 grpc:
   client:
-    tag: "debug"
+#    tag: "debug"
     timeout: 5_000
 
 nameResolver:
