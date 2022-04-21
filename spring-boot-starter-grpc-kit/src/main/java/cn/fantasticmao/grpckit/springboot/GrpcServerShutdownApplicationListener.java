@@ -11,7 +11,7 @@ import org.springframework.context.event.ContextClosedEvent;
 import javax.annotation.Nonnull;
 
 /**
- * An {@link ApplicationListener} for shutdown the gRPC {@link Server Server}.
+ * An {@link ApplicationListener} for shutdown the gRPC {@link io.grpc.Server Server}.
  *
  * @author fantasticmao
  * @version 1.39.0

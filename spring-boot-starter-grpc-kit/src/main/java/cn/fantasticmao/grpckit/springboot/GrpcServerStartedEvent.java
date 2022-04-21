@@ -7,7 +7,7 @@ import java.util.Set;
 
 /**
  * Event published by a {@link GrpcServerStartApplicationListener} when gRPC
- * {@link cn.fantasticmao.grpckit.GrpcKitConfig.Grpc.Server Server} has been started.
+ * {@link io.grpc.Server Server} has been started.
  *
  * @author fantasticmao
  * @version 1.39.0

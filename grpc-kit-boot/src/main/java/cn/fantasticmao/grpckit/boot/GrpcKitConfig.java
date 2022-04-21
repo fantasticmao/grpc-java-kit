@@ -1,5 +1,8 @@
-package cn.fantasticmao.grpckit;
+package cn.fantasticmao.grpckit.boot;
 
+import cn.fantasticmao.grpckit.GrpcKitException;
+import cn.fantasticmao.grpckit.ServiceLoadBalancer;
+import cn.fantasticmao.grpckit.ServiceMetadata;
 import lombok.Getter;
 import lombok.Setter;
 import org.yaml.snakeyaml.Yaml;
@@ -12,7 +15,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
-import java.util.regex.Pattern;
 
 /**
  * Configurations used in gRPC Java Kit.
@@ -46,36 +48,21 @@ public final class GrpcKitConfig {
         }
     }
 
-    private static final Pattern NAME_PATTERN = Pattern.compile("[\\w]+");
-
-    public void validate() {
-        if (app.getName() == null || app.getName().isBlank()) {
-            throw new NullPointerException("app.name must not be null or blank");
-        }
-        if (!NAME_PATTERN.matcher(app.getName()).matches()) {
-            throw new IllegalArgumentException("app.name must match the regular expression: [\\w]+");
-        }
+    public GrpcKitConfig validate() {
         if (nameResolver.getRegistry() == null || nameResolver.getRegistry().isBlank()) {
-            throw new NullPointerException("nameResolver.registry must not be null or blank");
+            throw new IllegalArgumentException("nameResolver.registry must not be null or blank");
         }
+        return this;
     }
 
-    private App app = new App();
     private Grpc grpc = new Grpc();
     private NameResolver nameResolver = new NameResolver();
     private LoadBalancer loadBalancer = new LoadBalancer();
 
     @Getter
     @Setter
-    public static class App {
-        @Nullable
-        private String name = null;
-        private String group = "default";
-    }
-
-    @Getter
-    @Setter
     public static class Grpc {
+        private String group = "default";
         private Server server = new Server();
         private Client client = new Client();
 

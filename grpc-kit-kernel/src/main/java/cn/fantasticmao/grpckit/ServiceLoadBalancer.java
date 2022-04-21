@@ -21,16 +21,19 @@ public abstract class ServiceLoadBalancer extends LoadBalancer {
     /**
      * {@inheritDoc}
      */
+    @Override
     public abstract void handleResolvedAddresses(ResolvedAddresses resolvedAddresses);
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public abstract void handleNameResolutionError(Status error);
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public abstract void shutdown();
 
     public enum Policy {

@@ -1,6 +1,8 @@
 package cn.fantasticmao.grpckit.springboot;
 
-import cn.fantasticmao.grpckit.GrpcKitFactory;
+import cn.fantasticmao.grpckit.boot.GrpcKitChannelBuilder;
+import cn.fantasticmao.grpckit.boot.GrpcKitConfig;
+import cn.fantasticmao.grpckit.boot.GrpcKitStubFactory;
 import cn.fantasticmao.grpckit.proto.CalculatorServiceGrpc;
 import io.grpc.Channel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +19,15 @@ import org.springframework.context.annotation.Bean;
 public class ApplicationConfiguration {
 
     @Bean
-    public Channel unitTestChannel(@Autowired GrpcKitFactory factory) {
-        return factory.newChannel("unit_test_spring_boot");
+    public Channel unitTestChannel(@Autowired GrpcKitConfig config) {
+        return GrpcKitChannelBuilder.forConfig("unit_test_spring_boot", config)
+            .usePlaintext()
+            .build();
     }
 
     @Bean
-    public CalculatorServiceGrpc.CalculatorServiceBlockingStub calculatorStub(@Autowired GrpcKitFactory factory,
-                                                                              @Autowired Channel channel) {
-        return factory.newStub(CalculatorServiceGrpc.CalculatorServiceBlockingStub.class, channel);
+    public CalculatorServiceGrpc.CalculatorServiceBlockingStub calculatorStub(@Autowired Channel channel,
+                                                                              @Autowired GrpcKitConfig config) {
+        return GrpcKitStubFactory.newStub(CalculatorServiceGrpc.CalculatorServiceBlockingStub.class, channel, config);
     }
 }

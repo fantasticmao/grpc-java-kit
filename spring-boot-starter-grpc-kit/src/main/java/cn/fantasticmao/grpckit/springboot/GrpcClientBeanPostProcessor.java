@@ -1,7 +1,7 @@
 package cn.fantasticmao.grpckit.springboot;
 
 import cn.fantasticmao.grpckit.GrpcKitException;
-import cn.fantasticmao.grpckit.GrpcKitFactory;
+import cn.fantasticmao.grpckit.boot.GrpcKitConfig;
 import cn.fantasticmao.grpckit.springboot.annotation.GrpcClient;
 import io.grpc.stub.AbstractStub;
 import org.springframework.beans.BeansException;
@@ -38,21 +38,21 @@ public class GrpcClientBeanPostProcessor implements BeanPostProcessor, Applicati
     public Object postProcessBeforeInitialization(@Nonnull Object bean, @Nonnull String beanName) throws BeansException {
         Objects.requireNonNull(this.applicationContext, "applicationContext must not be null");
 
-        GrpcKitFactory grpcKitFactory = this.applicationContext.getBean(GrpcKitFactory.class);
-        Objects.requireNonNull(grpcKitFactory, "bean 'grpcKitFactory' in applicationContext must not be null");
+        GrpcKitConfig grpcKitConfig = this.applicationContext.getBean(GrpcKitConfig.class);
+        Objects.requireNonNull(grpcKitConfig, "bean 'GrpcKitConfig' in applicationContext must not be null");
 
-        ReflectionUtils.doWithFields(bean.getClass(), new Callback(bean, grpcKitFactory),
+        ReflectionUtils.doWithFields(bean.getClass(), new Callback(bean, grpcKitConfig),
             filter -> filter.isAnnotationPresent(GrpcClient.class));
         return bean;
     }
 
     private static class Callback implements ReflectionUtils.FieldCallback {
         private final Object bean;
-        private final GrpcKitFactory grpcKitFactory;
+        private final GrpcKitConfig grpcKitConfig;
 
-        public Callback(Object bean, GrpcKitFactory grpcKitFactory) {
+        public Callback(Object bean, GrpcKitConfig grpcKitConfig) {
             this.bean = bean;
-            this.grpcKitFactory = grpcKitFactory;
+            this.grpcKitConfig = grpcKitConfig;
         }
 
         @Override

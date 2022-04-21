@@ -16,21 +16,25 @@ public abstract class ServiceDiscovery extends NameResolver {
     /**
      * {@inheritDoc}
      */
+    @Override
     public abstract String getServiceAuthority();
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public abstract void start(Listener2 listener);
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public abstract void refresh();
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public abstract void shutdown();
 
 }

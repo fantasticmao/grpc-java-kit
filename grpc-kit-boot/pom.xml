@@ -9,26 +9,22 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>spring-boot-starter-grpc-kit</artifactId>
+    <artifactId>grpc-kit-boot</artifactId>
     <packaging>jar</packaging>
 
-    <name>spring-boot-starter-grpc-kit</name>
-    <description>Spring Boot Starter gRPC Kit</description>
+    <name>grpc-kit-boot</name>
+    <description>gRPC Kit Bootstrap</description>
 
     <dependencies>
         <dependency>
-            <groupId>cn.fantasticmao.grpc-kit</groupId>
-            <artifactId>grpc-kit-boot</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -36,6 +32,17 @@
             <groupId>org.apache.curator</groupId>
             <artifactId>curator-framework</artifactId>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.fantasticmao.grpc-kit</groupId>
+            <artifactId>grpc-kit-kernel</artifactId>
         </dependency>
     </dependencies>
 </project>

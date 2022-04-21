@@ -1,6 +1,3 @@
-app:
-  name: "unit_test_spring_boot"
-
 grpc:
   server:
     port: 50051

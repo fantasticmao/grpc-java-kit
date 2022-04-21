@@ -15,15 +15,18 @@ public abstract class ServiceLoadBalancerProvider extends LoadBalancerProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public abstract boolean isAvailable();
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public abstract int getPriority();
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public abstract String getPolicyName();
 }

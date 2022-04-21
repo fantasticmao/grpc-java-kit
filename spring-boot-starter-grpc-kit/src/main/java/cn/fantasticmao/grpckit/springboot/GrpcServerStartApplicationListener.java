@@ -1,9 +1,12 @@
 package cn.fantasticmao.grpckit.springboot;
 
-import cn.fantasticmao.grpckit.GrpcKitFactory;
+import cn.fantasticmao.grpckit.GrpcKitException;
+import cn.fantasticmao.grpckit.boot.GrpcKitConfig;
+import cn.fantasticmao.grpckit.boot.GrpcKitServerBuilder;
 import cn.fantasticmao.grpckit.springboot.annotation.GrpcService;
 import io.grpc.BindableService;
 import io.grpc.Server;
+import io.grpc.ServerServiceDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -14,12 +17,14 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
 
 import javax.annotation.Nonnull;
+import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * An {@link ApplicationListener} for start the gRPC {@link Server Server}.
+ * An {@link ApplicationListener} for start the gRPC {@link io.grpc.Server Server}.
  *
  * @author fantasticmao
  * @version 1.39.0
@@ -53,26 +58,32 @@ public class GrpcServerStartApplicationListener implements ApplicationListener<A
         Set<String> grpcServiceNames = grpcServiceBeans.stream()
             .map(Map.Entry::getKey)
             .collect(Collectors.toSet());
-        Set<BindableService> grpcServices = grpcServiceBeans.stream()
+        List<ServerServiceDefinition> grpcServices = grpcServiceBeans.stream()
             .map(Map.Entry::getValue)
             .map(obj -> (BindableService) obj)
-            .collect(Collectors.toSet());
+            .map(BindableService::bindService)
+            .collect(Collectors.toList());
 
-        final GrpcKitFactory grpcKitFactory;
+        final GrpcKitConfig grpcKitConfig;
         try {
-            grpcKitFactory = context.getBean(GrpcKitAutoConfiguration.BEAN_NAME_GRPC_KIT_FACTORY, GrpcKitFactory.class);
+            grpcKitConfig = context.getBean(GrpcKitAutoConfiguration.BEAN_NAME_GRPC_KIT_CONFIG, GrpcKitConfig.class);
         } catch (NoSuchBeanDefinitionException e) {
             LOGGER.error("bean {} in applicationContext must not be null",
-                GrpcKitAutoConfiguration.BEAN_NAME_GRPC_KIT_FACTORY);
+                GrpcKitAutoConfiguration.BEAN_NAME_GRPC_KIT_CONFIG);
             throw e;
         }
 
         // FIXME
-        Server grpcServer = grpcKitFactory.newAndStartServer("", grpcServices);
-        if (grpcServer != null) {
-            this.registerBeanForGrpcServer(context, grpcServer);
-            this.publishGrpcServiceStartedEvent(context, event, grpcServiceNames);
+        Server grpcServer = GrpcKitServerBuilder.forConfig("unit_test_spring_boot", grpcKitConfig)
+            .addServices(grpcServices)
+            .build();
+        try {
+            grpcServer.start();
+        } catch (IOException e) {
+            throw new GrpcKitException("Start gRPC server error", e);
         }
+        this.registerBeanForGrpcServer(context, grpcServer);
+        this.publishGrpcServiceStartedEvent(context, event, grpcServiceNames);
     }
 
     private void registerBeanForGrpcServer(ConfigurableApplicationContext context, Server grpcServer) {

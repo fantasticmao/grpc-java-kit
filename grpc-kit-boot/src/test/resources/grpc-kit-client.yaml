@@ -1,9 +1,6 @@
-app:
-  name: "unit_test_stub"
-
 grpc:
   client:
-    tag: "debug"
+    # tag: "debug"
     timeout: 5_000
 
 nameResolver:

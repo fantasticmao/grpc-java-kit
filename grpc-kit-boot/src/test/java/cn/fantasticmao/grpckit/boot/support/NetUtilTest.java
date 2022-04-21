@@ -1,4 +1,4 @@
-package cn.fantasticmao.grpckit.support;
+package cn.fantasticmao.grpckit.boot.support;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -11,7 +11,7 @@ import java.net.InetAddress;
  *
  * @author fantasticmao
  * @version 1.39.0
- * @since 2022-03-18
+ * @since 2022-04-21
  */
 public class NetUtilTest {
 

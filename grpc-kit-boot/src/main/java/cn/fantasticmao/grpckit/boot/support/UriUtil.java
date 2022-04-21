@@ -1,4 +1,4 @@
-package cn.fantasticmao.grpckit.support;
+package cn.fantasticmao.grpckit.boot.support;
 
 import java.net.InetAddress;
 import java.net.URI;
@@ -16,14 +16,14 @@ public interface UriUtil {
     /**
      * New URI for service discovery.
      *
-     * @param registryUri registry URI
-     * @param appName     application name
-     * @param appGroup    application group
+     * @param registryUri  registry URI
+     * @param appName      application name
+     * @param serviceGroup service group
      * @see cn.fantasticmao.grpckit.ServiceDiscovery
      * @see cn.fantasticmao.grpckit.ServiceDiscoveryProvider
      */
-    static URI newServiceUri(URI registryUri, String appName, String appGroup) {
-        final String path = String.format("/%s/%s/servers", appName, appGroup);
+    static URI newServiceUri(URI registryUri, String appName, String serviceGroup) {
+        final String path = String.format("/%s/%s/servers", appName, serviceGroup);
         try {
             return new URI(registryUri.getScheme(), registryUri.getUserInfo(), registryUri.getHost(),
                 registryUri.getPort(), path, registryUri.getQuery(), registryUri.getFragment());
@@ -35,16 +35,16 @@ public interface UriUtil {
     /**
      * New URI for service registry.
      *
-     * @param registryUri registry URI
-     * @param appName     application name
-     * @param appGroup    application group
-     * @param address     local host address
-     * @param port        listening port
+     * @param registryUri  registry URI
+     * @param appName      application name
+     * @param serviceGroup service group
+     * @param address      host address
+     * @param port         listening port
      * @see cn.fantasticmao.grpckit.ServiceRegistry
      * @see cn.fantasticmao.grpckit.ServiceRegistryProvider
      */
-    static URI newServiceUri(URI registryUri, String appName, String appGroup, InetAddress address, int port) {
-        final String path = String.format("/%s/%s/servers/%s:%d", appName, appGroup, address.getHostAddress(), port);
+    static URI newServiceUri(URI registryUri, String appName, String serviceGroup, InetAddress address, int port) {
+        final String path = String.format("/%s/%s/servers/%s:%d", appName, serviceGroup, address.getHostAddress(), port);
         try {
             return new URI(registryUri.getScheme(), registryUri.getUserInfo(), registryUri.getHost(),
                 registryUri.getPort(), path, registryUri.getQuery(), registryUri.getFragment());

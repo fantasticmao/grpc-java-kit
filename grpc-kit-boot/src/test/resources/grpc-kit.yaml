@@ -1,13 +1,10 @@
-app:
-  name: "unit_test"
-  group: "dev"
-
 grpc:
+  group: "dev"
   server:
     port: 8080
     weight: 100
     tag: "debug"
-    # interfaceName: en0
+    interfaceName: en0
   client:
     tag: "debug"
     timeout: 5_000

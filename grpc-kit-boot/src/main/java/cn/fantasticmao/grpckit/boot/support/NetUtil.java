@@ -1,4 +1,4 @@
-package cn.fantasticmao.grpckit.support;
+package cn.fantasticmao.grpckit.boot.support;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
