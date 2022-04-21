@@ -19,20 +19,27 @@ public abstract class ServiceDiscoveryProvider extends NameResolverProvider {
     /**
      * {@inheritDoc}
      */
+    @Override
     public abstract NameResolver newNameResolver(URI serviceUri, final NameResolver.Args args);
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public abstract String getDefaultScheme();
 
     /**
-     * {@inheritDoc}
+     * Implementations should not throw. If they do, it may interrupt class loading.
+     * If exceptions may reasonably occur for implementation-specific reasons,
+     * implementations should generally handle the exception gracefully
+     * and return false from isAvailable().
      */
+    @Override
     protected abstract boolean isAvailable();
 
     /**
      * {@inheritDoc}
      */
+    @Override
     protected abstract int priority();
 }

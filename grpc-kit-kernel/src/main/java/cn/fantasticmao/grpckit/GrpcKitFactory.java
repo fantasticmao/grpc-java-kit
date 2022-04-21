@@ -92,7 +92,7 @@ public class GrpcKitFactory {
         final URI serviceUri = UriUtil.newServiceUri(URI.create(registry), appName, appGroup,
             localAddress, serverPort);
         final ServiceMetadata metadata = new ServiceMetadata(localAddress, serverPort, serverWeight,
-            serverTag, Constant.VERSION);
+            serverTag, Constant.VERSION, appName);
         for (ServiceRegistryProvider provider : this.getAllServiceRegistries()) {
             try (ServiceRegistry serviceRegistry = provider.newServiceRegistry(serviceUri)) {
                 if (serviceRegistry == null) {
@@ -119,26 +119,7 @@ public class GrpcKitFactory {
     // stub handling
 
     public <S extends AbstractStub<S>> S newStub(Class<S> clazz, Channel channel) {
-        final AbstractStub.StubFactory<S> stubFactory = (_channel, callOptions) -> {
-            final Constructor<S> constructor;
-            try {
-                // get private constructor
-                constructor = clazz.getDeclaredConstructor(Channel.class, CallOptions.class);
-                if ((!Modifier.isPublic(constructor.getModifiers()) ||
-                    !Modifier.isPublic(constructor.getDeclaringClass().getModifiers())) && !constructor.canAccess(null)) {
-                    constructor.setAccessible(true);
-                }
-            } catch (NoSuchMethodException e) {
-                throw new GrpcKitException("Get gRPC stub constructor error", e);
-            }
-
-            try {
-                return constructor.newInstance(_channel, callOptions);
-            } catch (ReflectiveOperationException e) {
-                throw new GrpcKitException("New gRPC stub instance error", e);
-            }
-        };
-
+        final AbstractStub.StubFactory<S> stubFactory = buildStubFactory(clazz);
         final String methodName = "newStub";
         final Method method;
         try {
@@ -174,5 +155,39 @@ public class GrpcKitFactory {
             .defaultLoadBalancingPolicy(ServiceLoadBalancer.Policy.of(policy).name)
             .usePlaintext()
             .build();
+    }
+
+    private <S> boolean isAccessible(Constructor<S> constructor) {
+        return (!Modifier.isPublic(constructor.getModifiers())
+            || !Modifier.isPublic(constructor.getDeclaringClass().getModifiers()))
+            && !constructor.canAccess(null);
+    }
+
+    /**
+     * build {@link AbstractStub.StubFactory}
+     *
+     * @param clazz {@link AbstractStub.StubFactory#newStub} 方法生产的stub class
+     * @param <S> {@link AbstractStub.StubFactory#newStub} 方法生产的stub class类型
+     * @return {@link AbstractStub.StubFactory} 的实例
+     */
+    private <S extends AbstractStub<S>> AbstractStub.StubFactory<S> buildStubFactory(Class<S> clazz) {
+        return  (channel, callOptions) -> {
+            final Constructor<S> constructor;
+            try {
+                // get private constructor
+                constructor = clazz.getDeclaredConstructor(Channel.class, CallOptions.class);
+                if (isAccessible(constructor)) {
+                    constructor.setAccessible(true);
+                }
+            } catch (NoSuchMethodException e) {
+                throw new GrpcKitException("Get gRPC stub constructor error", e);
+            }
+
+            try {
+                return constructor.newInstance(channel, callOptions);
+            } catch (ReflectiveOperationException e) {
+                throw new GrpcKitException("New gRPC stub instance error", e);
+            }
+        };
     }
 }

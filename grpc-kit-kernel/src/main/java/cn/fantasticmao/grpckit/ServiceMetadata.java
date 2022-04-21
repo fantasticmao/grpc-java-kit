@@ -44,6 +44,11 @@ public class ServiceMetadata {
      */
     private String version;
 
+    /**
+     * The app name of the service
+     */
+    private String appName;
+
     public static final int DEFAULT_WEIGHT = 1;
 
     public static final String DEFAULT_TAG = "";
@@ -52,12 +57,13 @@ public class ServiceMetadata {
     }
 
     public ServiceMetadata(InetAddress address, int port, Integer weight, String tag,
-                           String version) {
+                           String version, String appName) {
         this.host = address.getHostAddress();
         this.port = port;
         this.weight = weight;
         this.tag = tag;
         this.version = version;
+        this.appName = appName;
     }
 
     public EquivalentAddressGroup toAddressGroup() {

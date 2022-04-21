@@ -27,6 +27,9 @@ import static io.grpc.ConnectivityState.*;
 class RandomLoadBalancer extends ServiceLoadBalancer {
     private static final Logger LOGGER = LoggerFactory.getLogger(RandomLoadBalancer.class);
 
+    /**
+     * Helper由gRPC库实现并提供给Factory使用。它提供了LoadBalancer实现通常需要的功能。
+     */
     private final LoadBalancer.Helper helper;
 
     /**
@@ -207,6 +210,11 @@ class RandomLoadBalancer extends ServiceLoadBalancer {
             this.subChannel = subChannel;
         }
 
+        /**
+         * subChannel状态发生变化时进行处理
+         * subChannel的初始状态为IDLE。初始IDLE状态不会收到通知。
+         * @param newState 新的状态
+         */
         @Override
         public void onSubchannelState(ConnectivityStateInfo newState) {
             LOGGER.debug("Listening state changes in SubChannel (address group: {}), new state: {}",
@@ -221,6 +229,8 @@ class RandomLoadBalancer extends ServiceLoadBalancer {
                 RandomLoadBalancer.this.helper.refreshNameResolution();
             }
             if (newState.getState() == IDLE) {
+                // 如果没有活动连接，则要求子通道创建连接。
+                // subChannel state will be changed from IDLE to CONNECTING.
                 subChannel.requestConnection();
             }
 

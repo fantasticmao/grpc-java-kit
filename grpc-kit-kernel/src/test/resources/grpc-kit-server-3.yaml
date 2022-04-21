@@ -1,0 +1,11 @@
+app:
+  name: "unit_test_server"
+
+grpc:
+  server:
+    port: 50053
+    weight: 80
+#    tag: "debug"
+
+nameResolver:
+  registry: "nacos://localhost:8848"

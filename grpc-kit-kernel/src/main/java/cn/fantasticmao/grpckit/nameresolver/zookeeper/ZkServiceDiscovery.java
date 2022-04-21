@@ -101,6 +101,9 @@ class ZkServiceDiscovery extends ServiceDiscovery {
         }
     }
 
+    /**
+     * 服务发现
+     */
     private void lookUp() {
         final String path = this.servicePath;
         final List<String> serverList;

@@ -17,4 +17,6 @@ public interface Constant {
 
     CallOptions.Key<String> KEY_OPTION_TAG = CallOptions.Key
         .createWithDefault("tag", ServiceMetadata.DEFAULT_TAG);
+
+    String URI_SPILT = "/";
 }
