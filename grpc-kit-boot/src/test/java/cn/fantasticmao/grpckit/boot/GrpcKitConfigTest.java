@@ -15,7 +15,7 @@ public class GrpcKitConfigTest {
 
     @Test
     public void loadAndParse() {
-        GrpcKitConfig config = GrpcKitConfig.loadAndParse("grpc-kit.yaml").validate();
+        GrpcKitConfig config = GrpcKitConfig.loadAndParse("grpc-kit.yml").validate();
 
         Assertions.assertEquals("dev", config.getGrpc().getGroup());
         Assertions.assertEquals(8080, config.getGrpc().getServer().getPort());

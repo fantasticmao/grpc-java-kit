@@ -29,8 +29,8 @@ public class GreeterServiceTest {
         final String appName = "unit_test";
 
         // build servers
-        final GrpcKitConfig serverConfig_1 = GrpcKitConfig.loadAndParse("grpc-kit-server-1.yaml");
-        final GrpcKitConfig serverConfig_2 = GrpcKitConfig.loadAndParse("grpc-kit-server-2.yaml");
+        final GrpcKitConfig serverConfig_1 = GrpcKitConfig.loadAndParse("grpc-kit-server-1.yml");
+        final GrpcKitConfig serverConfig_2 = GrpcKitConfig.loadAndParse("grpc-kit-server-2.yml");
 
         final Server server_1 = GrpcKitServerBuilder.forConfig(appName, serverConfig_1.validate())
             .addService(new GreeterService(1))
@@ -45,7 +45,7 @@ public class GreeterServiceTest {
 
         try {
             // new channel and stub
-            final GrpcKitConfig clientConfig = GrpcKitConfig.loadAndParse("grpc-kit-client.yaml");
+            final GrpcKitConfig clientConfig = GrpcKitConfig.loadAndParse("grpc-kit-client.yml");
             final Channel channel = GrpcKitChannelBuilder.forConfig(appName, clientConfig.validate())
                 .usePlaintext()
                 .build();

@@ -17,7 +17,7 @@ import org.springframework.context.annotation.DependsOn;
  */
 @Configuration
 public class GrpcKitAutoConfiguration {
-    @Value("${cn.fantasticmao.grpckit.config:grpc-kit.yaml}")
+    @Value("${cn.fantasticmao.grpckit.config:grpc-kit.yml}")
     private String configPath;
 
     public static final String BEAN_NAME_GRPC_KIT_CONFIG = "_grpc_kit_config_";

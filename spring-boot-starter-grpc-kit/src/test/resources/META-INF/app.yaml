@@ -1,4 +1,0 @@
-app:
-  name: "unit_test_spring_boot"
-  services:
-    - "unit_test.CalculatorService"
