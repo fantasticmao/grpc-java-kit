@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Bean;
  * ApplicationConfiguration
  *
  * @author fantasticmao
+ * @version 1.39.0
  * @since 2022-04-04
  */
 @SpringBootApplication

@@ -32,7 +32,7 @@ public class GrpcKitAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     @DependsOn(BEAN_NAME_GRPC_KIT_CONFIG)
-    public GrpcClientBeanPostProcessor clientBeanPostProcessor() {
-        return new GrpcClientBeanPostProcessor();
+    public GrpcStubBeanPostProcessor grpcStubBeanPostProcessor() {
+        return new GrpcStubBeanPostProcessor();
     }
 }

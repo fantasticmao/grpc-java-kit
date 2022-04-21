@@ -36,14 +36,14 @@ public class GrpcKitServerBuilder extends AbstractServerImplBuilder<GrpcKitServe
 
     private GrpcKitServerBuilder(String appName, GrpcKitConfig config) {
         this.appName = appName;
-        this.config = config.validate();
+        this.config = config;
         this.serverBuilder = ServerBuilder.forPort(config.getGrpc().getServer().getPort());
     }
 
     public static GrpcKitServerBuilder forConfig(String appName, @Nonnull GrpcKitConfig config) {
         // TODO check appName
         Objects.requireNonNull(config, "config must not be null");
-        return new GrpcKitServerBuilder(appName, config);
+        return new GrpcKitServerBuilder(appName, config.validate());
     }
 
     @Override

@@ -9,6 +9,7 @@ import io.grpc.stub.AbstractBlockingStub;
 import io.grpc.stub.AbstractFutureStub;
 import io.grpc.stub.AbstractStub;
 
+import javax.annotation.Nonnull;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.Objects;
@@ -23,8 +24,12 @@ import java.util.concurrent.TimeUnit;
  */
 public class GrpcKitStubFactory {
 
-    public static <S extends AbstractStub<S>> S newStub(Class<S> clazz, Channel channel, GrpcKitConfig config) {
+    public static <S extends AbstractStub<S>> S newStub(Class<S> clazz, @Nonnull Channel channel,
+                                                        @Nonnull GrpcKitConfig config) {
+        Objects.requireNonNull(channel, "channel must not be null");
         Objects.requireNonNull(config, "config must not be null");
+        config.validate();
+
         final AbstractStub.StubFactory<S> stubFactory = getStubFactory(clazz);
         final S stub;
         if (AbstractAsyncStub.class.isAssignableFrom(clazz)) {

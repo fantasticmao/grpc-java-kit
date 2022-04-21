@@ -4,7 +4,10 @@ import cn.fantasticmao.grpckit.GrpcKitException;
 import cn.fantasticmao.grpckit.boot.GrpcKitConfig;
 import cn.fantasticmao.grpckit.springboot.annotation.GrpcClient;
 import io.grpc.stub.AbstractStub;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -15,7 +18,7 @@ import java.lang.reflect.Field;
 import java.util.Objects;
 
 /**
- * GrpcClientBeanPostProcessor
+ * GrpcStubBeanPostProcessor
  *
  * @author fantasticmao
  * @version 1.39.0
@@ -23,23 +26,31 @@ import java.util.Objects;
  * @see org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor
  * @since 2022-04-03
  */
-public class GrpcClientBeanPostProcessor implements BeanPostProcessor, ApplicationContextAware {
-    private ApplicationContext applicationContext;
+public class GrpcStubBeanPostProcessor implements BeanPostProcessor, ApplicationContextAware {
+    private static final Logger LOGGER = LoggerFactory.getLogger(GrpcStubBeanPostProcessor.class);
 
-    public GrpcClientBeanPostProcessor() {
+    private ApplicationContext context;
+
+    public GrpcStubBeanPostProcessor() {
     }
 
     @Override
     public void setApplicationContext(@Nonnull ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
+        this.context = applicationContext;
     }
 
     @Override
     public Object postProcessBeforeInitialization(@Nonnull Object bean, @Nonnull String beanName) throws BeansException {
-        Objects.requireNonNull(this.applicationContext, "applicationContext must not be null");
+        Objects.requireNonNull(this.context, "applicationContext must not be null");
 
-        GrpcKitConfig grpcKitConfig = this.applicationContext.getBean(GrpcKitConfig.class);
-        Objects.requireNonNull(grpcKitConfig, "bean 'GrpcKitConfig' in applicationContext must not be null");
+        final GrpcKitConfig grpcKitConfig;
+        try {
+            grpcKitConfig = this.context.getBean(GrpcKitAutoConfiguration.BEAN_NAME_GRPC_KIT_CONFIG, GrpcKitConfig.class);
+        } catch (NoSuchBeanDefinitionException e) {
+            LOGGER.error("bean {} in applicationContext must not be null",
+                GrpcKitAutoConfiguration.BEAN_NAME_GRPC_KIT_CONFIG);
+            throw e;
+        }
 
         ReflectionUtils.doWithFields(bean.getClass(), new Callback(bean, grpcKitConfig),
             filter -> filter.isAnnotationPresent(GrpcClient.class));

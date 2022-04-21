@@ -34,7 +34,7 @@ public class GrpcKitChannelBuilder extends AbstractManagedChannelImplBuilder<Grp
     public static GrpcKitChannelBuilder forConfig(String appName, @Nonnull GrpcKitConfig config) {
         // TODO check appName
         Objects.requireNonNull(config, "config must not be null");
-        return new GrpcKitChannelBuilder(appName, config);
+        return new GrpcKitChannelBuilder(appName, config.validate());
     }
 
     @Override
