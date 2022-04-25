@@ -68,8 +68,7 @@ public class GrpcServerStartApplicationListener implements ApplicationListener<A
         try {
             grpcKitConfig = context.getBean(GrpcKitAutoConfiguration.BEAN_NAME_GRPC_KIT_CONFIG, GrpcKitConfig.class);
         } catch (NoSuchBeanDefinitionException e) {
-            LOGGER.error("bean {} in applicationContext must not be null",
-                GrpcKitAutoConfiguration.BEAN_NAME_GRPC_KIT_CONFIG);
+            LOGGER.error("bean {} must not be null", GrpcKitAutoConfiguration.BEAN_NAME_GRPC_KIT_CONFIG);
             throw e;
         }
 

@@ -63,13 +63,14 @@ public class GrpcKitServerBuilder extends AbstractServerImplBuilder<GrpcKitServe
         return new ForwardingServer(server) {
             @Override
             public Server start() throws IOException {
-                GrpcKitServerBuilder.this.register();
-                return super.start();
+                Server _server = super.start();
+                GrpcKitServerBuilder.this.register(_server);
+                return _server;
             }
         };
     }
 
-    private void register() {
+    private void register(Server server) {
         final String serviceGroup = config.getGrpc().getGroup();
         final int serverPort = config.getGrpc().getServer().getPort();
         final int serverWeight = config.getGrpc().getServer().getWeight();

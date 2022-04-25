@@ -12,9 +12,9 @@ import java.lang.annotation.*;
  * @version 1.39.0
  * @since 2022-04-03
  */
-@Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
+@Documented
 @Component
 public @interface GrpcService {
     @AliasFor(annotation = Component.class)

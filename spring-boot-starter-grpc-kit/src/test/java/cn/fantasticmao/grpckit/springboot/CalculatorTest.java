@@ -2,6 +2,7 @@ package cn.fantasticmao.grpckit.springboot;
 
 import cn.fantasticmao.grpckit.proto.Calculator;
 import cn.fantasticmao.grpckit.proto.CalculatorServiceGrpc;
+import cn.fantasticmao.grpckit.springboot.annotation.GrpcClient;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 public class CalculatorTest {
     @Autowired
     private CalculatorServiceGrpc.CalculatorServiceBlockingStub calculatorStub;
+    @GrpcClient
+    private CalculatorServiceGrpc.CalculatorServiceStub stub;
+    @GrpcClient
+    private CalculatorServiceGrpc.CalculatorServiceBlockingStub blockingStub;
+    @GrpcClient
+    private CalculatorServiceGrpc.CalculatorServiceFutureStub futureStub;
 
     @Test
     public void plus() {
