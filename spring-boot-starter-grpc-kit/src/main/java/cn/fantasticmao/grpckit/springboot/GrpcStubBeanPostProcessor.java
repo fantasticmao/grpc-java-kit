@@ -2,16 +2,16 @@ package cn.fantasticmao.grpckit.springboot;
 
 import cn.fantasticmao.grpckit.GrpcKitException;
 import cn.fantasticmao.grpckit.boot.GrpcKitConfig;
+import cn.fantasticmao.grpckit.boot.GrpcKitStubFactory;
 import cn.fantasticmao.grpckit.springboot.annotation.GrpcClient;
+import io.grpc.Channel;
 import io.grpc.stub.AbstractStub;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.beans.factory.BeanCreationException;
+import org.springframework.beans.factory.annotation.InjectionMetadata;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.MergedAnnotation;
 import org.springframework.core.annotation.MergedAnnotations;
@@ -23,7 +23,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * GrpcStubBeanPostProcessor
@@ -32,15 +31,17 @@ import java.util.Objects;
  * @version 1.39.0
  * @see <a href="https://docs.spring.io/spring-framework/docs/current/reference/html/core.html#beans-factory-extension-bpp">Customizing Beans by Using a BeanPostProcessor</a>
  * @see org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor
+ * @see org.springframework.context.annotation.CommonAnnotationBeanPostProcessor
  * @since 2022-04-03
  */
-public class GrpcStubBeanPostProcessor implements BeanPostProcessor, BeanFactoryAware, Ordered {
+public class GrpcStubBeanPostProcessor implements BeanPostProcessor, Ordered {
     private static final Logger LOGGER = LoggerFactory.getLogger(GrpcStubBeanPostProcessor.class);
 
-    @Nullable
-    private ConfigurableListableBeanFactory beanFactory;
+    private final GrpcStubFactory stubFactory = new GrpcStubFactory();
+    private final GrpcKitConfig grpcKitConfig;
 
-    public GrpcStubBeanPostProcessor() {
+    public GrpcStubBeanPostProcessor(@Nonnull GrpcKitConfig grpcKitConfig) {
+        this.grpcKitConfig = grpcKitConfig;
     }
 
     @Override
@@ -49,39 +50,30 @@ public class GrpcStubBeanPostProcessor implements BeanPostProcessor, BeanFactory
     }
 
     @Override
-    public void setBeanFactory(@Nonnull BeanFactory beanFactory) {
-        if (!(beanFactory instanceof ConfigurableListableBeanFactory)) {
-            throw new IllegalArgumentException("GrpcStubBeanPostProcessor requires a ConfigurableListableBeanFactory: "
-                + beanFactory);
-        }
-        this.beanFactory = (ConfigurableListableBeanFactory) beanFactory;
-    }
-
-    @Override
     public Object postProcessBeforeInitialization(@Nonnull Object bean, @Nonnull String beanName) throws BeansException {
-        List<Field> fields = buildGrpcClientFields(bean.getClass());
-        if (fields.isEmpty()) {
-            return bean;
-        }
-
-        LOGGER.info("fields: {}", fields);
-
-        Objects.requireNonNull(this.beanFactory, "beanFactory must not be null");
-        final GrpcKitConfig grpcKitConfig;
-        try {
-            grpcKitConfig = this.beanFactory.getBean(GrpcKitAutoConfiguration.BEAN_NAME_GRPC_KIT_CONFIG, GrpcKitConfig.class);
-        } catch (NoSuchBeanDefinitionException e) {
-            LOGGER.error("bean {} must not be null", GrpcKitAutoConfiguration.BEAN_NAME_GRPC_KIT_CONFIG);
-            throw e;
-        }
+        this.processInjection(bean, beanName);
         return bean;
     }
 
-    private List<Field> buildGrpcClientFields(Class<?> clazz) {
-        final List<Field> fields = new ArrayList<>();
+    private void processInjection(Object bean, String beanName) throws BeanCreationException {
+        final Class<?> clazz = bean.getClass();
+        InjectionMetadata metadata = this.buildGrpcClientInjectedMetadata(clazz);
+        try {
+            metadata.inject(bean, beanName, null);
+        } catch (BeanCreationException e) {
+            throw e;
+        } catch (Throwable e) {
+            throw new BeanCreationException(
+                "Injection of @GrpcClient dependencies failed for class [" + clazz + "]", e);
+        }
+    }
+
+    private InjectionMetadata buildGrpcClientInjectedMetadata(Class<?> clazz) {
+        final List<InjectionMetadata.InjectedElement> elements = new ArrayList<>();
         Class<?> targetClass = clazz;
+
         do {
-            final List<Field> currFields = new ArrayList<>();
+            final List<InjectionMetadata.InjectedElement> currElements = new ArrayList<>();
             ReflectionUtils.doWithLocalFields(targetClass, field -> {
                 MergedAnnotations annotations = MergedAnnotations.from(field);
                 MergedAnnotation<GrpcClient> annotation = annotations.get(GrpcClient.class);
@@ -95,13 +87,40 @@ public class GrpcStubBeanPostProcessor implements BeanPostProcessor, BeanFactory
                 if (!AbstractStub.class.isAssignableFrom(field.getType())) {
                     throw new GrpcKitException("@GrpcClient annotation is not supported on class: " + field.getType());
                 }
-                currFields.add(field);
+
+                final String tag = annotation.getString("tag");
+                final int timeout = annotation.getInt("timeout");
+                currElements.add(new GrpcClientFieldElement(field, tag, timeout));
             });
 
-            fields.addAll(0, currFields);
+            elements.addAll(0, currElements);
             targetClass = targetClass.getSuperclass();
         } while (targetClass != null && targetClass != Object.class);
-        return fields;
+
+        return InjectionMetadata.forElements(elements, clazz);
+    }
+
+    private class GrpcClientFieldElement extends InjectionMetadata.InjectedElement {
+        private final String tag;
+        private final int timeout;
+
+        public GrpcClientFieldElement(Field field, String tag, int timeout) {
+            super(field, null);
+            this.tag = tag;
+            this.timeout = timeout;
+        }
+
+        @Override
+        protected Object getResourceToInject(@Nonnull Object target, @Nullable String requestingBeanName) {
+            Class<?> resourceType = super.getResourceType();
+            @SuppressWarnings("unchecked")
+            Class<? extends AbstractStub> stubClass = (Class<? extends AbstractStub>) resourceType;
+            String serviceName = stubFactory.getServiceName(stubClass);
+            // FIXME
+            String appName = "unit_test_spring_boot";
+            Channel channel = stubFactory.getChannel(appName, grpcKitConfig);
+            return GrpcKitStubFactory.newStub(stubClass, channel, tag, timeout);
+        }
     }
 
 }

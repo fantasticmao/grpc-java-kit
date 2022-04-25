@@ -7,6 +7,7 @@ option java_package = "cn.fantasticmao.grpckit.proto";
 service CalculatorService {
   rpc Plus (Input) returns (Output);
   rpc Minus (Input) returns (Output);
+  rpc Multiply (Input) returns (Output);
 }
 
 message Input {

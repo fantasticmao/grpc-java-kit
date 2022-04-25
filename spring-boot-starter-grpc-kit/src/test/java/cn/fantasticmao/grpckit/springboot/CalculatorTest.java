@@ -3,10 +3,13 @@ package cn.fantasticmao.grpckit.springboot;
 import cn.fantasticmao.grpckit.proto.Calculator;
 import cn.fantasticmao.grpckit.proto.CalculatorServiceGrpc;
 import cn.fantasticmao.grpckit.springboot.annotation.GrpcClient;
+import io.grpc.stub.StreamObserver;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 /**
  * CalculatorTest
@@ -17,8 +20,6 @@ import org.springframework.boot.test.context.SpringBootTest;
  */
 @SpringBootTest(classes = ApplicationConfiguration.class, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class CalculatorTest {
-    @Autowired
-    private CalculatorServiceGrpc.CalculatorServiceBlockingStub calculatorStub;
     @GrpcClient
     private CalculatorServiceGrpc.CalculatorServiceStub stub;
     @GrpcClient
@@ -27,12 +28,19 @@ public class CalculatorTest {
     private CalculatorServiceGrpc.CalculatorServiceFutureStub futureStub;
 
     @Test
+    public void inject() {
+        Assertions.assertNotNull(stub);
+        Assertions.assertNotNull(blockingStub);
+        Assertions.assertNotNull(futureStub);
+    }
+
+    @Test
     public void plus() {
         Calculator.Input input = Calculator.Input.newBuilder()
             .setA(1)
             .setB(2)
             .build();
-        Calculator.Output output = calculatorStub.plus(input);
+        Calculator.Output output = blockingStub.plus(input);
         Assertions.assertEquals(3, output.getResult());
     }
 
@@ -42,7 +50,31 @@ public class CalculatorTest {
             .setA(3)
             .setB(2)
             .build();
-        Calculator.Output output = calculatorStub.minus(input);
-        Assertions.assertEquals(1, output.getResult());
+        stub.minus(input, new StreamObserver<>() {
+            @Override
+            public void onNext(Calculator.Output output) {
+                Assertions.assertEquals(1, output.getResult());
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                Assertions.fail();
+            }
+
+            @Override
+            public void onCompleted() {
+            }
+        });
+    }
+
+    @Test
+    public void multiply() throws ExecutionException, InterruptedException {
+        Calculator.Input input = Calculator.Input.newBuilder()
+            .setA(2)
+            .setB(3)
+            .build();
+        Future<Calculator.Output> future = futureStub.multiply(input);
+        Calculator.Output output = future.get();
+        Assertions.assertEquals(6, output.getResult());
     }
 }

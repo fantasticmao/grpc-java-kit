@@ -25,6 +25,13 @@ public class GrpcKitStubFactory {
 
     public static <S extends AbstractStub<S>> S newStub(Class<S> clazz, @Nonnull Channel channel,
                                                         @Nonnull GrpcKitConfig config) {
+        String tag = config.getGrpc().getClient().getTag();
+        int timeout = config.getGrpc().getClient().getTimeout();
+        return newStub(clazz, channel, tag, timeout);
+    }
+
+    public static <S extends AbstractStub<S>> S newStub(Class<S> clazz, @Nonnull Channel channel,
+                                                        String tag, int timeout) {
         final AbstractStub.StubFactory<S> stubFactory = getStubFactory(clazz);
         final S stub;
         if (AbstractAsyncStub.class.isAssignableFrom(clazz)) {
@@ -36,8 +43,8 @@ public class GrpcKitStubFactory {
         } else {
             throw new IllegalArgumentException(clazz.getName() + " is not a standard gRPC Stub");
         }
-        return stub.withOption(Constant.KEY_OPTION_TAG, config.getGrpc().getClient().getTag())
-            .withDeadlineAfter(config.getGrpc().getClient().getTimeout(), TimeUnit.MILLISECONDS);
+        return stub.withOption(Constant.KEY_OPTION_TAG, tag)
+            .withDeadlineAfter(timeout, TimeUnit.MILLISECONDS);
     }
 
     private static <S extends AbstractStub<S>> AbstractStub.StubFactory<S> getStubFactory(Class<S> clazz) {

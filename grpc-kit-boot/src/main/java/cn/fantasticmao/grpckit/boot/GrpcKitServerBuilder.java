@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.SocketException;
@@ -41,7 +40,7 @@ public class GrpcKitServerBuilder extends AbstractServerImplBuilder<GrpcKitServe
         this.serverBuilder = ServerBuilder.forPort(config.getGrpc().getServer().getPort());
     }
 
-    public static GrpcKitServerBuilder forConfig(@Nullable String appName, @Nonnull GrpcKitConfig config) {
+    public static GrpcKitServerBuilder forConfig(String appName, @Nonnull GrpcKitConfig config) {
         if (appName == null || appName.isBlank()) {
             throw new IllegalArgumentException("application name must not be null or blank");
         }

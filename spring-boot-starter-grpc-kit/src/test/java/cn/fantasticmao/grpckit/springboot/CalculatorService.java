@@ -32,4 +32,13 @@ public class CalculatorService extends CalculatorServiceGrpc.CalculatorServiceIm
         responseObserver.onNext(output);
         responseObserver.onCompleted();
     }
+
+    @Override
+    public void multiply(Calculator.Input input, StreamObserver<Calculator.Output> responseObserver) {
+        Calculator.Output output = Calculator.Output.newBuilder()
+            .setResult(input.getA() * input.getB())
+            .build();
+        responseObserver.onNext(output);
+        responseObserver.onCompleted();
+    }
 }

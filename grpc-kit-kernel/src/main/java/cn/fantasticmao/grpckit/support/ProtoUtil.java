@@ -5,7 +5,6 @@ import io.grpc.ServiceDescriptor;
 import io.grpc.stub.AbstractAsyncStub;
 import io.grpc.stub.AbstractBlockingStub;
 import io.grpc.stub.AbstractFutureStub;
-import io.grpc.stub.AbstractStub;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -25,7 +24,7 @@ public class ProtoUtil {
      * @param clazz The gRPC stub class.
      * @return The descriptor for the service.
      */
-    public static <S extends AbstractStub<S>> ServiceDescriptor getServiceDescriptor(Class<S> clazz) {
+    public static ServiceDescriptor getServiceDescriptor(Class<?> clazz) {
         final String grpcName = getGrpcName(clazz);
         final Class<?> grpcClazz;
         try {
@@ -57,7 +56,7 @@ public class ProtoUtil {
      * @return The Java class name that gRPC generated.
      * @see <a href="https://grpc.io/docs/languages/java/generated-code/#packages">Naming convention for the gRPC Java class</a>
      */
-    static <S extends AbstractStub<S>> String getGrpcName(Class<S> clazz) {
+    static String getGrpcName(Class<?> clazz) {
         final String stubSuffix = getStubSuffix(clazz);
         final String stubClassName = clazz.getSimpleName();
         final String serviceName = stubClassName.substring(0, stubClassName.length() - stubSuffix.length());
@@ -71,7 +70,7 @@ public class ProtoUtil {
      * @return The suffix of the stub name.
      * @see <a href="https://grpc.io/docs/languages/java/generated-code/#client-stubs">Naming convention for gRPC Stubs</a>
      */
-    static <S extends AbstractStub<S>> String getStubSuffix(Class<S> clazz) {
+    static String getStubSuffix(Class<?> clazz) {
         if (AbstractAsyncStub.class.isAssignableFrom(clazz)) {
             return "Stub";
         } else if (AbstractBlockingStub.class.isAssignableFrom(clazz)) {

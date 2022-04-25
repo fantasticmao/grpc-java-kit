@@ -7,7 +7,6 @@ import io.grpc.ManagedChannelBuilder;
 import io.grpc.internal.AbstractManagedChannelImplBuilder;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.net.URI;
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -33,7 +32,7 @@ public class GrpcKitChannelBuilder extends AbstractManagedChannelImplBuilder<Grp
             .defaultLoadBalancingPolicy(ServiceLoadBalancer.Policy.of(policy).name);
     }
 
-    public static GrpcKitChannelBuilder forConfig(@Nullable String appName, @Nonnull GrpcKitConfig config) {
+    public static GrpcKitChannelBuilder forConfig(String appName, @Nonnull GrpcKitConfig config) {
         if (appName == null || appName.isBlank()) {
             throw new IllegalArgumentException("application name must not be null or blank");
         }
