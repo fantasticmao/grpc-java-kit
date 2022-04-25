@@ -19,7 +19,6 @@ import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Objects;
 import java.util.ServiceLoader;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -46,8 +45,9 @@ public class GrpcKitServerBuilder extends AbstractServerImplBuilder<GrpcKitServe
         if (appName == null || appName.isBlank()) {
             throw new IllegalArgumentException("application name must not be null or blank");
         }
-        if (!Pattern.compile("[\\w]+").matcher(appName).matches()) {
-            throw new IllegalArgumentException("application name must match the regular expression: [\\w]+");
+        if (!ApplicationMetadata.NAME_PATTERN.matcher(appName).matches()) {
+            throw new IllegalArgumentException("application name must match the pattern: "
+                + ApplicationMetadata.NAME_PATTERN.pattern());
         }
         return new GrpcKitServerBuilder(appName, config.validate());
     }

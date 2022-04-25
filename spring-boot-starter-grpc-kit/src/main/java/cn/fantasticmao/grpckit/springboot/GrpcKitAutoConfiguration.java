@@ -26,7 +26,7 @@ public class GrpcKitAutoConfiguration {
     @Bean(BEAN_NAME_GRPC_KIT_CONFIG)
     @ConditionalOnMissingBean
     public GrpcKitConfig grpcKitConfig() {
-        return GrpcKitConfig.loadAndParse(configPath).validate();
+        return GrpcKitConfig.loadAndParse(configPath);
     }
 
     @Bean

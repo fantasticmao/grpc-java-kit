@@ -11,9 +11,10 @@ import org.yaml.snakeyaml.error.YAMLException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
+import java.util.Objects;
 
 /**
  * Configurations used in gRPC Java Kit.
@@ -36,13 +37,14 @@ public final class GrpcKitConfig {
     public static GrpcKitConfig loadAndParse(@Nonnull String path) {
         Yaml yaml = new Yaml(new Constructor(GrpcKitConfig.class));
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        try (InputStream input = classLoader.getResourceAsStream(path)) {
-            if (input == null) {
-                throw new FileNotFoundException("File not found: " + path);
-            }
-            return yaml.load(input);
+        URL url = classLoader.getResource(path);
+        Objects.requireNonNull(url, "File not found: " + path);
+
+        try (InputStream input = url.openStream()) {
+            GrpcKitConfig config = yaml.load(input);
+            return config.validate();
         } catch (IOException | YAMLException e) {
-            throw new GrpcKitException("Load configuration from: " + path + " error", e);
+            throw new GrpcKitException("Unable to load configurations from location: " + path, e);
         }
     }
 

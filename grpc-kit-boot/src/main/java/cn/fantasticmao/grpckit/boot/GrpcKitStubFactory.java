@@ -25,7 +25,6 @@ public class GrpcKitStubFactory {
 
     public static <S extends AbstractStub<S>> S newStub(Class<S> clazz, @Nonnull Channel channel,
                                                         @Nonnull GrpcKitConfig config) {
-        config.validate();
         final AbstractStub.StubFactory<S> stubFactory = getStubFactory(clazz);
         final S stub;
         if (AbstractAsyncStub.class.isAssignableFrom(clazz)) {

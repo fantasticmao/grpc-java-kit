@@ -32,10 +32,10 @@ public class GreeterServiceTest {
         final GrpcKitConfig serverConfig_1 = GrpcKitConfig.loadAndParse("grpc-kit-server-1.yml");
         final GrpcKitConfig serverConfig_2 = GrpcKitConfig.loadAndParse("grpc-kit-server-2.yml");
 
-        final Server server_1 = GrpcKitServerBuilder.forConfig(appName, serverConfig_1.validate())
+        final Server server_1 = GrpcKitServerBuilder.forConfig(appName, serverConfig_1)
             .addService(new GreeterService(1))
             .build();
-        final Server server_2 = GrpcKitServerBuilder.forConfig(appName, serverConfig_2.validate())
+        final Server server_2 = GrpcKitServerBuilder.forConfig(appName, serverConfig_2)
             .addService(new GreeterService(2))
             .build();
 
@@ -46,11 +46,11 @@ public class GreeterServiceTest {
         try {
             // new channel and stub
             final GrpcKitConfig clientConfig = GrpcKitConfig.loadAndParse("grpc-kit-client.yml");
-            final Channel channel = GrpcKitChannelBuilder.forConfig(appName, clientConfig.validate())
+            final Channel channel = GrpcKitChannelBuilder.forConfig(appName, clientConfig)
                 .usePlaintext()
                 .build();
             final GreeterServiceGrpc.GreeterServiceBlockingStub stub = GrpcKitStubFactory.newStub(
-                GreeterServiceGrpc.GreeterServiceBlockingStub.class, channel, clientConfig.validate());
+                GreeterServiceGrpc.GreeterServiceBlockingStub.class, channel, clientConfig);
 
             // send requests
             HelloRequest request = HelloRequest.newBuilder()
