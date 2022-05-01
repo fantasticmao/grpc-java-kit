@@ -25,7 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * GrpcStubBeanPostProcessor
+ * {@link BeanPostProcessor Spring BeanPostProcessor} implementation that
+ * supports the {@link GrpcClient GrpcClient} annotation.
  *
  * @author fantasticmao
  * @version 1.39.0
@@ -81,11 +82,12 @@ public class GrpcStubBeanPostProcessor implements BeanPostProcessor, Ordered {
                     return;
                 }
                 if (Modifier.isStatic(field.getModifiers())) {
-                    LOGGER.warn("@GrpcClient annotation is not supported on static fields: " + field);
-                    return;
+                    throw new GrpcKitException(
+                        "@GrpcClient annotation is not supported on the static field: " + field);
                 }
                 if (!AbstractStub.class.isAssignableFrom(field.getType())) {
-                    throw new GrpcKitException("@GrpcClient annotation is not supported on class: " + field.getType());
+                    throw new GrpcKitException(
+                        "@GrpcClient annotation is not supported on the class: " + field.getType());
                 }
 
                 final String tag = annotation.getString("tag");
@@ -115,10 +117,13 @@ public class GrpcStubBeanPostProcessor implements BeanPostProcessor, Ordered {
             Class<?> resourceType = super.getResourceType();
             @SuppressWarnings("unchecked")
             Class<? extends AbstractStub> stubClass = (Class<? extends AbstractStub>) resourceType;
+            // stub class -> service name
             String serviceName = stubFactory.getServiceName(stubClass);
-            // FIXME
-            String appName = "unit_test_spring_boot";
+            // service name -> application name
+            String appName = stubFactory.getAppName(serviceName);
+            // application name -> channel
             Channel channel = stubFactory.getChannel(appName, grpcKitConfig);
+            // FIXME
             return GrpcKitStubFactory.newStub(stubClass, channel, tag, timeout);
         }
     }

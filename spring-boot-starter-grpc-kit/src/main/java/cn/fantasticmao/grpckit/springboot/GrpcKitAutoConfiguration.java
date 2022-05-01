@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * gRPC Kit Auto Configuration.
+ * Enable auto-configuration of the gRPC application.
  *
  * @author fantasticmao
  * @version 1.39.0

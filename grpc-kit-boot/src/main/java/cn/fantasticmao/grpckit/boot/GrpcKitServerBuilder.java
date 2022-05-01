@@ -21,7 +21,7 @@ import java.util.ServiceLoader;
 import java.util.stream.Collectors;
 
 /**
- * A builder for {@link io.grpc.Server gRPC Server} instances.
+ * A builder for creating {@link io.grpc.Server gRPC Server} instances.
  *
  * @author fantasticmao
  * @version 1.39.0
@@ -88,8 +88,9 @@ public class GrpcKitServerBuilder extends AbstractServerImplBuilder<GrpcKitServe
         final URI serviceUri = UriUtil.newServiceUri(URI.create(registry), appName, serviceGroup,
             localAddress, serverPort);
         final ServiceMetadata metadata = new ServiceMetadata(localAddress, serverPort, serverWeight,
-            serverTag, Constant.VERSION);
+            serverTag, appName, Constant.VERSION);
         for (ServiceRegistryProvider provider : this.getAllServiceRegistries()) {
+            // FIXME
             ServiceRegistry serviceRegistry = provider.newServiceRegistry(serviceUri);
             if (serviceRegistry == null) {
                 continue;

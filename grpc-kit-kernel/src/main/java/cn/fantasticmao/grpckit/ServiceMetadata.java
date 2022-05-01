@@ -30,17 +30,22 @@ public class ServiceMetadata {
     private int port;
 
     /**
-     * Weight of a service instance, will be used in service load balancing.
+     * Weight of a service instance, used in service load balancing.
      */
     private int weight = DEFAULT_WEIGHT;
 
     /**
-     * Tag of a service instance, will be used in service load balancing.
+     * Tag of a service instance, used in service load balancing.
      */
     private String tag = DEFAULT_TAG;
 
     /**
-     * Version of the gRPC, used for backup only.
+     * Name of the application, for backup only.
+     */
+    private String name;
+
+    /**
+     * Version of the gRPC, for backup only.
      */
     private String version;
 
@@ -53,11 +58,12 @@ public class ServiceMetadata {
     }
 
     public ServiceMetadata(InetAddress address, int port, Integer weight, String tag,
-                           String version) {
+                           String name, String version) {
         this.host = address.getHostAddress();
         this.port = port;
         this.weight = weight;
         this.tag = tag;
+        this.name = name;
         this.version = version;
     }
 

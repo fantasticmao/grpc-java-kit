@@ -46,7 +46,8 @@ public class GrpcServerStartApplicationListener implements ApplicationListener<A
                 if (entry.getValue() instanceof BindableService) {
                     return true;
                 } else {
-                    LOGGER.warn("@GrpcService is not valid for {}", entry.getValue().getClass().getName());
+                    LOGGER.warn("@GrpcService annotation is not supported on the class: {}",
+                        entry.getValue().getClass());
                     return false;
                 }
             })

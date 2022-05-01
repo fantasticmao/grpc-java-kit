@@ -32,6 +32,10 @@ public class CalculatorTest {
         Assertions.assertNotNull(stub);
         Assertions.assertNotNull(blockingStub);
         Assertions.assertNotNull(futureStub);
+
+        Assertions.assertEquals(stub.getChannel(), blockingStub.getChannel());
+        Assertions.assertEquals(blockingStub.getChannel(), futureStub.getChannel());
+        Assertions.assertEquals(futureStub.getChannel(), stub.getChannel());
     }
 
     @Test

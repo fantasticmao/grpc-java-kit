@@ -12,7 +12,7 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 /**
- * A builder for {@link ManagedChannel gRPC ManagedChannel} instances.
+ * A builder for creating {@link ManagedChannel gRPC ManagedChannel} instances.
  *
  * @author fantasticmao
  * @version 1.39.0

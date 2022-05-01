@@ -15,7 +15,7 @@ import java.lang.reflect.Modifier;
 import java.util.concurrent.TimeUnit;
 
 /**
- * A factory for {@link io.grpc.stub.AbstractStub gRPC Stub} instances.
+ * A factory for creating {@link io.grpc.stub.AbstractStub gRPC Stub} instances.
  *
  * @author fantasticmao
  * @version 1.39.0
