@@ -1,10 +1,11 @@
 package cn.fantasticmao.grpckit.springboot;
 
 import cn.fantasticmao.grpckit.GrpcKitException;
-import cn.fantasticmao.grpckit.boot.GrpcKitConfig;
-import cn.fantasticmao.grpckit.boot.GrpcKitStubFactory;
+import cn.fantasticmao.grpckit.boot.*;
 import cn.fantasticmao.grpckit.springboot.annotation.GrpcClient;
+import cn.fantasticmao.grpckit.support.ProtoUtil;
 import io.grpc.Channel;
+import io.grpc.ServiceDescriptor;
 import io.grpc.stub.AbstractStub;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * {@link BeanPostProcessor Spring BeanPostProcessor} implementation that
@@ -38,11 +40,43 @@ import java.util.List;
 public class GrpcStubBeanPostProcessor implements BeanPostProcessor, Ordered {
     private static final Logger LOGGER = LoggerFactory.getLogger(GrpcStubBeanPostProcessor.class);
 
-    private final GrpcStubFactory stubFactory = new GrpcStubFactory();
+    /**
+     * Cache of gRPC service names, keyed by the gRPC stub class.
+     */
+    private final ConcurrentHashMap<Class<?>, String> serviceNameCache = new ConcurrentHashMap<>(128);
+
+    /**
+     * Cache of gRPC {@link io.grpc.Channel Channel}s, keyed by the application name.
+     */
+    private final ConcurrentHashMap<String, Channel> channelCache = new ConcurrentHashMap<>(64);
+
     private final GrpcKitConfig grpcKitConfig;
 
     public GrpcStubBeanPostProcessor(@Nonnull GrpcKitConfig grpcKitConfig) {
         this.grpcKitConfig = grpcKitConfig;
+    }
+
+    public String getServiceName(Class<?> stubClass) {
+        return serviceNameCache.computeIfAbsent(stubClass, key -> {
+                ServiceDescriptor serviceDescriptor = ProtoUtil.getServiceDescriptor(stubClass);
+                return serviceDescriptor.getName();
+            }
+        );
+    }
+
+    public String getAppName(String serviceName) {
+        ApplicationMetadata applicationMetadata = ApplicationMetadataCache.getInstance()
+            .getByServiceName(serviceName);
+        return applicationMetadata.getName();
+    }
+
+    public Channel getChannel(String appName) {
+        // FIXME
+        return channelCache.computeIfAbsent(appName, key ->
+            GrpcKitChannelBuilder.forConfig(appName, this.grpcKitConfig)
+                .usePlaintext()
+                .build()
+        );
     }
 
     @Override
@@ -118,11 +152,11 @@ public class GrpcStubBeanPostProcessor implements BeanPostProcessor, Ordered {
             @SuppressWarnings("unchecked")
             Class<? extends AbstractStub> stubClass = (Class<? extends AbstractStub>) resourceType;
             // stub class -> service name
-            String serviceName = stubFactory.getServiceName(stubClass);
+            String serviceName = GrpcStubBeanPostProcessor.this.getServiceName(stubClass);
             // service name -> application name
-            String appName = stubFactory.getAppName(serviceName);
+            String appName = GrpcStubBeanPostProcessor.this.getAppName(serviceName);
             // application name -> channel
-            Channel channel = stubFactory.getChannel(appName, grpcKitConfig);
+            Channel channel = GrpcStubBeanPostProcessor.this.getChannel(appName);
             // FIXME
             return GrpcKitStubFactory.newStub(stubClass, channel, tag, timeout);
         }
