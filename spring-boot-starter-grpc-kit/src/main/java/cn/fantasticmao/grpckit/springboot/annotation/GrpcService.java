@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import java.lang.annotation.*;
 
 /**
- * Indicates that an annotated class is a "gRPC Service".
+ * Indicates that an annotated class is a gRPC service.
  *
  * @author fantasticmao
  * @version 1.39.0

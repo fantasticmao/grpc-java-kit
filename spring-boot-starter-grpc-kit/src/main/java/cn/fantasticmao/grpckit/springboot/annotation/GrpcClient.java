@@ -3,7 +3,7 @@ package cn.fantasticmao.grpckit.springboot.annotation;
 import java.lang.annotation.*;
 
 /**
- * Indicates that an annotated class is a "gRPC client".
+ * Indicates that an annotated class is a gRPC client.
  *
  * @author fantasticmao
  * @version 1.39.0

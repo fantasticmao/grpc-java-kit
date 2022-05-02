@@ -21,8 +21,8 @@ public class ProtoUtil {
     /**
      * Get the {@link ServiceDescriptor ServiceDescriptor} of the gRPC service by the stub class.
      *
-     * @param clazz The gRPC stub class.
-     * @return The descriptor for the service.
+     * @param clazz the gRPC stub class.
+     * @return the descriptor for the service.
      */
     public static ServiceDescriptor getServiceDescriptor(Class<?> clazz) {
         final String grpcName = getGrpcName(clazz);
@@ -52,8 +52,8 @@ public class ProtoUtil {
     /**
      * Get the gRPC generated Java class name by the stub class.
      *
-     * @param clazz The gRPC stub class.
-     * @return The Java class name that gRPC generated.
+     * @param clazz the gRPC stub class.
+     * @return the Java class name that gRPC generated.
      * @see <a href="https://grpc.io/docs/languages/java/generated-code/#packages">Naming convention for the gRPC Java class</a>
      */
     static String getGrpcName(Class<?> clazz) {
@@ -67,7 +67,7 @@ public class ProtoUtil {
      * Get the suffix of the name by the stub class.
      *
      * @param clazz the gRPC stub class.
-     * @return The suffix of the stub name.
+     * @return the suffix of the stub name.
      * @see <a href="https://grpc.io/docs/languages/java/generated-code/#client-stubs">Naming convention for gRPC Stubs</a>
      */
     static String getStubSuffix(Class<?> clazz) {

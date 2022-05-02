@@ -18,8 +18,8 @@ public abstract class ServiceRegistryProvider implements Comparable<ServiceRegis
      * <p>
      * Example URIs:
      * <ul>
-     *     <li>zookeeper://localhost:2181/service_name/default/server/192.168.1.1:8080</li>
-     *     <li>consul://localhost:8500/service_name/default/server/192.168.1.1:8080</li>
+     *     <li>zookeeper://localhost:2181/app_name/default/servers/192.168.1.1:8080</li>
+     *     <li>consul://localhost:8500/app_name/default/servers/192.168.1.1:8080</li>
      * </ul>
      *
      * @param serviceUri the service URI to be resolved.

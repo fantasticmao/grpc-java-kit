@@ -1,7 +1,7 @@
 package cn.fantasticmao.grpckit.loadbalancer.picker;
 
-import cn.fantasticmao.grpckit.Constant;
 import cn.fantasticmao.grpckit.support.AttributeUtil;
+import cn.fantasticmao.grpckit.support.CallOptionUtil;
 import cn.fantasticmao.grpckit.support.ValRef;
 import com.google.common.base.MoreObjects;
 import io.grpc.LoadBalancer;
@@ -39,7 +39,7 @@ public class WeightedRandomPicker extends LoadBalancer.SubchannelPicker {
     public LoadBalancer.PickResult pickSubchannel(LoadBalancer.PickSubchannelArgs args) {
         List<LoadBalancer.Subchannel> filteredList = list;
         // filter subChannels by the tag in call options.
-        final String tag = args.getCallOptions().getOption(Constant.KEY_OPTION_TAG);
+        final String tag = args.getCallOptions().getOption(CallOptionUtil.KEY_TAG);
         if (tag != null && !tag.isBlank()) {
             LOGGER.debug("Original subChannels: {}", filteredList);
             LOGGER.debug("Tag in call options: {}", tag);

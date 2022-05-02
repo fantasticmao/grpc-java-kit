@@ -1,7 +1,7 @@
 package cn.fantasticmao.grpckit.boot;
 
-import cn.fantasticmao.grpckit.Constant;
 import cn.fantasticmao.grpckit.GrpcKitException;
+import cn.fantasticmao.grpckit.support.CallOptionUtil;
 import io.grpc.CallOptions;
 import io.grpc.Channel;
 import io.grpc.stub.AbstractAsyncStub;
@@ -43,7 +43,7 @@ public class GrpcKitStubFactory {
         } else {
             throw new IllegalArgumentException(clazz.getName() + " is not a standard gRPC Stub");
         }
-        return stub.withOption(Constant.KEY_OPTION_TAG, tag)
+        return stub.withOption(CallOptionUtil.KEY_TAG, tag)
             .withDeadlineAfter(timeout, TimeUnit.MILLISECONDS);
     }
 

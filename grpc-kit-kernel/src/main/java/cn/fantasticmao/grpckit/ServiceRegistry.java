@@ -2,7 +2,7 @@ package cn.fantasticmao.grpckit;
 
 /**
  * Register a service instance, which implementation is independent of the gRPC, and will
- * be called when {@link io.grpc.Server gRPC Server} has been started.
+ * be called when the {@link io.grpc.Server gRPC Server} has been started.
  *
  * @author fantasticmao
  * @version 1.39.0

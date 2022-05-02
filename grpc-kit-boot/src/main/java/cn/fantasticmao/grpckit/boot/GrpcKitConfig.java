@@ -17,7 +17,7 @@ import java.net.URL;
 import java.util.Objects;
 
 /**
- * Configurations used in gRPC Java Kit.
+ * The gRPC Java Kit configurations.
  *
  * @author fantasticmao
  * @version 1.39.0
@@ -30,9 +30,9 @@ public final class GrpcKitConfig {
     /**
      * Load and parse {@link GrpcKitConfig} from the specific file.
      *
-     * @param path The config file path
-     * @return A {@link GrpcKitConfig} object
-     * @throws GrpcKitException Errors during loading and parsing phases
+     * @param path the config file path
+     * @return a new {@link GrpcKitConfig} instance
+     * @throws GrpcKitException errors during loading and parsing phases
      */
     public static GrpcKitConfig loadAndParse(@Nonnull String path) {
         Yaml yaml = new Yaml(new Constructor(GrpcKitConfig.class));
