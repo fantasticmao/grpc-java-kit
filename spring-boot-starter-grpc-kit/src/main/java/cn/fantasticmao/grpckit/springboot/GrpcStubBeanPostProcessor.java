@@ -10,6 +10,7 @@ import io.grpc.stub.AbstractStub;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.PropertyValues;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.annotation.InjectionMetadata;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -56,7 +57,7 @@ public class GrpcStubBeanPostProcessor implements BeanPostProcessor, Ordered {
         this.grpcKitConfig = grpcKitConfig;
     }
 
-    public String getServiceName(Class<?> stubClass) {
+    public <S extends AbstractStub<S>> String getServiceName(Class<S> stubClass) {
         return serviceNameCache.computeIfAbsent(stubClass, key -> {
                 ServiceDescriptor serviceDescriptor = ProtoUtil.getServiceDescriptor(stubClass);
                 return serviceDescriptor.getName();
@@ -147,17 +148,25 @@ public class GrpcStubBeanPostProcessor implements BeanPostProcessor, Ordered {
         }
 
         @Override
-        protected Object getResourceToInject(@Nonnull Object target, @Nullable String requestingBeanName) {
-            Class<?> resourceType = super.getResourceType();
+        protected void inject(@Nonnull Object bean, @Nullable String requestingBeanName, @Nullable PropertyValues pvs)
+            throws Throwable {
+            Field field = (Field) super.member;
+            Object stub = this.newStubObject(field, bean);
+            if (stub != null) {
+                ReflectionUtils.makeAccessible(field);
+                field.set(bean, stub);
+            }
+        }
+
+        protected <S extends AbstractStub<S>> S newStubObject(Field field, Object bean) {
             @SuppressWarnings("unchecked")
-            Class<? extends AbstractStub> stubClass = (Class<? extends AbstractStub>) resourceType;
+            Class<S> stubClass = (Class<S>) field.getType();
             // stub class -> service name
             String serviceName = GrpcStubBeanPostProcessor.this.getServiceName(stubClass);
             // service name -> application name
             String appName = GrpcStubBeanPostProcessor.this.getAppName(serviceName);
             // application name -> channel
             Channel channel = GrpcStubBeanPostProcessor.this.getChannel(appName);
-            // FIXME
             return GrpcKitStubFactory.newStub(stubClass, channel, tag, timeout);
         }
     }

@@ -52,7 +52,7 @@ public class GrpcKitStubFactory {
             final Constructor<S> constructor;
             try {
                 // get private constructor
-                constructor = clazz.getDeclaredConstructor(io.grpc.Channel.class, CallOptions.class);
+                constructor = clazz.getDeclaredConstructor(Channel.class, CallOptions.class);
                 if ((!Modifier.isPublic(constructor.getModifiers()) ||
                     !Modifier.isPublic(constructor.getDeclaringClass().getModifiers())) && !constructor.canAccess(null)) {
                     constructor.setAccessible(true);
