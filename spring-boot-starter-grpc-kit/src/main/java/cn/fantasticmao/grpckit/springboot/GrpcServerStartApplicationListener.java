@@ -4,6 +4,7 @@ import cn.fantasticmao.grpckit.GrpcKitException;
 import cn.fantasticmao.grpckit.boot.GrpcKitConfig;
 import cn.fantasticmao.grpckit.boot.GrpcKitServerBuilder;
 import cn.fantasticmao.grpckit.springboot.annotation.GrpcService;
+import cn.fantasticmao.grpckit.springboot.factory.GrpcKitServerBuilderFactory;
 import io.grpc.BindableService;
 import io.grpc.Server;
 import io.grpc.ServerServiceDefinition;
@@ -12,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -20,7 +22,6 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -40,61 +41,75 @@ public class GrpcServerStartApplicationListener implements ApplicationListener<A
     @Override
     public void onApplicationEvent(@Nonnull ApplicationReadyEvent event) {
         final ConfigurableApplicationContext context = event.getApplicationContext();
-        Set<Map.Entry<String, Object>> grpcServiceBeans = context.getBeansWithAnnotation(GrpcService.class)
-            .entrySet().stream()
-            .filter(entry -> {
-                if (entry.getValue() instanceof BindableService) {
-                    return true;
-                } else {
-                    LOGGER.warn("@GrpcService annotation is not supported on the class: {}",
-                        entry.getValue().getClass());
-                    return false;
-                }
-            })
-            .collect(Collectors.toSet());
-        if (grpcServiceBeans.isEmpty()) {
-            return;
-        }
+        final String appName = this.getCurrentApplicationName(context);
 
-        Set<String> grpcServiceNames = grpcServiceBeans.stream()
-            .map(Map.Entry::getKey)
-            .collect(Collectors.toSet());
-        List<ServerServiceDefinition> grpcServices = grpcServiceBeans.stream()
-            .map(Map.Entry::getValue)
-            .map(obj -> (BindableService) obj)
-            .map(BindableService::bindService)
-            .collect(Collectors.toList());
+        final List<ServerServiceDefinition> services = this.getGrpcServices(context);
+        final GrpcKitServerBuilderFactory builderFactory = this.getGrpcKitServerBuilderFactory(context);
+        final GrpcKitConfig config = this.getGrpcKitConfig(context);
 
-        final GrpcKitConfig grpcKitConfig;
+        GrpcKitServerBuilder builder = GrpcKitServerBuilder.forConfig(appName, config);
+        builder = builderFactory.maintain(builder, services);
+        Server server = builder.build();
+
         try {
-            grpcKitConfig = context.getBean(GrpcKitAutoConfiguration.BEAN_NAME_GRPC_KIT_CONFIG, GrpcKitConfig.class);
-        } catch (NoSuchBeanDefinitionException e) {
-            LOGGER.error("bean {} must not be null", GrpcKitAutoConfiguration.BEAN_NAME_GRPC_KIT_CONFIG);
-            throw e;
-        }
-
-        // by default, if no application name is set, 'application' will be used.
-        // @see org.springframework.boot.context.ContextIdApplicationContextInitializer
-        final String appName = context.getId();
-        Server grpcServer = GrpcKitServerBuilder.forConfig(appName, grpcKitConfig)
-            .addServices(grpcServices)
-            .build();
-        try {
-            grpcServer.start();
+            server.start();
         } catch (IOException e) {
             throw new GrpcKitException("Start gRPC server error", e);
         }
-        this.registerBeanForGrpcServer(context, grpcServer);
-        this.publishGrpcServiceStartedEvent(context, event, grpcServiceNames);
+
+        this.registerBeanForGrpcServer(context, server);
+        this.publishGrpcServiceStartedEvent(context, event, services);
     }
 
-    private void registerBeanForGrpcServer(ConfigurableApplicationContext context, Server grpcServer) {
+    /**
+     * By default, if no application name is set, "application" will be used.
+     *
+     * @see org.springframework.boot.context.ContextIdApplicationContextInitializer
+     */
+    private String getCurrentApplicationName(ApplicationContext context) {
+        return context.getId();
+    }
+
+    private List<ServerServiceDefinition> getGrpcServices(ApplicationContext context) {
+        Map<String, Object> grpcServiceBeans = context.getBeansWithAnnotation(GrpcService.class);
+        return grpcServiceBeans.values().stream()
+            .filter(bean -> {
+                if (bean instanceof BindableService) {
+                    return true;
+                } else {
+                    LOGGER.warn("@GrpcService annotation is not supported on the class: {}",
+                        bean.getClass());
+                    return false;
+                }
+            })
+            .map(bean -> (BindableService) bean)
+            .map(BindableService::bindService)
+            .collect(Collectors.toList());
+    }
+
+    private GrpcKitServerBuilderFactory getGrpcKitServerBuilderFactory(ApplicationContext context) {
+        try {
+            return context.getBean(GrpcKitServerBuilderFactory.class);
+        } catch (NoSuchBeanDefinitionException e) {
+            return GrpcKitServerBuilderFactory.Default.INSTANCE;
+        }
+    }
+
+    private GrpcKitConfig getGrpcKitConfig(ApplicationContext context) {
+        return context.getBean(GrpcKitAutoConfiguration.BEAN_NAME_GRPC_KIT_CONFIG, GrpcKitConfig.class);
+    }
+
+    private void registerBeanForGrpcServer(ConfigurableApplicationContext context, Server server) {
         ConfigurableListableBeanFactory beanFactory = context.getBeanFactory();
-        beanFactory.registerSingleton(GrpcKitAutoConfiguration.BEAN_NAME_GRPC_KIT_SERVER, grpcServer);
+        beanFactory.registerSingleton(GrpcKitAutoConfiguration.BEAN_NAME_GRPC_KIT_SERVER, server);
     }
 
-    private void publishGrpcServiceStartedEvent(ConfigurableApplicationContext context,
-                                                ApplicationReadyEvent sourceEvent, Set<String> serviceNames) {
+    private void publishGrpcServiceStartedEvent(ApplicationContext context,
+                                                ApplicationReadyEvent sourceEvent,
+                                                List<ServerServiceDefinition> services) {
+        List<String> serviceNames = services.stream()
+            .map(service -> service.getServiceDescriptor().getName())
+            .collect(Collectors.toList());
         ApplicationEvent event = new GrpcServerStartedEvent(sourceEvent, serviceNames);
         context.publishEvent(event);
     }

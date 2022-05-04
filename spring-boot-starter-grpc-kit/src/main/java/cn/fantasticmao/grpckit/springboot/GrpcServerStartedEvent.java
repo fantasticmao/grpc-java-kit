@@ -3,7 +3,7 @@ package cn.fantasticmao.grpckit.springboot;
 import org.springframework.context.ApplicationEvent;
 
 import java.util.Collections;
-import java.util.Set;
+import java.util.List;
 
 /**
  * Event published by a {@link GrpcServerStartApplicationListener} when gRPC
@@ -14,14 +14,14 @@ import java.util.Set;
  * @since 2022-04-13
  */
 public class GrpcServerStartedEvent extends ApplicationEvent {
-    private final Set<String> serviceNames;
+    private final List<String> serviceNames;
 
-    public GrpcServerStartedEvent(Object source, Set<String> serviceNames) {
+    public GrpcServerStartedEvent(Object source, List<String> serviceNames) {
         super(source);
-        this.serviceNames = Collections.unmodifiableSet(serviceNames);
+        this.serviceNames = Collections.unmodifiableList(serviceNames);
     }
 
-    public Set<String> getServiceNames() {
+    public List<String> getServiceNames() {
         return serviceNames;
     }
 }

@@ -24,6 +24,9 @@ public class ApplicationMetadataCache {
 
     private static volatile ApplicationMetadataCache instance;
 
+    private ApplicationMetadataCache() {
+    }
+
     public static ApplicationMetadataCache getInstance() {
         if (instance == null) {
             synchronized (ApplicationMetadataCache.class) {

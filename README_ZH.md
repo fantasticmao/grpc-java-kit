@@ -11,7 +11,7 @@
 - 序列化 / 反序列化 [Protocol Buffers](https://developers.google.com/protocol-buffers/docs/overview)
 - 接入方式
   - [x] Java SE (JDK 11+)
-  - [ ] Spring Boot
+  - [x] Spring Boot
 - 服务注册 / 发现
   - [x] 服务分组
   - [x] ZooKeeper、~~Consul~~
