@@ -20,13 +20,13 @@ public class GrpcKitAutoConfiguration {
     @Value("${cn.fantasticmao.grpckit.config:grpc-kit.yml}")
     private String configPath;
 
-    public static final String BEAN_NAME_GRPC_KIT_CONFIG = "_grpc_kit_config_";
-    public static final String BEAN_NAME_GRPC_KIT_SERVER = "_grpc_kit_server_";
+    public static final String BEAN_NAME_GRPC_KIT_CONFIG = "__grpcKitConfig__";
+    public static final String BEAN_NAME_GRPC_KIT_SERVER = "__grpcKitServer__";
 
     @Bean(BEAN_NAME_GRPC_KIT_CONFIG)
     @ConditionalOnMissingBean
     public GrpcKitConfig grpcKitConfig() {
-        return GrpcKitConfig.loadAndParse(configPath);
+        return GrpcKitConfig.loadAndParse(configPath).validate();
     }
 
     @Bean

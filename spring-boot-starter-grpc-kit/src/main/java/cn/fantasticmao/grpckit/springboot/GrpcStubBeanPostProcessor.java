@@ -4,7 +4,7 @@ import cn.fantasticmao.grpckit.GrpcKitException;
 import cn.fantasticmao.grpckit.boot.*;
 import cn.fantasticmao.grpckit.springboot.annotation.GrpcClient;
 import cn.fantasticmao.grpckit.springboot.factory.GrpcKitChannelBuilderFactory;
-import cn.fantasticmao.grpckit.support.ProtoUtil;
+import cn.fantasticmao.grpckit.util.ProtoUtil;
 import io.grpc.Channel;
 import io.grpc.ServiceDescriptor;
 import io.grpc.stub.AbstractStub;

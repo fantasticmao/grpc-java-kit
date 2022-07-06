@@ -26,7 +26,7 @@ public final class ApplicationMetadata {
      */
     private List<String> services;
 
-    public static final Pattern NAME_PATTERN = Pattern.compile("[\\w]+");
+    public static final Pattern NAME_PATTERN = Pattern.compile("\\w+");
 
     public ApplicationMetadata validate() {
         if (name == null || name.isBlank()) {

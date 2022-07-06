@@ -3,14 +3,13 @@ package cn.fantasticmao.grpckit.nameresolver.zookeeper;
 import cn.fantasticmao.grpckit.GrpcKitException;
 import cn.fantasticmao.grpckit.ServiceDiscovery;
 import cn.fantasticmao.grpckit.ServiceMetadata;
-import cn.fantasticmao.grpckit.support.GsonUtil;
+import cn.fantasticmao.grpckit.util.GsonUtil;
 import io.grpc.EquivalentAddressGroup;
 import io.grpc.NameResolver;
 import org.apache.curator.framework.CuratorFramework;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,28 +39,28 @@ import java.util.stream.Collectors;
 class ZkServiceDiscovery extends ServiceDiscovery {
     private static final Logger LOGGER = LoggerFactory.getLogger(ZkServiceDiscovery.class);
 
-    private final String connectString;
+    private final String zkAuthority;
     private final String servicePath;
     private final CuratorFramework zkClient;
 
     private boolean resolving = false;
     private NameResolver.Listener2 listener;
 
-    ZkServiceDiscovery(URI serviceUri, NameResolver.Args args) {
-        this.connectString = serviceUri.getAuthority();
-        this.servicePath = serviceUri.getPath();
-        this.zkClient = ZkClientHolder.get(this.connectString);
+    ZkServiceDiscovery(String zkAuthority, String connectString, String servicePath) {
+        this.zkAuthority = zkAuthority;
+        this.servicePath = servicePath;
+        this.zkClient = ZkClientHolder.get(connectString);
 
         try {
             this.zkClient.blockUntilConnected(5, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
-            throw new GrpcKitException("Connect to ZooKeeper error, connect string: " + this.connectString, e);
+            throw new GrpcKitException("Connect to ZooKeeper error, connect string: " + connectString, e);
         }
     }
 
     @Override
     public String getServiceAuthority() {
-        return this.connectString;
+        return this.zkAuthority;
     }
 
     @Override

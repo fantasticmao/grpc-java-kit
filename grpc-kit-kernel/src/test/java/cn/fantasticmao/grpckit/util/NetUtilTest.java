@@ -1,4 +1,4 @@
-package cn.fantasticmao.grpckit.boot.support;
+package cn.fantasticmao.grpckit.util;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

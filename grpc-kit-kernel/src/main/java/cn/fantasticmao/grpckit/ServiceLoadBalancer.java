@@ -19,19 +19,29 @@ import java.util.Objects;
 public abstract class ServiceLoadBalancer extends LoadBalancer {
 
     /**
-     * {@inheritDoc}
+     * Handles newly resolved server groups and metadata attributes from name resolution system.
+     * {@code servers} contained in {@link io.grpc.EquivalentAddressGroup} should be considered equivalent
+     * but may be flattened into a single list if needed.
+     *
+     * <p>Implementations should not modify the given {@code servers}.
+     *
+     * @param resolvedAddresses the resolved server addresses, attributes, and config.
      */
     @Override
     public abstract void handleResolvedAddresses(ResolvedAddresses resolvedAddresses);
 
     /**
-     * {@inheritDoc}
+     * Handles an error from the name resolution system.
+     *
+     * @param error a non-OK status
      */
     @Override
     public abstract void handleNameResolutionError(Status error);
 
     /**
-     * {@inheritDoc}
+     * The channel asks the load-balancer to shutdown.  No more methods on this class will be called
+     * after this method.  The implementation should shutdown all Subchannels and OOB channels, and do
+     * any other cleanup as necessary.
      */
     @Override
     public abstract void shutdown();

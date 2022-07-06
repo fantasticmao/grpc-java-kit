@@ -1,6 +1,6 @@
 package cn.fantasticmao.grpckit;
 
-import cn.fantasticmao.grpckit.support.AttributeUtil;
+import cn.fantasticmao.grpckit.support.Constant;
 import io.grpc.Attributes;
 import io.grpc.EquivalentAddressGroup;
 import lombok.Getter;
@@ -18,7 +18,7 @@ import java.net.InetSocketAddress;
  */
 @Getter
 @Setter
-public class ServiceMetadata {
+public final class ServiceMetadata {
     /**
      * Host of a service instance.
      */
@@ -70,8 +70,8 @@ public class ServiceMetadata {
     public EquivalentAddressGroup toAddressGroup() {
         InetSocketAddress address = new InetSocketAddress(this.host, this.port);
         Attributes attributes = Attributes.newBuilder()
-            .set(AttributeUtil.KEY_WEIGHT, this.weight)
-            .set(AttributeUtil.KEY_TAG, this.tag)
+            .set(Constant.ATTRIBUTE_WEIGHT, this.weight)
+            .set(Constant.ATTRIBUTE_TAG, this.tag)
             .build();
         return new EquivalentAddressGroup(address, attributes);
     }

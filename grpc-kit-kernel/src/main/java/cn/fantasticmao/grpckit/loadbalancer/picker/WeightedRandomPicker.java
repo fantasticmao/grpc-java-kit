@@ -1,7 +1,6 @@
 package cn.fantasticmao.grpckit.loadbalancer.picker;
 
-import cn.fantasticmao.grpckit.support.AttributeUtil;
-import cn.fantasticmao.grpckit.support.CallOptionUtil;
+import cn.fantasticmao.grpckit.support.Constant;
 import cn.fantasticmao.grpckit.support.ValRef;
 import com.google.common.base.MoreObjects;
 import io.grpc.LoadBalancer;
@@ -39,7 +38,7 @@ public class WeightedRandomPicker extends LoadBalancer.SubchannelPicker {
     public LoadBalancer.PickResult pickSubchannel(LoadBalancer.PickSubchannelArgs args) {
         List<LoadBalancer.Subchannel> filteredList = list;
         // filter subChannels by the tag in call options.
-        final String tag = args.getCallOptions().getOption(CallOptionUtil.KEY_TAG);
+        final String tag = args.getCallOptions().getOption(Constant.CALL_OPTION_TAG);
         if (tag != null && !tag.isBlank()) {
             LOGGER.debug("Original subChannels: {}", filteredList);
             LOGGER.debug("Tag in call options: {}", tag);
@@ -78,12 +77,12 @@ public class WeightedRandomPicker extends LoadBalancer.SubchannelPicker {
     }
 
     private String getTag(LoadBalancer.Subchannel subChannel) {
-        ValRef<String> tagRef = AttributeUtil.getValRef(subChannel, AttributeUtil.KEY_REF_TAG);
+        ValRef<String> tagRef = Constant.getValRef(subChannel, Constant.ATTRIBUTE_REF_TAG);
         return tagRef.value;
     }
 
     private int getWeight(LoadBalancer.Subchannel subChannel) {
-        ValRef<Integer> weightRef = AttributeUtil.getValRef(subChannel, AttributeUtil.KEY_REF_WEIGHT);
+        ValRef<Integer> weightRef = Constant.getValRef(subChannel, Constant.ATTRIBUTE_REF_WEIGHT);
         return weightRef.value;
     }
 

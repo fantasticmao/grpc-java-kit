@@ -1,6 +1,8 @@
 package cn.fantasticmao.grpckit;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.net.InetSocketAddress;
 import java.net.URI;
 
 /**
@@ -15,17 +17,11 @@ public abstract class ServiceRegistryProvider implements Comparable<ServiceRegis
 
     /**
      * Creates a {@link ServiceRegistry} for the given service URI.
-     * <p>
-     * Example URIs:
-     * <ul>
-     *     <li>zookeeper://localhost:2181/app_name/default/servers/192.168.1.1:8080</li>
-     *     <li>consul://localhost:8500/app_name/default/servers/192.168.1.1:8080</li>
-     * </ul>
      *
-     * @param serviceUri the service URI to be resolved.
+     * @param targetUri the target URI to be resolved, whose scheme must not be {@code null}
      */
     @Nullable
-    public abstract ServiceRegistry newServiceRegistry(URI serviceUri);
+    public abstract ServiceRegistry newServiceRegistry(URI targetUri, @Nonnull InetSocketAddress address);
 
     public abstract boolean isAvailable();
 

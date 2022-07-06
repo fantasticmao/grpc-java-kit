@@ -1,7 +1,8 @@
 package cn.fantasticmao.grpckit.boot;
 
 import cn.fantasticmao.grpckit.ServiceLoadBalancer;
-import cn.fantasticmao.grpckit.boot.support.UriUtil;
+import cn.fantasticmao.grpckit.ServiceURI;
+import cn.fantasticmao.grpckit.ServiceURILoader;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.internal.AbstractManagedChannelImplBuilder;
@@ -9,7 +10,6 @@ import io.grpc.internal.AbstractManagedChannelImplBuilder;
 import javax.annotation.Nonnull;
 import java.net.URI;
 import java.util.Objects;
-import java.util.regex.Pattern;
 
 /**
  * A builder for creating {@link ManagedChannel gRPC ManagedChannel} instances.
@@ -25,9 +25,10 @@ public class GrpcKitChannelBuilder extends AbstractManagedChannelImplBuilder<Grp
         final String appGroup = config.getGrpc().getGroup();
         final String registry = Objects.requireNonNull(config.getNameResolver().getRegistry(),
             "nameResolver.registry must not be null");
+
         final String policy = config.getLoadBalancer().getPolicy();
-        final URI serviceUri = UriUtil.newServiceUri(URI.create(registry), appName, appGroup);
-        this.managedChannelBuilder = ManagedChannelBuilder.forTarget(serviceUri.toString())
+        final ServiceURI serviceUri = ServiceURILoader.loadWith(URI.create(registry), appName, appGroup);
+        this.managedChannelBuilder = ManagedChannelBuilder.forTarget(serviceUri.toTargetUri().toString())
             .userAgent(appName)
             .defaultLoadBalancingPolicy(ServiceLoadBalancer.Policy.of(policy).name);
     }
@@ -36,8 +37,9 @@ public class GrpcKitChannelBuilder extends AbstractManagedChannelImplBuilder<Grp
         if (appName == null || appName.isBlank()) {
             throw new IllegalArgumentException("application name must not be null or blank");
         }
-        if (!Pattern.compile("[\\w]+").matcher(appName).matches()) {
-            throw new IllegalArgumentException("application name must match the regular expression: [\\w]+");
+        if (!ApplicationMetadata.NAME_PATTERN.matcher(appName).matches()) {
+            throw new IllegalArgumentException("application name must match the pattern: "
+                + ApplicationMetadata.NAME_PATTERN.pattern());
         }
         return new GrpcKitChannelBuilder(appName, config.validate());
     }

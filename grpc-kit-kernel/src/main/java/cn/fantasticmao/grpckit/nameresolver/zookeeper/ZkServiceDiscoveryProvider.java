@@ -22,6 +22,20 @@ public class ZkServiceDiscoveryProvider extends ServiceDiscoveryProvider {
     }
 
     @Override
+    public NameResolver newNameResolver(URI targetUri, NameResolver.Args args) {
+        if (!SCHEME.equalsIgnoreCase(targetUri.getScheme())) {
+            return null;
+        }
+        String servicePath = targetUri.getPath();
+        return new ZkServiceDiscovery(targetUri.getAuthority(), targetUri.getAuthority(), servicePath);
+    }
+
+    @Override
+    public String getDefaultScheme() {
+        return SCHEME;
+    }
+
+    @Override
     protected boolean isAvailable() {
         try {
             Class.forName("org.apache.curator.framework.CuratorFramework");
@@ -36,18 +50,5 @@ public class ZkServiceDiscoveryProvider extends ServiceDiscoveryProvider {
     protected int priority() {
         // greater than the default value.
         return DEFAULT_PRIORITY + 1;
-    }
-
-    @Override
-    public NameResolver newNameResolver(URI serviceUri, NameResolver.Args args) {
-        if (!SCHEME.equalsIgnoreCase(serviceUri.getScheme())) {
-            return null;
-        }
-        return new ZkServiceDiscovery(serviceUri, args);
-    }
-
-    @Override
-    public String getDefaultScheme() {
-        return SCHEME;
     }
 }

@@ -1,8 +1,11 @@
-package cn.fantasticmao.grpckit.boot.support;
+package cn.fantasticmao.grpckit.util;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
-import java.net.*;
+import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.util.*;
 
 /**
@@ -15,7 +18,7 @@ import java.util.*;
 public interface NetUtil {
     Boolean PREFER_IPV6_ADDRESSES = Boolean.getBoolean("java.net.preferIPv6Addresses");
 
-    static InetAddress getLocalAddress(@Nullable String preferInterface) throws SocketException, UnknownHostException {
+    static InetAddress getLocalAddress(@Nullable String preferInterface) throws SocketException {
         List<NetworkInterface> validNetworkInterfaces = getValidNetworkInterfaces(preferInterface);
         for (NetworkInterface networkInterface : validNetworkInterfaces) {
             Enumeration<InetAddress> addresses = networkInterface.getInetAddresses();

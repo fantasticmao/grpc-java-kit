@@ -18,6 +18,9 @@ public abstract class ServiceRegistry {
      */
     public abstract boolean doRegister(ServiceMetadata metadata);
 
+    /**
+     * Stops the registry.
+     */
     public abstract void shutdown();
 
 }

@@ -5,7 +5,9 @@ import cn.fantasticmao.grpckit.ServiceRegistryProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.net.InetSocketAddress;
 import java.net.URI;
 
 /**
@@ -24,11 +26,14 @@ public class ZkServiceRegistryProvider extends ServiceRegistryProvider {
 
     @Nullable
     @Override
-    public ServiceRegistry newServiceRegistry(URI serviceUri) {
-        if (!SCHEME.equalsIgnoreCase(serviceUri.getScheme())) {
+    public ServiceRegistry newServiceRegistry(URI targetUri, @Nonnull InetSocketAddress address) {
+        if (!SCHEME.equalsIgnoreCase(targetUri.getScheme())) {
             return null;
         }
-        return new ZkServiceRegistry(serviceUri);
+        // FIXME
+        String servicePath = targetUri.getPath() + String.format("/%s:%d",
+            address.getAddress().getHostAddress(), address.getPort());
+        return new ZkServiceRegistry(targetUri.getAuthority(), servicePath);
     }
 
     @Override

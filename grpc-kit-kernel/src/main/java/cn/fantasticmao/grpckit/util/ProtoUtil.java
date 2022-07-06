@@ -1,4 +1,4 @@
-package cn.fantasticmao.grpckit.support;
+package cn.fantasticmao.grpckit.util;
 
 import cn.fantasticmao.grpckit.GrpcKitException;
 import io.grpc.ServiceDescriptor;

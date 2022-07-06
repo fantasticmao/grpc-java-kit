@@ -3,7 +3,7 @@ package cn.fantasticmao.grpckit.loadbalancer;
 import cn.fantasticmao.grpckit.ServiceLoadBalancer;
 import cn.fantasticmao.grpckit.loadbalancer.picker.EmptyPicker;
 import cn.fantasticmao.grpckit.loadbalancer.picker.WeightedRandomPicker;
-import cn.fantasticmao.grpckit.support.AttributeUtil;
+import cn.fantasticmao.grpckit.support.Constant;
 import cn.fantasticmao.grpckit.support.ValRef;
 import io.grpc.*;
 import org.slf4j.Logger;
@@ -67,24 +67,24 @@ class RandomLoadBalancer extends ServiceLoadBalancer {
         for (Map.Entry<List<SocketAddress>, EquivalentAddressGroup> latestEntry : latestAddressGroupMap.entrySet()) {
             final List<SocketAddress> addressList = latestEntry.getKey();
             final EquivalentAddressGroup addressGroup = latestEntry.getValue();
-            final Integer weight = AttributeUtil.getAttribute(addressGroup, AttributeUtil.KEY_WEIGHT);
-            final String tag = AttributeUtil.getAttribute(addressGroup, AttributeUtil.KEY_TAG);
+            final Integer weight = Constant.getAttribute(addressGroup, Constant.ATTRIBUTE_WEIGHT);
+            final String tag = Constant.getAttribute(addressGroup, Constant.ATTRIBUTE_TAG);
 
             Subchannel existingSubChannel = subChannelMap.get(addressList);
             // update existed subChannel.
             if (existingSubChannel != null) {
                 existingSubChannel.updateAddresses(Collections.singletonList(addressGroup));
-                AttributeUtil.getValRef(existingSubChannel, AttributeUtil.KEY_REF_WEIGHT).value = weight;
-                AttributeUtil.getValRef(existingSubChannel, AttributeUtil.KEY_REF_TAG).value = tag;
+                Constant.getValRef(existingSubChannel, Constant.ATTRIBUTE_REF_WEIGHT).value = weight;
+                Constant.getValRef(existingSubChannel, Constant.ATTRIBUTE_REF_TAG).value = tag;
                 continue;
             }
             // create a new subChannel for new addresses.
             final Subchannel subChannel = helper.createSubchannel(CreateSubchannelArgs.newBuilder()
                 .setAddresses(new EquivalentAddressGroup(addressList))
                 .setAttributes(Attributes.newBuilder()
-                    .set(AttributeUtil.KEY_REF_STATE, new ValRef<>(ConnectivityStateInfo.forNonError(IDLE)))
-                    .set(AttributeUtil.KEY_REF_WEIGHT, new ValRef<>(weight))
-                    .set(AttributeUtil.KEY_REF_TAG, new ValRef<>(tag))
+                    .set(Constant.ATTRIBUTE_REF_STATE, new ValRef<>(ConnectivityStateInfo.forNonError(IDLE)))
+                    .set(Constant.ATTRIBUTE_REF_WEIGHT, new ValRef<>(weight))
+                    .set(Constant.ATTRIBUTE_REF_TAG, new ValRef<>(tag))
                     .build())
                 .build());
             subChannel.start(new StateListener(subChannel));
@@ -121,7 +121,7 @@ class RandomLoadBalancer extends ServiceLoadBalancer {
 
     private void shutdownSubChannel(Subchannel subChannel) {
         subChannel.shutdown();
-        ValRef<ConnectivityStateInfo> stateRef = AttributeUtil.getValRef(subChannel, AttributeUtil.KEY_REF_STATE);
+        ValRef<ConnectivityStateInfo> stateRef = Constant.getValRef(subChannel, Constant.ATTRIBUTE_REF_STATE);
         stateRef.value = ConnectivityStateInfo.forNonError(SHUTDOWN);
     }
 
@@ -131,7 +131,7 @@ class RandomLoadBalancer extends ServiceLoadBalancer {
         boolean isConnecting = false;
         Status aggStatus = EmptyPicker.EMPTY_OK;
         for (Subchannel subChannel : subChannelMap.values()) {
-            ValRef<ConnectivityStateInfo> stateRef = AttributeUtil.getValRef(subChannel, AttributeUtil.KEY_REF_STATE);
+            ValRef<ConnectivityStateInfo> stateRef = Constant.getValRef(subChannel, Constant.ATTRIBUTE_REF_STATE);
             if (stateRef.value.getState() == READY) {
                 readySubChannelList.add(subChannel);
             }
@@ -224,8 +224,8 @@ class RandomLoadBalancer extends ServiceLoadBalancer {
                 subChannel.requestConnection();
             }
 
-            ValRef<ConnectivityStateInfo> currentStateRef = AttributeUtil.getValRef(subChannel,
-                AttributeUtil.KEY_REF_STATE);
+            ValRef<ConnectivityStateInfo> currentStateRef = Constant.getValRef(subChannel,
+                Constant.ATTRIBUTE_REF_STATE);
             if (currentStateRef.value.getState() == TRANSIENT_FAILURE) {
                 if (newState.getState() == CONNECTING || newState.getState() == IDLE) {
                     return;

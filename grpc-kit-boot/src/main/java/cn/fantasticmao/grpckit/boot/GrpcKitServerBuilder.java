@@ -1,8 +1,8 @@
 package cn.fantasticmao.grpckit.boot;
 
 import cn.fantasticmao.grpckit.*;
-import cn.fantasticmao.grpckit.boot.support.NetUtil;
-import cn.fantasticmao.grpckit.boot.support.UriUtil;
+import cn.fantasticmao.grpckit.support.Constant;
+import cn.fantasticmao.grpckit.util.NetUtil;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.internal.AbstractServerImplBuilder;
@@ -12,9 +12,9 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.net.URI;
-import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Objects;
 import java.util.ServiceLoader;
@@ -70,7 +70,7 @@ public class GrpcKitServerBuilder extends AbstractServerImplBuilder<GrpcKitServe
     }
 
     private void register(Server server) {
-        final String serviceGroup = config.getGrpc().getGroup();
+        final String appGroup = config.getGrpc().getGroup();
         final int serverPort = config.getGrpc().getServer().getPort();
         final int serverWeight = config.getGrpc().getServer().getWeight();
         final String serverTag = config.getGrpc().getServer().getTag();
@@ -81,17 +81,17 @@ public class GrpcKitServerBuilder extends AbstractServerImplBuilder<GrpcKitServe
         try {
             String preferInterface = this.config.getGrpc().getServer().getInterfaceName();
             localAddress = NetUtil.getLocalAddress(preferInterface);
-        } catch (SocketException | UnknownHostException e) {
+        } catch (SocketException e) {
             throw new GrpcKitException("Get local address error", e);
         }
 
-        final URI serviceUri = UriUtil.newServiceUri(URI.create(registry), appName, serviceGroup,
-            localAddress, serverPort);
+        final ServiceURI serviceUri = ServiceURILoader.loadWith(URI.create(registry), appName, appGroup);
         final ServiceMetadata metadata = new ServiceMetadata(localAddress, serverPort, serverWeight,
             serverTag, appName, Constant.VERSION);
         for (ServiceRegistryProvider provider : this.getAllServiceRegistries()) {
             // FIXME
-            ServiceRegistry serviceRegistry = provider.newServiceRegistry(serviceUri);
+            ServiceRegistry serviceRegistry = provider.newServiceRegistry(serviceUri.toTargetUri(),
+                new InetSocketAddress(localAddress, serverPort));
             if (serviceRegistry == null) {
                 continue;
             }

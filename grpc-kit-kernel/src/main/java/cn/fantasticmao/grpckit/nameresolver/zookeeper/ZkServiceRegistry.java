@@ -3,14 +3,13 @@ package cn.fantasticmao.grpckit.nameresolver.zookeeper;
 import cn.fantasticmao.grpckit.GrpcKitException;
 import cn.fantasticmao.grpckit.ServiceMetadata;
 import cn.fantasticmao.grpckit.ServiceRegistry;
-import cn.fantasticmao.grpckit.support.GsonUtil;
+import cn.fantasticmao.grpckit.util.GsonUtil;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.data.Stat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
@@ -40,10 +39,8 @@ class ZkServiceRegistry extends ServiceRegistry {
     private final String servicePath;
     private final CuratorFramework zkClient;
 
-    ZkServiceRegistry(URI serviceUri) {
-        this.servicePath = serviceUri.getPath();
-
-        String connectString = serviceUri.getAuthority();
+    ZkServiceRegistry(String connectString, String servicePath) {
+        this.servicePath = servicePath;
         this.zkClient = ZkClientHolder.get(connectString);
 
         try {
