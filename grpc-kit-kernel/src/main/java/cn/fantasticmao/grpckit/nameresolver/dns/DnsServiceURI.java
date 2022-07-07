@@ -3,7 +3,7 @@ package cn.fantasticmao.grpckit.nameresolver.dns;
 import cn.fantasticmao.grpckit.ServiceURI;
 import cn.fantasticmao.grpckit.ServiceURILoader;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -36,22 +36,21 @@ public class DnsServiceURI extends ServiceURI {
     public static class Loader implements ServiceURILoader {
         private static final String SCHEME = "dns";
 
-        @Nullable
+        @Nonnull
+        @Override
+        public String getScheme() {
+            return "dns";
+        }
+
+        @Nonnull
         @Override
         public ServiceURI with(URI registryUri, String appName, String appGroup) {
-            if (!SCHEME.equalsIgnoreCase(registryUri.getScheme())) {
-                return null;
-            }
             return new DnsServiceURI(registryUri, appName, appGroup);
         }
 
-        @Nullable
+        @Nonnull
         @Override
         public ServiceURI from(URI targetUri) {
-            if (!SCHEME.equalsIgnoreCase(targetUri.getScheme())) {
-                return null;
-            }
-
             URI registryUri;
             try {
                 registryUri = new URI(targetUri.getScheme(), targetUri.getUserInfo(),

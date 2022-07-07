@@ -3,8 +3,8 @@ package cn.fantasticmao.grpckit;
 import java.net.URI;
 
 /**
- * A URI associated with registryUri as well as application name and group, used to
- * identify a gRPC service in service discovery and registration.
+ * A URI associated with registryUri as well as application name and group, which will be
+ * used to identify a gRPC service in service discovery and registration.
  *
  * @author fantasticmao
  * @version 1.39.0

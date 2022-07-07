@@ -1,9 +1,7 @@
 package cn.fantasticmao.grpckit;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.net.URI;
-import java.util.Objects;
 import java.util.ServiceLoader;
 
 /**
@@ -14,6 +12,14 @@ import java.util.ServiceLoader;
  * @since 2022-07-07
  */
 public interface ServiceURILoader {
+
+    /**
+     * The scheme which will be used to find compatible a {@link ServiceLoader}.
+     *
+     * @see #with(URI, String, String)
+     */
+    @Nonnull
+    String getScheme();
 
     /**
      * Load a service URI with registry as well as application name and group.
@@ -30,7 +36,7 @@ public interface ServiceURILoader {
      * @param appGroup    application group
      * @return A URI to identify a gRPC service.
      */
-    @Nullable
+    @Nonnull
     ServiceURI with(URI registryUri, String appName, String appGroup);
 
     /**
@@ -46,7 +52,7 @@ public interface ServiceURILoader {
      * @param targetUri target URI
      * @return A URI to identify a gRPC service.
      */
-    @Nullable
+    @Nonnull
     ServiceURI from(URI targetUri);
 
     @Nonnull
@@ -54,11 +60,12 @@ public interface ServiceURILoader {
         ServiceLoader<ServiceURILoader> serviceLoader = ServiceLoader.load(ServiceURILoader.class);
         return serviceLoader.stream()
             .map(ServiceLoader.Provider::get)
+            .filter(serviceURILoader -> serviceURILoader.getScheme().equals(registryUri.getScheme()))
             .map(serviceURILoader -> serviceURILoader.with(registryUri, appName, appGroup))
-            .filter(Objects::nonNull)
             .findFirst()
             .orElseThrow(() -> new IllegalArgumentException(
-                String.format("Cannot find a suitable ServiceURILoader for %s:%s:%s", registryUri, appName, appGroup)));
+                String.format("Cannot find a suitable ServiceURILoader for %s:%s:%s", registryUri,
+                    appName, appGroup)));
     }
 
     @Nonnull
@@ -66,8 +73,8 @@ public interface ServiceURILoader {
         ServiceLoader<ServiceURILoader> serviceLoader = ServiceLoader.load(ServiceURILoader.class);
         return serviceLoader.stream()
             .map(ServiceLoader.Provider::get)
+            .filter(serviceURILoader -> serviceURILoader.getScheme().equals(targetUri.getScheme()))
             .map(serviceURILoader -> serviceURILoader.from(targetUri))
-            .filter(Objects::nonNull)
             .findFirst()
             .orElseThrow(() -> new IllegalArgumentException(
                 String.format("Cannot find a suitable ServiceURILoader for %s", targetUri)));
