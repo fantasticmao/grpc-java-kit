@@ -1,7 +1,6 @@
 package cn.fantasticmao.grpckit.nameresolver.dns;
 
 import cn.fantasticmao.grpckit.ServiceURI;
-import cn.fantasticmao.grpckit.ServiceURILoader;
 
 import javax.annotation.Nonnull;
 import java.net.URI;
@@ -33,8 +32,7 @@ public class DnsServiceURI extends ServiceURI {
         }
     }
 
-    public static class Loader implements ServiceURILoader {
-        private static final String SCHEME = "dns";
+    public static class Factory implements ServiceURI.Factory {
 
         @Nonnull
         @Override

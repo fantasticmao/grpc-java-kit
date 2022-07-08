@@ -85,7 +85,7 @@ public class GrpcKitServerBuilder extends AbstractServerImplBuilder<GrpcKitServe
             throw new GrpcKitException("Get local address error", e);
         }
 
-        final ServiceURI serviceUri = ServiceURILoader.loadWith(URI.create(registry), appName, appGroup);
+        final ServiceURI serviceUri = ServiceURI.Factory.loadWith(URI.create(registry), appName, appGroup);
         final ServiceMetadata metadata = new ServiceMetadata(localAddress, serverPort, serverWeight,
             serverTag, appName, Constant.VERSION);
         for (ServiceRegistryProvider provider : this.getAllServiceRegistries()) {

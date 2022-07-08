@@ -2,7 +2,6 @@ package cn.fantasticmao.grpckit.boot;
 
 import cn.fantasticmao.grpckit.ServiceLoadBalancer;
 import cn.fantasticmao.grpckit.ServiceURI;
-import cn.fantasticmao.grpckit.ServiceURILoader;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.internal.AbstractManagedChannelImplBuilder;
@@ -27,7 +26,7 @@ public class GrpcKitChannelBuilder extends AbstractManagedChannelImplBuilder<Grp
             "nameResolver.registry must not be null");
 
         final String policy = config.getLoadBalancer().getPolicy();
-        final ServiceURI serviceUri = ServiceURILoader.loadWith(URI.create(registry), appName, appGroup);
+        final ServiceURI serviceUri = ServiceURI.Factory.loadWith(URI.create(registry), appName, appGroup);
         this.managedChannelBuilder = ManagedChannelBuilder.forTarget(serviceUri.toTargetUri().toString())
             .userAgent(appName)
             .defaultLoadBalancingPolicy(ServiceLoadBalancer.Policy.of(policy).name);

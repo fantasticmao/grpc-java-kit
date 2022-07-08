@@ -1,7 +1,6 @@
 package cn.fantasticmao.grpckit.nameresolver.zookeeper;
 
 import cn.fantasticmao.grpckit.ServiceURI;
-import cn.fantasticmao.grpckit.ServiceURILoader;
 
 import javax.annotation.Nonnull;
 import java.net.URI;
@@ -32,7 +31,7 @@ public class ZkServiceURI extends ServiceURI {
         }
     }
 
-    public static class Loader implements ServiceURILoader {
+    public static class Factory implements ServiceURI.Factory {
 
         @Nonnull
         @Override
