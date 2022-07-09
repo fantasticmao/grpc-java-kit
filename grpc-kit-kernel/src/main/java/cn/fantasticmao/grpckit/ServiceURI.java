@@ -1,6 +1,7 @@
 package cn.fantasticmao.grpckit;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.net.URI;
 import java.util.ServiceLoader;
 
@@ -13,11 +14,12 @@ import java.util.ServiceLoader;
  * @since 2022-07-06
  */
 public abstract class ServiceURI {
-    protected final URI registryUri;
-    protected final String appName;
-    protected final String appGroup;
+    public final URI registryUri;
+    public final String appName;
+    @Nullable
+    public final String appGroup;
 
-    protected ServiceURI(URI registryUri, String appName, String appGroup) {
+    protected ServiceURI(URI registryUri, String appName, @Nullable String appGroup) {
         this.registryUri = registryUri;
         this.appName = appName;
         this.appGroup = appGroup;

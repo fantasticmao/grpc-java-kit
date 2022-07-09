@@ -23,9 +23,10 @@ public class DnsServiceURI extends ServiceURI {
 
     @Override
     public URI toTargetUri() {
+        String path = String.format("/%s", super.appName);
         try {
             return new URI(super.registryUri.getScheme(), super.registryUri.getUserInfo(),
-                super.registryUri.getHost(), super.registryUri.getPort(), appName,
+                super.registryUri.getHost(), super.registryUri.getPort(), path,
                 super.registryUri.getQuery(), super.registryUri.getFragment());
         } catch (URISyntaxException e) {
             throw new IllegalArgumentException(e.getMessage(), e);
@@ -58,8 +59,9 @@ public class DnsServiceURI extends ServiceURI {
                 throw new IllegalArgumentException(e.getMessage(), e);
             }
 
-            String appName = targetUri.getPath();
-            return new DnsServiceURI(registryUri, appName, "default");
+            String[] elements = targetUri.getPath().split("/");
+            String appName = elements[1];
+            return new DnsServiceURI(registryUri, appName, null);
         }
     }
 }

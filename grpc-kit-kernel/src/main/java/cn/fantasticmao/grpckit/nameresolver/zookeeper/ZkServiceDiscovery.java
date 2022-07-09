@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
 class ZkServiceDiscovery extends ServiceDiscovery {
     private static final Logger LOGGER = LoggerFactory.getLogger(ZkServiceDiscovery.class);
 
-    private final String zkAuthority;
+    private final String authority;
     private final String servicePath;
     private final CuratorFramework zkClient;
 
@@ -47,7 +47,7 @@ class ZkServiceDiscovery extends ServiceDiscovery {
     private NameResolver.Listener2 listener;
 
     ZkServiceDiscovery(String zkAuthority, String connectString, String servicePath) {
-        this.zkAuthority = zkAuthority;
+        this.authority = zkAuthority;
         this.servicePath = servicePath;
         this.zkClient = ZkClientHolder.get(connectString);
 
@@ -60,7 +60,7 @@ class ZkServiceDiscovery extends ServiceDiscovery {
 
     @Override
     public String getServiceAuthority() {
-        return this.zkAuthority;
+        return this.authority;
     }
 
     @Override

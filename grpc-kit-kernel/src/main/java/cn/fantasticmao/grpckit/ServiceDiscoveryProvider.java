@@ -26,7 +26,21 @@ public abstract class ServiceDiscoveryProvider extends NameResolverProvider {
      * @param args      other information that may be useful
      */
     @Nullable
-    public abstract NameResolver newNameResolver(URI targetUri, final NameResolver.Args args);
+    public NameResolver newNameResolver(URI targetUri, final NameResolver.Args args) {
+        ServiceURI serviceUri = ServiceURI.Factory.loadFrom(targetUri);
+        return this.newNameResolver(serviceUri, args);
+    }
+
+    /**
+     * Creates a {@link NameResolver} for the given service URI, or {@code null} if the given URI
+     * cannot be resolved by this factory. The decision should be solely based on the scheme of the
+     * URI.
+     *
+     * @param serviceUri the service URI to be resolved, whose scheme must not be {@code null}
+     * @param args       other information that may be useful
+     */
+    @Nullable
+    public abstract NameResolver newNameResolver(ServiceURI serviceUri, final NameResolver.Args args);
 
     /**
      * Returns the default scheme, which will be used to construct a URI when {@link

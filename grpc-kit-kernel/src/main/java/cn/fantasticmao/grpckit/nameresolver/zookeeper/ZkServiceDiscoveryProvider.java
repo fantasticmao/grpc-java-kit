@@ -1,11 +1,12 @@
 package cn.fantasticmao.grpckit.nameresolver.zookeeper;
 
 import cn.fantasticmao.grpckit.ServiceDiscoveryProvider;
+import cn.fantasticmao.grpckit.ServiceURI;
 import io.grpc.NameResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.URI;
+import java.util.Objects;
 
 /**
  * A provider for {@link ZkServiceDiscovery}.
@@ -22,12 +23,15 @@ public class ZkServiceDiscoveryProvider extends ServiceDiscoveryProvider {
     }
 
     @Override
-    public NameResolver newNameResolver(URI targetUri, NameResolver.Args args) {
-        if (!SCHEME.equalsIgnoreCase(targetUri.getScheme())) {
+    public NameResolver newNameResolver(ServiceURI serviceUri, NameResolver.Args args) {
+        if (!SCHEME.equalsIgnoreCase(serviceUri.registryUri.getScheme())) {
             return null;
         }
-        String servicePath = targetUri.getPath();
-        return new ZkServiceDiscovery(targetUri.getAuthority(), targetUri.getAuthority(), servicePath);
+        String authority = serviceUri.registryUri.getAuthority();
+        String connectString = serviceUri.registryUri.getAuthority();
+        String servicePath = String.format("/%s/%s/servers", serviceUri.appName,
+            Objects.requireNonNull(serviceUri.appGroup, "serviceUri.appGroup must not be null"));
+        return new ZkServiceDiscovery(authority, connectString, servicePath);
     }
 
     @Override

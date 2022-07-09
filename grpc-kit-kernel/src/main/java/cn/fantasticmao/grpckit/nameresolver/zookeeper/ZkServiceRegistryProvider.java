@@ -2,13 +2,13 @@ package cn.fantasticmao.grpckit.nameresolver.zookeeper;
 
 import cn.fantasticmao.grpckit.ServiceRegistry;
 import cn.fantasticmao.grpckit.ServiceRegistryProvider;
+import cn.fantasticmao.grpckit.ServiceURI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.net.InetSocketAddress;
-import java.net.URI;
+import java.util.Objects;
 
 /**
  * A provider for {@link ZkServiceRegistry}.
@@ -26,14 +26,15 @@ public class ZkServiceRegistryProvider extends ServiceRegistryProvider {
 
     @Nullable
     @Override
-    public ServiceRegistry newServiceRegistry(URI targetUri, @Nonnull InetSocketAddress address) {
-        if (!SCHEME.equalsIgnoreCase(targetUri.getScheme())) {
+    public ServiceRegistry newServiceRegistry(ServiceURI serviceUri, InetSocketAddress address) {
+        if (!SCHEME.equalsIgnoreCase(serviceUri.registryUri.getScheme())) {
             return null;
         }
-        // FIXME
-        String servicePath = targetUri.getPath() + String.format("/%s:%d",
+        String connectString = serviceUri.registryUri.getAuthority();
+        String servicePath = String.format("/%s/%s/servers/%s:%d", serviceUri.appName,
+            Objects.requireNonNull(serviceUri.appGroup, "serviceUri.appGroup must not be null"),
             address.getAddress().getHostAddress(), address.getPort());
-        return new ZkServiceRegistry(targetUri.getAuthority(), servicePath);
+        return new ZkServiceRegistry(connectString, servicePath);
     }
 
     @Override

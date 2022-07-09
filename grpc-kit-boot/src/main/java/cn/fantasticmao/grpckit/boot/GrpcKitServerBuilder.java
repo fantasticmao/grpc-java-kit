@@ -86,12 +86,11 @@ public class GrpcKitServerBuilder extends AbstractServerImplBuilder<GrpcKitServe
         }
 
         final ServiceURI serviceUri = ServiceURI.Factory.loadWith(URI.create(registry), appName, appGroup);
+        final InetSocketAddress address = new InetSocketAddress(localAddress, serverPort);
         final ServiceMetadata metadata = new ServiceMetadata(localAddress, serverPort, serverWeight,
             serverTag, appName, Constant.VERSION);
         for (ServiceRegistryProvider provider : this.getAllServiceRegistries()) {
-            // FIXME
-            ServiceRegistry serviceRegistry = provider.newServiceRegistry(serviceUri.toTargetUri(),
-                new InetSocketAddress(localAddress, serverPort));
+            ServiceRegistry serviceRegistry = provider.newServiceRegistry(serviceUri, address);
             if (serviceRegistry == null) {
                 continue;
             }

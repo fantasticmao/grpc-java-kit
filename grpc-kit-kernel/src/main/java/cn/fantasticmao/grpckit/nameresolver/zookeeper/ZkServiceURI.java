@@ -5,6 +5,7 @@ import cn.fantasticmao.grpckit.ServiceURI;
 import javax.annotation.Nonnull;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Objects;
 
 /**
  * A ZooKeeper based {@link ServiceURI}.
@@ -21,7 +22,8 @@ public class ZkServiceURI extends ServiceURI {
 
     @Override
     public URI toTargetUri() {
-        final String path = String.format("/%s/%s/servers", super.appName, super.appGroup);
+        final String path = String.format("/%s/%s", super.appName,
+            Objects.requireNonNull(super.appGroup, "serviceUri.appGroup must not be null"));
         try {
             return new URI(super.registryUri.getScheme(), super.registryUri.getUserInfo(),
                 super.registryUri.getHost(), super.registryUri.getPort(), path,
