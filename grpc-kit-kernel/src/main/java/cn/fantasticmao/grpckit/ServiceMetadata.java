@@ -49,6 +49,8 @@ public final class ServiceMetadata {
      */
     private String version;
 
+    public static final int DEFAULT_PORT = 50051;
+
     public static final int DEFAULT_WEIGHT = 1;
 
     public static final String DEFAULT_TAG = "";

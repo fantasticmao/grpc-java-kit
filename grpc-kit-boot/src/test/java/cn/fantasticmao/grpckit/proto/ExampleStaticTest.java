@@ -13,30 +13,28 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 
 /**
- * GreeterServiceTest
- * <p>
- * Start a ZooKeeper container for testing: {@code docker run -d -p 2181:2181 --rm --name zookeeper-test zookeeper:3.7.0}
+ * ExampleStaticTest
  *
  * @author fantasticmao
  * @version 1.39.0
- * @since 2021-07-31
+ * @since 2022-07-11
  */
-public class GreeterServiceTest {
-    private static final Logger LOGGER = LoggerFactory.getLogger(GreeterServiceTest.class);
+public class ExampleStaticTest {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExampleStaticTest.class);
 
     @Test
     public void example() throws IOException {
         final String appName = "unit_test";
 
         // build servers
-        final GrpcKitConfig serverConfig_1 = GrpcKitConfig.loadAndParse("grpc-kit-server-1.yml");
-        final GrpcKitConfig serverConfig_2 = GrpcKitConfig.loadAndParse("grpc-kit-server-2.yml");
+        final GrpcKitConfig serverConfig_1 = GrpcKitConfig.loadAndParse("grpc-kit-static-server-1.yml");
+        final GrpcKitConfig serverConfig_2 = GrpcKitConfig.loadAndParse("grpc-kit-static-server-2.yml");
 
         final Server server_1 = GrpcKitServerBuilder.forConfig(appName, serverConfig_1)
-            .addService(new GreeterService(1))
+            .addService(new GreeterService("static_1"))
             .build();
         final Server server_2 = GrpcKitServerBuilder.forConfig(appName, serverConfig_2)
-            .addService(new GreeterService(2))
+            .addService(new GreeterService("static_2"))
             .build();
 
         // start servers
@@ -45,7 +43,7 @@ public class GreeterServiceTest {
 
         try {
             // new channel and stub
-            final GrpcKitConfig clientConfig = GrpcKitConfig.loadAndParse("grpc-kit-client.yml");
+            final GrpcKitConfig clientConfig = GrpcKitConfig.loadAndParse("grpc-kit-static-client.yml");
             final Channel channel = GrpcKitChannelBuilder.forConfig(appName, clientConfig)
                 .usePlaintext()
                 .build();

@@ -46,6 +46,7 @@ public abstract class ServiceURI {
          * <ul>
          *     <li>dns:///</li>
          *     <li>dns://8.8.8.8</li>
+         *     <li>static://localhost?example_service=192.168.1.1</li>
          *     <li>zookeeper://zk.example.com:2181</li>
          * </ul>
          *
@@ -64,6 +65,7 @@ public abstract class ServiceURI {
          * <ul>
          *     <li>dns:///example_service</li>
          *     <li>dns://8.8.8.8/example_service</li>
+         *     <li>static://localhost/example_service?example_service=192.168.1.1</li>
          *     <li>zookeeper://zk.example.com:2181/example_service/default</li>
          * </ul>
          *

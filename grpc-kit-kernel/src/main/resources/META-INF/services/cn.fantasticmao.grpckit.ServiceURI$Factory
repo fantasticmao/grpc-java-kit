@@ -1,2 +1,3 @@
 cn.fantasticmao.grpckit.nameresolver.dns.DnsServiceURI$Factory
+cn.fantasticmao.grpckit.nameresolver.statik.StaticServiceURI$Factory
 cn.fantasticmao.grpckit.nameresolver.zookeeper.ZkServiceURI$Factory

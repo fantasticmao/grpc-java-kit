@@ -1,1 +1,2 @@
+cn.fantasticmao.grpckit.nameresolver.statik.StaticServiceDiscoveryProvider
 cn.fantasticmao.grpckit.nameresolver.zookeeper.ZkServiceDiscoveryProvider

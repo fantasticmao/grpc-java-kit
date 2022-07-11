@@ -46,8 +46,8 @@ class ZkServiceDiscovery extends ServiceDiscovery {
     private boolean resolving = false;
     private NameResolver.Listener2 listener;
 
-    ZkServiceDiscovery(String zkAuthority, String connectString, String servicePath) {
-        this.authority = zkAuthority;
+    ZkServiceDiscovery(String authority, String connectString, String servicePath) {
+        this.authority = authority;
         this.servicePath = servicePath;
         this.zkClient = ZkClientHolder.get(connectString);
 

@@ -1,0 +1,6 @@
+grpc:
+  server:
+    port: 50052
+
+nameResolver:
+  registry: "static://localhost"

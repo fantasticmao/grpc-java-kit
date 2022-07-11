@@ -14,15 +14,15 @@ import org.slf4j.LoggerFactory;
 public class GreeterService extends GreeterServiceGrpc.GreeterServiceImplBase {
     private static final Logger LOGGER = LoggerFactory.getLogger(GreeterService.class);
 
-    private final int num;
+    private final String id;
 
-    public GreeterService(int num) {
-        this.num = num;
+    public GreeterService(String id) {
+        this.id = id;
     }
 
     @Override
     public void sayHello(HelloRequest request, StreamObserver<HelloResponse> responseObserver) {
-        LOGGER.info("[Server {}] receive a new message, name: {}", this.num, request.getName());
+        LOGGER.info("[Server {}] receive a new message, name: {}", this.id, request.getName());
 
         HelloResponse response = HelloResponse.newBuilder()
             .setMessage("Hello " + request.getName())

@@ -69,7 +69,7 @@ public final class GrpcKitConfig {
         @Getter
         @Setter
         public static class Server {
-            private int port = 50051;
+            private int port = ServiceMetadata.DEFAULT_PORT;
             private int weight = ServiceMetadata.DEFAULT_WEIGHT;
             private String tag = ServiceMetadata.DEFAULT_TAG;
             @Nullable
