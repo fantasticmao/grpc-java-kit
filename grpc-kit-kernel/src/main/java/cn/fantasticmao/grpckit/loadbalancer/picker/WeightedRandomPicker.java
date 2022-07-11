@@ -65,7 +65,7 @@ public class WeightedRandomPicker extends LoadBalancer.SubchannelPicker {
         int randomIndex = filteredList.size() - 1;
         for (int i = 0, sum = 0; i < filteredList.size(); i++) {
             sum += this.getWeight(filteredList.get(i));
-            if (randomVal <= sum) {
+            if (randomVal < sum) {
                 randomIndex = i;
                 break;
             }

@@ -16,7 +16,7 @@ import java.util.Objects;
  */
 public class ZkServiceURI extends ServiceURI {
 
-    public ZkServiceURI(URI registryUri, String appName, String appGroup) {
+    ZkServiceURI(URI registryUri, String appName, String appGroup) {
         super(registryUri, appName, appGroup);
     }
 

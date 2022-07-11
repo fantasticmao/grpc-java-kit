@@ -18,7 +18,8 @@ public class DnsServiceURITest {
     @Test
     public void loadWith() {
         URI registryUri = URI.create("dns://8.8.8.8");
-        ServiceURI serviceURI = ServiceURI.Factory.loadWith(registryUri, "example_service", "default");
+        ServiceURI serviceURI = ServiceURI.Factory.loadWith(registryUri,
+            "example_service", "default");
         URI targetUri = serviceURI.toTargetUri();
         Assertions.assertEquals("dns", targetUri.getScheme());
         Assertions.assertEquals("8.8.8.8", targetUri.getHost());

@@ -1,11 +1,14 @@
 package cn.fantasticmao.grpckit.nameresolver.statik;
 
+import cn.fantasticmao.grpckit.ServiceMetadata;
 import cn.fantasticmao.grpckit.ServiceURI;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.*;
 
 /**
  * A static config based {@link ServiceURI}.
@@ -16,7 +19,7 @@ import java.net.URISyntaxException;
  */
 public class StaticServiceURI extends ServiceURI {
 
-    public StaticServiceURI(URI registryUri, String appName, @Nullable String appGroup) {
+    StaticServiceURI(URI registryUri, String appName, @Nullable String appGroup) {
         super(registryUri, appName, appGroup);
     }
 
@@ -30,6 +33,41 @@ public class StaticServiceURI extends ServiceURI {
         } catch (URISyntaxException e) {
             throw new IllegalArgumentException(e.getMessage(), e);
         }
+    }
+
+    Map<String, List<InetSocketAddress>> toServerMap() {
+        if (registryUri.getQuery() == null || registryUri.getQuery().isBlank()) {
+            return Collections.emptyMap();
+        }
+
+        Map<String, List<InetSocketAddress>> serverMap = new HashMap<>();
+        String[] servers = registryUri.getQuery().split("&");
+        for (String server : servers) {
+            String[] nameToAuthorities = server.split("=");
+            if (nameToAuthorities.length != 2 || nameToAuthorities[0].isBlank()
+                || nameToAuthorities[1].isBlank()) {
+                throw new IllegalArgumentException("Illegal syntax in StaticServiceURI: " + server);
+            }
+
+            String serverName = nameToAuthorities[0];
+            if (!serverMap.containsKey(serverName)) {
+                serverMap.put(serverName, new LinkedList<>());
+            }
+
+            String[] serverAuthorities = nameToAuthorities[1].split(",");
+            for (String authority : serverAuthorities) {
+                String[] hostAndPort = authority.split(":");
+                if (hostAndPort.length > 2) {
+                    throw new IllegalArgumentException("Illegal syntax in StaticServiceURI: " + server);
+                }
+                String host = hostAndPort[0];
+                int port = hostAndPort.length > 1
+                    ? Integer.parseInt(hostAndPort[1])
+                    : ServiceMetadata.DEFAULT_PORT;
+                serverMap.get(serverName).add(new InetSocketAddress(host, port));
+            }
+        }
+        return serverMap;
     }
 
     public static class Factory implements ServiceURI.Factory {

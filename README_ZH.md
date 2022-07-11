@@ -14,7 +14,7 @@
   - [x] Spring Boot
 - 服务注册 / 发现
   - [x] 注册中心
-    - [ ] 静态配置
+    - [x] 静态配置
     - [x] ZooKeeper
     - [ ] Consul
   - [x] 服务分组（隔离）

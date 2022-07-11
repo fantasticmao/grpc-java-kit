@@ -17,7 +17,7 @@ import java.net.URISyntaxException;
  */
 public class DnsServiceURI extends ServiceURI {
 
-    public DnsServiceURI(URI registryUri, String appName, String appGroup) {
+    DnsServiceURI(URI registryUri, String appName, String appGroup) {
         super(registryUri, appName, appGroup);
     }
 
