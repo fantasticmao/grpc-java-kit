@@ -6,6 +6,7 @@ import cn.fantasticmao.grpckit.boot.GrpcKitServerBuilder;
 import cn.fantasticmao.grpckit.boot.GrpcKitStubFactory;
 import io.grpc.Channel;
 import io.grpc.Server;
+import io.grpc.protobuf.services.ProtoReflectionService;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,9 +35,11 @@ public class ExampleZooKeeperTest {
 
         final Server server_1 = GrpcKitServerBuilder.forConfig(appName, serverConfig_1)
             .addService(new GreeterService("zookeeper_1"))
+            .addService(ProtoReflectionService.newInstance())
             .build();
         final Server server_2 = GrpcKitServerBuilder.forConfig(appName, serverConfig_2)
             .addService(new GreeterService("zookeeper_2"))
+            .addService(ProtoReflectionService.newInstance())
             .build();
 
         // start servers
