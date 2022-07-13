@@ -13,6 +13,8 @@ import java.net.URISyntaxException;
  *
  * @author fantasticmao
  * @version 1.39.0
+ * @see io.grpc.internal.DnsNameResolver
+ * @see io.grpc.internal.DnsNameResolverProvider
  * @since 2022-07-07
  */
 public class DnsServiceURI extends ServiceURI {

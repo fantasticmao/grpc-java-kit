@@ -15,6 +15,8 @@ import java.util.*;
  *
  * @author fantasticmao
  * @version 1.39.0
+ * @see StaticServiceDiscovery
+ * @see StaticServiceDiscoveryProvider
  * @since 2022-07-11
  */
 public class StaticServiceURI extends ServiceURI {

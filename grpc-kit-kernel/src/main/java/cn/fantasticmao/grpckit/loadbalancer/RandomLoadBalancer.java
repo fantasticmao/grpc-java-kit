@@ -1,6 +1,7 @@
 package cn.fantasticmao.grpckit.loadbalancer;
 
 import cn.fantasticmao.grpckit.ServiceLoadBalancer;
+import cn.fantasticmao.grpckit.ServiceMetadata;
 import cn.fantasticmao.grpckit.loadbalancer.picker.EmptyPicker;
 import cn.fantasticmao.grpckit.loadbalancer.picker.WeightedRandomPicker;
 import cn.fantasticmao.grpckit.support.Constant;
@@ -67,8 +68,10 @@ class RandomLoadBalancer extends ServiceLoadBalancer {
         for (Map.Entry<List<SocketAddress>, EquivalentAddressGroup> latestEntry : latestAddressGroupMap.entrySet()) {
             final List<SocketAddress> addressList = latestEntry.getKey();
             final EquivalentAddressGroup addressGroup = latestEntry.getValue();
-            final Integer weight = Constant.getAttribute(addressGroup, Constant.ATTRIBUTE_WEIGHT);
-            final String tag = Constant.getAttribute(addressGroup, Constant.ATTRIBUTE_TAG);
+            final Integer weight = Constant.getAttribute(addressGroup, Constant.ATTRIBUTE_WEIGHT,
+                ServiceMetadata.DEFAULT_WEIGHT);
+            final String tag = Constant.getAttribute(addressGroup, Constant.ATTRIBUTE_TAG,
+                ServiceMetadata.DEFAULT_TAG);
 
             Subchannel existingSubChannel = subChannelMap.get(addressList);
             // update existed subChannel.

@@ -33,13 +33,10 @@ public interface Constant {
      * Get the value of a specific key in the {@link Attributes} of a {@link EquivalentAddressGroup}.
      */
     @Nonnull
-    static <T> T getAttribute(EquivalentAddressGroup addressGroup, Attributes.Key<T> key) {
+    static <T> T getAttribute(EquivalentAddressGroup addressGroup, Attributes.Key<T> key,
+                              T defaultVal) {
         T attribute = addressGroup.getAttributes().get(key);
-        if (attribute == null) {
-            String message = String.format("Attribute '%s' in the addressGroup '%s' must not be null.", key, addressGroup);
-            throw new NullPointerException(message);
-        }
-        return attribute;
+        return attribute != null ? attribute : defaultVal;
     }
 
     /**

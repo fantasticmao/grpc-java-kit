@@ -8,7 +8,6 @@ import io.grpc.internal.AbstractManagedChannelImplBuilder;
 
 import javax.annotation.Nonnull;
 import java.net.URI;
-import java.util.Objects;
 
 /**
  * A builder for creating {@link ManagedChannel gRPC ManagedChannel} instances.
@@ -22,8 +21,7 @@ public class GrpcKitChannelBuilder extends AbstractManagedChannelImplBuilder<Grp
 
     private GrpcKitChannelBuilder(String appName, GrpcKitConfig config) {
         final String appGroup = config.getGrpc().getGroup();
-        final String registry = Objects.requireNonNull(config.getNameResolver().getRegistry(),
-            "nameResolver.registry must not be null");
+        final String registry = config.getNameResolver().getRegistry();
 
         final String policy = config.getLoadBalancer().getPolicy();
         final ServiceURI serviceUri = ServiceURI.Factory.loadWith(URI.create(registry), appName, appGroup);
@@ -33,13 +31,8 @@ public class GrpcKitChannelBuilder extends AbstractManagedChannelImplBuilder<Grp
     }
 
     public static GrpcKitChannelBuilder forConfig(String appName, @Nonnull GrpcKitConfig config) {
-        if (appName == null || appName.isBlank()) {
-            throw new IllegalArgumentException("application name must not be null or blank");
-        }
-        if (!ApplicationMetadata.NAME_PATTERN.matcher(appName).matches()) {
-            throw new IllegalArgumentException("application name must match the pattern: "
-                + ApplicationMetadata.NAME_PATTERN.pattern());
-        }
+        String registry = config.validate().getNameResolver().getRegistry();
+        ApplicationNameValidator.validateWithRegistry(appName, registry);
         return new GrpcKitChannelBuilder(appName, config.validate());
     }
 

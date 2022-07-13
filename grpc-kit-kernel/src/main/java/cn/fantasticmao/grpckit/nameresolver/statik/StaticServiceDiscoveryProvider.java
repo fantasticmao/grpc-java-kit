@@ -25,7 +25,7 @@ public class StaticServiceDiscoveryProvider extends ServiceDiscoveryProvider {
     @Nullable
     @Override
     public NameResolver newNameResolver(ServiceURI serviceUri, NameResolver.Args args) {
-        if (!SCHEME.equalsIgnoreCase(serviceUri.registryUri.getScheme())
+        if (!SCHEME.equals(serviceUri.registryUri.getScheme())
             || !(serviceUri instanceof StaticServiceURI)) {
             return null;
         }

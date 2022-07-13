@@ -49,7 +49,7 @@ public class ApplicationMetadataMetaInfLoader implements ApplicationMetadataLoad
             URL url = urls.nextElement();
             try (InputStream input = url.openStream()) {
                 ApplicationMetadata metadata = yaml.load(input);
-                metadataList.add(metadata.validate());
+                metadataList.add(metadata);
             } catch (IOException | YAMLException e) {
                 throw new GrpcKitException("Unable to load application metadata from URL: "
                     + url, e);

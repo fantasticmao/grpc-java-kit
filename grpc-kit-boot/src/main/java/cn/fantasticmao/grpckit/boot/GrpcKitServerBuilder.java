@@ -16,7 +16,6 @@ import java.net.InetSocketAddress;
 import java.net.SocketException;
 import java.net.URI;
 import java.util.List;
-import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.stream.Collectors;
 
@@ -41,13 +40,8 @@ public class GrpcKitServerBuilder extends AbstractServerImplBuilder<GrpcKitServe
     }
 
     public static GrpcKitServerBuilder forConfig(String appName, @Nonnull GrpcKitConfig config) {
-        if (appName == null || appName.isBlank()) {
-            throw new IllegalArgumentException("application name must not be null or blank");
-        }
-        if (!ApplicationMetadata.NAME_PATTERN.matcher(appName).matches()) {
-            throw new IllegalArgumentException("application name must match the pattern: "
-                + ApplicationMetadata.NAME_PATTERN.pattern());
-        }
+        String registry = config.validate().getNameResolver().getRegistry();
+        ApplicationNameValidator.validateWithRegistry(appName, registry);
         return new GrpcKitServerBuilder(appName, config.validate());
     }
 
@@ -74,8 +68,7 @@ public class GrpcKitServerBuilder extends AbstractServerImplBuilder<GrpcKitServe
         final int serverPort = config.getGrpc().getServer().getPort();
         final int serverWeight = config.getGrpc().getServer().getWeight();
         final String serverTag = config.getGrpc().getServer().getTag();
-        final String registry = Objects.requireNonNull(config.getNameResolver().getRegistry(),
-            "nameResolver.registry must not be null");
+        final String registry = config.getNameResolver().getRegistry();
 
         final InetAddress localAddress;
         try {

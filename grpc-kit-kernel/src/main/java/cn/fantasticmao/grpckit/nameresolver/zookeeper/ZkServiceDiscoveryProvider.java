@@ -24,7 +24,7 @@ public class ZkServiceDiscoveryProvider extends ServiceDiscoveryProvider {
 
     @Override
     public NameResolver newNameResolver(ServiceURI serviceUri, NameResolver.Args args) {
-        if (!SCHEME.equalsIgnoreCase(serviceUri.registryUri.getScheme())) {
+        if (!SCHEME.equals(serviceUri.registryUri.getScheme())) {
             return null;
         }
         String authority = serviceUri.registryUri.getAuthority();

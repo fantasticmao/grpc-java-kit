@@ -12,6 +12,10 @@ import java.util.Objects;
  *
  * @author fantasticmao
  * @version 1.39.0
+ * @see ZkServiceDiscovery
+ * @see ZkServiceDiscoveryProvider
+ * @see ZkServiceRegistry
+ * @see ZkServiceRegistryProvider
  * @since 2022-07-07
  */
 public class ZkServiceURI extends ServiceURI {

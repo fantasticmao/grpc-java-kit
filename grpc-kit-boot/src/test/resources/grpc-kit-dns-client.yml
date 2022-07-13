@@ -1,0 +1,6 @@
+grpc:
+  client:
+    timeout: 5_000
+
+nameResolver:
+  registry: "dns://localhost/"

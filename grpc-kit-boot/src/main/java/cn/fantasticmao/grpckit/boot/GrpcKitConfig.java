@@ -48,7 +48,7 @@ public final class GrpcKitConfig {
         }
     }
 
-    public GrpcKitConfig validate() {
+    public GrpcKitConfig validate() throws IllegalArgumentException {
         if (nameResolver.getRegistry() == null || nameResolver.getRegistry().isBlank()) {
             throw new IllegalArgumentException("nameResolver.registry must not be null or blank");
         }
@@ -87,7 +87,6 @@ public final class GrpcKitConfig {
     @Getter
     @Setter
     public static class NameResolver {
-        @Nullable
         private String registry = null;
     }
 

@@ -27,7 +27,7 @@ public class ZkServiceRegistryProvider extends ServiceRegistryProvider {
     @Nullable
     @Override
     public ServiceRegistry newServiceRegistry(ServiceURI serviceUri, InetSocketAddress address) {
-        if (!SCHEME.equalsIgnoreCase(serviceUri.registryUri.getScheme())) {
+        if (!SCHEME.equals(serviceUri.registryUri.getScheme())) {
             return null;
         }
         String connectString = serviceUri.registryUri.getAuthority();
