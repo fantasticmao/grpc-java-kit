@@ -3,4 +3,4 @@ grpc:
     port: 50051
 
 nameResolver:
-  registry: "dns://localhost/"
+  registry: "dns://localhost"

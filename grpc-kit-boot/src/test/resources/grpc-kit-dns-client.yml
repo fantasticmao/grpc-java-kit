@@ -3,4 +3,4 @@ grpc:
     timeout: 5_000
 
 nameResolver:
-  registry: "dns://localhost/"
+  registry: "dns://localhost"
