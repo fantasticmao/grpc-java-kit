@@ -45,7 +45,7 @@ public class ZkServiceDiscoveryProvider extends ServiceDiscoveryProvider {
             Class.forName("org.apache.curator.framework.CuratorFramework");
             return true;
         } catch (ClassNotFoundException ignored) {
-            LOGGER.warn("Unsupported ZkServiceDiscoveryProvider, missing dependency: curator-framework");
+            LOGGER.debug("Unsupported ZkServiceDiscoveryProvider, missing dependency: curator-framework");
             return false;
         }
     }

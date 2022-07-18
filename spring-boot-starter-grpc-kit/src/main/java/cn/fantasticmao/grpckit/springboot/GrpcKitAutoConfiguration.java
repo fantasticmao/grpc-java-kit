@@ -1,9 +1,11 @@
 package cn.fantasticmao.grpckit.springboot;
 
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Role;
 
 /**
  * Enable auto-configuration for gRPC applications.
@@ -15,6 +17,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @EnableConfigurationProperties(GrpcKitConfigProperties.class)
 @Configuration
+@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 public class GrpcKitAutoConfiguration {
     public static final String BEAN_NAME_GRPC_KIT_SERVER = "__grpcKitServer__";
 
