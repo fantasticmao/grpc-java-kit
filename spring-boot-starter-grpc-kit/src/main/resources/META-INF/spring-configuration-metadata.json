@@ -94,6 +94,11 @@
           "value": "zookeeper://zk.example.com:2181",
           "description": "ZooKeeper based service discovery."
         }
+      ],
+      "providers": [
+        {
+          "name": "any"
+        }
       ]
     }
   ]
