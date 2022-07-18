@@ -25,7 +25,7 @@ import java.util.Objects;
  */
 @Getter
 @Setter
-public final class GrpcKitConfig {
+public class GrpcKitConfig {
 
     /**
      * Load and parse {@link GrpcKitConfig} from the specific file.

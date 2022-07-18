@@ -45,7 +45,7 @@ public class ZkServiceDiscoveryProvider extends ServiceDiscoveryProvider {
             Class.forName("org.apache.curator.framework.CuratorFramework");
             return true;
         } catch (ClassNotFoundException ignored) {
-            LOGGER.warn("Unable to load ZooKeeper bases service discovery, missing dependency: curator-framework");
+            LOGGER.warn("Unsupported ZkServiceDiscoveryProvider, missing dependency: curator-framework");
             return false;
         }
     }

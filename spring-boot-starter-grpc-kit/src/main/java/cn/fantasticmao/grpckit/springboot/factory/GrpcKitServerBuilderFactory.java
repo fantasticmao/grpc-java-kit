@@ -14,13 +14,13 @@ import java.util.List;
  */
 public interface GrpcKitServerBuilderFactory {
 
-    GrpcKitServerBuilder maintain(GrpcKitServerBuilder builder, List<ServerServiceDefinition> services);
+    GrpcKitServerBuilder customize(GrpcKitServerBuilder builder, List<ServerServiceDefinition> services);
 
     enum Default implements GrpcKitServerBuilderFactory {
         INSTANCE;
 
         @Override
-        public GrpcKitServerBuilder maintain(GrpcKitServerBuilder builder, List<ServerServiceDefinition> services) {
+        public GrpcKitServerBuilder customize(GrpcKitServerBuilder builder, List<ServerServiceDefinition> services) {
             return builder
                 .addServices(services);
         }

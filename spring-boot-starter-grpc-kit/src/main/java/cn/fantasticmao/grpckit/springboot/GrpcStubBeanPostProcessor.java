@@ -43,7 +43,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @see org.springframework.context.annotation.CommonAnnotationBeanPostProcessor
  * @since 2022-04-03
  */
-public class GrpcStubBeanPostProcessor implements Ordered, BeanFactoryAware, BeanPostProcessor {
+public class GrpcStubBeanPostProcessor implements BeanPostProcessor, Ordered, BeanFactoryAware {
     private static final Logger LOGGER = LoggerFactory.getLogger(GrpcStubBeanPostProcessor.class);
 
     /**
@@ -71,8 +71,7 @@ public class GrpcStubBeanPostProcessor implements Ordered, BeanFactoryAware, Bea
 
     @Override
     public void setBeanFactory(@Nonnull BeanFactory beanFactory) throws BeansException {
-        this.grpcKitConfig = beanFactory.getBean(
-            GrpcKitAutoConfiguration.BEAN_NAME_GRPC_KIT_CONFIG, GrpcKitConfig.class);
+        this.grpcKitConfig = beanFactory.getBean(GrpcKitConfigProperties.class).validate();
 
         try {
             this.grpcKitChannelBuilderFactory = beanFactory.getBean(GrpcKitChannelBuilderFactory.class);
@@ -151,7 +150,7 @@ public class GrpcStubBeanPostProcessor implements Ordered, BeanFactoryAware, Bea
         Objects.requireNonNull(this.grpcKitChannelBuilderFactory, "grpcKitChannelBuilderFactory must not be null");
         return channelCache.computeIfAbsent(appName, key -> {
             GrpcKitChannelBuilder builder = GrpcKitChannelBuilder.forConfig(appName, this.grpcKitConfig);
-            builder = grpcKitChannelBuilderFactory.maintain(builder);
+            builder = grpcKitChannelBuilderFactory.customize(builder);
             return builder.build();
         });
     }

@@ -1,8 +1,0 @@
-grpc:
-  server:
-    port: 50051
-  client:
-    timeout: 5_000
-
-nameResolver:
-  registry: "zookeeper://localhost:2181"

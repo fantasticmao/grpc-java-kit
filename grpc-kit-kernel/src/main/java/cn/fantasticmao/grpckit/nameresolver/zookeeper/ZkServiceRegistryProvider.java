@@ -43,7 +43,7 @@ public class ZkServiceRegistryProvider extends ServiceRegistryProvider {
             Class.forName("org.apache.curator.framework.CuratorFramework");
             return true;
         } catch (ClassNotFoundException ignored) {
-            LOGGER.warn("Unable to load ZooKeeper bases service registry, missing dependency: curator-framework");
+            LOGGER.warn("Unsupported ZkServiceRegistryProvider, missing dependency: curator-framework");
             return false;
         }
     }

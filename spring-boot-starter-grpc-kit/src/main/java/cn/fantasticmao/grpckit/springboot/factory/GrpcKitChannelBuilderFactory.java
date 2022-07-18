@@ -11,13 +11,13 @@ import cn.fantasticmao.grpckit.boot.GrpcKitChannelBuilder;
  */
 public interface GrpcKitChannelBuilderFactory {
 
-    GrpcKitChannelBuilder maintain(GrpcKitChannelBuilder builder);
+    GrpcKitChannelBuilder customize(GrpcKitChannelBuilder builder);
 
     enum Default implements GrpcKitChannelBuilderFactory {
         INSTANCE;
 
         @Override
-        public GrpcKitChannelBuilder maintain(GrpcKitChannelBuilder builder) {
+        public GrpcKitChannelBuilder customize(GrpcKitChannelBuilder builder) {
             return builder
                 .usePlaintext();
         }

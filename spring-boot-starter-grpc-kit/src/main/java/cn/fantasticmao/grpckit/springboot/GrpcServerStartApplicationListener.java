@@ -45,10 +45,10 @@ public class GrpcServerStartApplicationListener implements ApplicationListener<A
 
         final List<ServerServiceDefinition> services = this.getGrpcServices(context);
         final GrpcKitServerBuilderFactory builderFactory = this.getGrpcKitServerBuilderFactory(context);
-        final GrpcKitConfig config = this.getGrpcKitConfig(context);
+        final GrpcKitConfig config = context.getBean(GrpcKitConfigProperties.class).validate();
 
         GrpcKitServerBuilder builder = GrpcKitServerBuilder.forConfig(appName, config);
-        builder = builderFactory.maintain(builder, services);
+        builder = builderFactory.customize(builder, services);
         Server server = builder.build();
 
         try {
@@ -93,10 +93,6 @@ public class GrpcServerStartApplicationListener implements ApplicationListener<A
         } catch (NoSuchBeanDefinitionException e) {
             return GrpcKitServerBuilderFactory.Default.INSTANCE;
         }
-    }
-
-    private GrpcKitConfig getGrpcKitConfig(ApplicationContext context) {
-        return context.getBean(GrpcKitAutoConfiguration.BEAN_NAME_GRPC_KIT_CONFIG, GrpcKitConfig.class);
     }
 
     private void registerBeanForGrpcServer(ConfigurableApplicationContext context, Server server) {
