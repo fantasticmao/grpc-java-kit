@@ -1,0 +1,100 @@
+{
+  "groups": [
+    {
+      "name": "grpc-kit",
+      "type": "cn.fantasticmao.grpckit.boot.GrpcKitConfig",
+      "description": "Grpc-Java-Kit configuration properties.",
+      "sourceType": "cn.fantasticmao.grpckit.springboot.GrpcKitAutoConfiguration",
+      "sourceMethod": "grpcKitConfig()"
+    }
+  ],
+  "properties": [
+    {
+      "name": "grpc-kit.grpc.group",
+      "type": "java.lang.String",
+      "sourceType": "cn.fantasticmao.grpckit.boot.GrpcKitConfig$Grpc",
+      "defaultValue": "default"
+    },
+    {
+      "name": "grpc-kit.grpc.server.port",
+      "type": "java.lang.Integer",
+      "sourceType": "cn.fantasticmao.grpckit.boot.GrpcKitConfig$Grpc$Server",
+      "defaultValue": 50051
+    },
+    {
+      "name": "grpc-kit.grpc.server.weight",
+      "type": "java.lang.Integer",
+      "sourceType": "cn.fantasticmao.grpckit.boot.GrpcKitConfig$Grpc$Server",
+      "defaultValue": 1
+    },
+    {
+      "name": "grpc-kit.grpc.server.tag",
+      "type": "java.lang.String",
+      "sourceType": "cn.fantasticmao.grpckit.boot.GrpcKitConfig$Grpc$Server",
+      "defaultValue": ""
+    },
+    {
+      "name": "grpc-kit.grpc.server.interface-name",
+      "type": "java.lang.String",
+      "sourceType": "cn.fantasticmao.grpckit.boot.GrpcKitConfig$Grpc$Server"
+    },
+    {
+      "name": "grpc-kit.grpc.client.tag",
+      "type": "java.lang.String",
+      "sourceType": "cn.fantasticmao.grpckit.boot.GrpcKitConfig$Grpc$Client",
+      "defaultValue": ""
+    },
+    {
+      "name": "grpc-kit.grpc.client.timeout",
+      "type": "java.lang.String",
+      "sourceType": "cn.fantasticmao.grpckit.boot.GrpcKitConfig$Grpc$Client",
+      "defaultValue": 2000
+    },
+    {
+      "name": "grpc-kit.name-resolver.registry",
+      "type": "java.lang.String",
+      "sourceType": "cn.fantasticmao.grpckit.boot.GrpcKitConfig$NameResolver"
+    },
+    {
+      "name": "grpc-kit.load-balancer.policy",
+      "type": "java.lang.String",
+      "sourceType": "cn.fantasticmao.grpckit.boot.GrpcKitConfig$LoadBalancer",
+      "defaultValue": "weighted_random"
+    },
+    {
+      "name": "grpc-kit.load-balancer.max-fails",
+      "type": "java.lang.String",
+      "sourceType": "cn.fantasticmao.grpckit.boot.GrpcKitConfig$LoadBalancer",
+      "defaultValue": 1
+    },
+    {
+      "name": "grpc-kit.load-balancer.fail-timeout",
+      "type": "java.lang.String",
+      "sourceType": "cn.fantasticmao.grpckit.boot.GrpcKitConfig$LoadBalancer",
+      "defaultValue": 10000
+    }
+  ],
+  "hints": [
+    {
+      "name": "grpc-kit.name-resolver.registry",
+      "values": [
+        {
+          "value": "dns://localhost",
+          "description": "DNS based service discovery."
+        },
+        {
+          "value": "dns://8.8.8.8",
+          "description": "DNS based service discovery."
+        },
+        {
+          "value": "static://localhost?example_service=192.168.1.1",
+          "description": "Static config based service discovery."
+        },
+        {
+          "value": "zookeeper://zk.example.com:2181",
+          "description": "ZooKeeper based service discovery."
+        }
+      ]
+    }
+  ]
+}

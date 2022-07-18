@@ -44,7 +44,7 @@ public abstract class ServiceURI {
          *
          * <p>Example of registry URIs:
          * <ul>
-         *     <li>dns:///</li>
+         *     <li>dns://localhost</li>
          *     <li>dns://8.8.8.8</li>
          *     <li>static://localhost?example_service=192.168.1.1</li>
          *     <li>zookeeper://zk.example.com:2181</li>
@@ -63,7 +63,7 @@ public abstract class ServiceURI {
          *
          * <p>Example of target URIs:
          * <ul>
-         *     <li>dns:///example_service</li>
+         *     <li>dns://localhost/example_service</li>
          *     <li>dns://8.8.8.8/example_service</li>
          *     <li>static://localhost/example_service?example_service=192.168.1.1</li>
          *     <li>zookeeper://zk.example.com:2181/example_service/default</li>

@@ -71,7 +71,7 @@ public class GrpcStubBeanPostProcessor implements BeanPostProcessor, Ordered, Be
 
     @Override
     public void setBeanFactory(@Nonnull BeanFactory beanFactory) throws BeansException {
-        this.grpcKitConfig = beanFactory.getBean(GrpcKitConfigProperties.class).validate();
+        this.grpcKitConfig = beanFactory.getBean(GrpcKitConfig.class).validate();
 
         try {
             this.grpcKitChannelBuilderFactory = beanFactory.getBean(GrpcKitChannelBuilderFactory.class);

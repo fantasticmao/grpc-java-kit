@@ -45,7 +45,7 @@ public class GrpcServerStartApplicationListener implements ApplicationListener<A
 
         final List<ServerServiceDefinition> services = this.getGrpcServices(context);
         final GrpcKitServerBuilderFactory builderFactory = this.getGrpcKitServerBuilderFactory(context);
-        final GrpcKitConfig config = context.getBean(GrpcKitConfigProperties.class).validate();
+        final GrpcKitConfig config = context.getBean(GrpcKitConfig.class).validate();
 
         GrpcKitServerBuilder builder = GrpcKitServerBuilder.forConfig(appName, config);
         builder = builderFactory.customize(builder, services);
