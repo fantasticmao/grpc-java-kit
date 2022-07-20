@@ -1,5 +1,6 @@
-package cn.fantasticmao.grpckit.springboot;
+package cn.fantasticmao.grpckit.springboot.event;
 
+import cn.fantasticmao.grpckit.springboot.GrpcServerContainer;
 import io.grpc.Server;
 import org.springframework.context.ApplicationEvent;
 
@@ -7,8 +8,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Event published by a {@link GrpcServerContainer} when gRPC {@link io.grpc.Server Server}
- * has been started.
+ * Event published by a {@link GrpcServerContainer} when gRPC {@link io.grpc.Server Server} started.
  *
  * @author fantasticmao
  * @version 1.39.0

@@ -33,8 +33,8 @@ import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * {@link BeanPostProcessor Spring BeanPostProcessor} implementation that
- * supports the {@link GrpcClient GrpcClient} annotation.
+ * A {@link BeanPostProcessor Spring BeanPostProcessor} that supports
+ * {@link GrpcClient GrpcClient} annotations.
  *
  * @author fantasticmao
  * @version 1.39.0
@@ -43,8 +43,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @see org.springframework.context.annotation.CommonAnnotationBeanPostProcessor
  * @since 2022-04-03
  */
-public class GrpcStubBeanPostProcessor implements BeanPostProcessor, Ordered, BeanFactoryAware {
-    private static final Logger LOGGER = LoggerFactory.getLogger(GrpcStubBeanPostProcessor.class);
+public class GrpcClientBeanPostProcessor implements BeanPostProcessor, Ordered, BeanFactoryAware {
+    private static final Logger LOGGER = LoggerFactory.getLogger(GrpcClientBeanPostProcessor.class);
 
     /**
      * Cache of gRPC service names, keyed by the gRPC stub class.
@@ -61,7 +61,7 @@ public class GrpcStubBeanPostProcessor implements BeanPostProcessor, Ordered, Be
     @Nullable
     private GrpcKitChannelBuilderFactory grpcKitChannelBuilderFactory;
 
-    public GrpcStubBeanPostProcessor() {
+    public GrpcClientBeanPostProcessor() {
     }
 
     @Override
@@ -180,11 +180,11 @@ public class GrpcStubBeanPostProcessor implements BeanPostProcessor, Ordered, Be
             @SuppressWarnings("unchecked")
             Class<S> stubClass = (Class<S>) field.getType();
             // stub class -> service name
-            String serviceName = GrpcStubBeanPostProcessor.this.getServiceName(stubClass);
+            String serviceName = GrpcClientBeanPostProcessor.this.getServiceName(stubClass);
             // service name -> application name
-            String appName = GrpcStubBeanPostProcessor.this.getDependApplicationName(serviceName);
+            String appName = GrpcClientBeanPostProcessor.this.getDependApplicationName(serviceName);
             // application name -> channel
-            Channel channel = GrpcStubBeanPostProcessor.this.getChannel(appName);
+            Channel channel = GrpcClientBeanPostProcessor.this.getChannel(appName);
             return GrpcKitStubFactory.newStub(stubClass, channel, tag, timeout);
         }
     }

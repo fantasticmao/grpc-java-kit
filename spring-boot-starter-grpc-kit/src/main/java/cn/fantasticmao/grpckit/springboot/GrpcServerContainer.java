@@ -4,7 +4,9 @@ import cn.fantasticmao.grpckit.GrpcKitException;
 import cn.fantasticmao.grpckit.boot.GrpcKitConfig;
 import cn.fantasticmao.grpckit.boot.GrpcKitServerBuilder;
 import cn.fantasticmao.grpckit.springboot.annotation.GrpcService;
+import cn.fantasticmao.grpckit.springboot.event.GrpcServerStartedEvent;
 import cn.fantasticmao.grpckit.springboot.factory.GrpcKitServerBuilderFactory;
+import cn.fantasticmao.grpckit.support.Constant;
 import io.grpc.BindableService;
 import io.grpc.Server;
 import io.grpc.ServerServiceDefinition;
@@ -30,6 +32,8 @@ import java.util.stream.Collectors;
  *
  * @author fantasticmao
  * @version 1.39.0
+ * @see <a href="https://docs.spring.io/spring-framework/docs/current/reference/html/core.html#beans-factory-lifecycle-processor">Startup and Shutdown Callbacks</a>
+ * @see org.springframework.boot.web.context.WebServerGracefulShutdownLifecycle
  * @since 2022-07-20
  */
 public class GrpcServerContainer implements SmartLifecycle, ApplicationContextAware {
@@ -55,10 +59,12 @@ public class GrpcServerContainer implements SmartLifecycle, ApplicationContextAw
         final List<ServerServiceDefinition> services = this.getGrpcServices(applicationContext);
         final GrpcKitServerBuilderFactory factory = this.getGrpcKitServerBuilderFactory(applicationContext);
 
+        LOGGER.info("Starting gRPC Server using gRPC-Java v{} in '{}' application",
+            Constant.VERSION, appName);
         long startTime = System.nanoTime();
         this.server = this.createAndStartServer(config, appName, services, factory);
         long elapsedNanos = System.nanoTime() - startTime;
-        LOGGER.info("gRPC server started on post: {} in {} millis", server.getPort(),
+        LOGGER.info("Started gRPC Server on port {} in {} millis", server.getPort(),
             TimeUnit.NANOSECONDS.toMillis(elapsedNanos));
 
         // The Java Virtual Machine exits when the only threads running are all daemon threads.

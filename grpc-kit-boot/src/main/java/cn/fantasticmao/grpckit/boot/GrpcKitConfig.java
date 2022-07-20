@@ -17,7 +17,7 @@ import java.net.URL;
 import java.util.Objects;
 
 /**
- * The gRPC Java Kit configurations.
+ * Configurations used in RPC Java Kit.
  *
  * @author fantasticmao
  * @version 1.39.0
