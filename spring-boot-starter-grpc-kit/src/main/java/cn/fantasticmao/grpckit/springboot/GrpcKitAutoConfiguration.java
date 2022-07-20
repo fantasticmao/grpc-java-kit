@@ -19,13 +19,18 @@ import org.springframework.context.annotation.Role;
 @Configuration
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 public class GrpcKitAutoConfiguration {
-    public static final String BEAN_NAME_GRPC_KIT_SERVER = "__grpcKitServer__";
 
     @Bean
     @ConditionalOnMissingBean
     @ConfigurationProperties("grpc-kit")
     public GrpcKitConfig grpcKitConfig() {
         return new GrpcKitConfig();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public GrpcServerContainer grpcServerContainer() {
+        return new GrpcServerContainer();
     }
 
     @Bean

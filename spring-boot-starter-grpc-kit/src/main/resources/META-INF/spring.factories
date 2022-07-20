@@ -1,5 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   cn.fantasticmao.grpckit.springboot.GrpcKitAutoConfiguration
-org.springframework.context.ApplicationListener=\
-  cn.fantasticmao.grpckit.springboot.GrpcServerStartApplicationListener,\
-  cn.fantasticmao.grpckit.springboot.GrpcServerShutdownApplicationListener
