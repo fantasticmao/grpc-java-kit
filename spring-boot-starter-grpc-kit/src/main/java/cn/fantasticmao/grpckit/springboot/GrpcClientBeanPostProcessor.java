@@ -22,6 +22,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.MergedAnnotation;
 import org.springframework.core.annotation.MergedAnnotations;
 import org.springframework.lang.Nullable;
+import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
 
 import javax.annotation.Nonnull;
@@ -34,7 +35,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A {@link BeanPostProcessor Spring BeanPostProcessor} that supports
- * {@link GrpcClient GrpcClient} annotations.
+ * {@link GrpcClient @GrpcClient} annotations.
  *
  * @author fantasticmao
  * @version 1.39.0
@@ -87,7 +88,7 @@ public class GrpcClientBeanPostProcessor implements BeanPostProcessor, Ordered, 
     }
 
     private void processInjection(Object bean, String beanName) throws BeanCreationException {
-        final Class<?> clazz = bean.getClass();
+        final Class<?> clazz = ClassUtils.getUserClass(bean);
         InjectionMetadata metadata = this.buildGrpcClientInjectedMetadata(clazz);
         try {
             metadata.inject(bean, beanName, null);
