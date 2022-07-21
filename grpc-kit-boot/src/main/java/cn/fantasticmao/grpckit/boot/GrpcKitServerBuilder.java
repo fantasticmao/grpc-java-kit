@@ -36,7 +36,7 @@ public class GrpcKitServerBuilder extends AbstractServerImplBuilder<GrpcKitServe
     private GrpcKitServerBuilder(String appName, GrpcKitConfig config) {
         this.appName = appName;
         this.config = config;
-        this.serverBuilder = ServerBuilder.forPort(config.getGrpc().getServer().getPort());
+        this.serverBuilder = ServerBuilder.forPort(config.getServer().getPort());
     }
 
     public static GrpcKitServerBuilder forConfig(String appName, @Nonnull GrpcKitConfig config) {
@@ -64,15 +64,15 @@ public class GrpcKitServerBuilder extends AbstractServerImplBuilder<GrpcKitServe
     }
 
     private void register(Server server) {
-        final String appGroup = config.getGrpc().getGroup();
-        final int serverPort = config.getGrpc().getServer().getPort();
-        final int serverWeight = config.getGrpc().getServer().getWeight();
-        final String serverTag = config.getGrpc().getServer().getTag();
+        final String appGroup = config.getGroup();
+        final int serverPort = server.getPort();
+        final int serverWeight = config.getServer().getWeight();
+        final String serverTag = config.getServer().getTag();
         final String registry = config.getNameResolver().getRegistry();
 
         final InetAddress localAddress;
         try {
-            String preferInterface = this.config.getGrpc().getServer().getInterfaceName();
+            String preferInterface = this.config.getServer().getInterfaceName();
             localAddress = NetUtil.getLocalAddress(preferInterface);
         } catch (SocketException e) {
             throw new GrpcKitException("Get local address error", e);

@@ -1,13 +1,14 @@
-grpc:
-  group: "dev"
-  server:
-    port: 8080
-    weight: 100
-    tag: "debug"
-    interfaceName: en0
-  client:
-    tag: "debug"
-    timeout: 5_000
+group: "dev"
+
+server:
+  port: 8080
+  weight: 100
+  tag: "debug"
+  interfaceName: en0
+
+client:
+  tag: "debug"
+  timeout: 5_000
 
 nameResolver:
   registry: "zookeeper://localhost:2181"

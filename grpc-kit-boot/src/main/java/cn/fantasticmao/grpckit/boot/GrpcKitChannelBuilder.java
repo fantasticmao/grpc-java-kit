@@ -20,7 +20,7 @@ public class GrpcKitChannelBuilder extends AbstractManagedChannelImplBuilder<Grp
     private final ManagedChannelBuilder<?> managedChannelBuilder;
 
     private GrpcKitChannelBuilder(String appName, GrpcKitConfig config) {
-        final String appGroup = config.getGrpc().getGroup();
+        final String appGroup = config.getGroup();
         final String registry = config.getNameResolver().getRegistry();
 
         final String policy = config.getLoadBalancer().getPolicy();

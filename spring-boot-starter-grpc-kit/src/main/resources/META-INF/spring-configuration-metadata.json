@@ -10,44 +10,44 @@
   ],
   "properties": [
     {
-      "name": "grpc-kit.grpc.group",
+      "name": "grpc-kit.group",
       "type": "java.lang.String",
-      "sourceType": "cn.fantasticmao.grpckit.boot.GrpcKitConfig$Grpc",
+      "sourceType": "cn.fantasticmao.grpckit.boot.GrpcKitConfig",
       "defaultValue": "default"
     },
     {
-      "name": "grpc-kit.grpc.server.port",
+      "name": "grpc-kit.server.port",
       "type": "java.lang.Integer",
-      "sourceType": "cn.fantasticmao.grpckit.boot.GrpcKitConfig$Grpc$Server",
+      "sourceType": "cn.fantasticmao.grpckit.boot.GrpcKitConfig$Server",
       "defaultValue": 50051
     },
     {
-      "name": "grpc-kit.grpc.server.weight",
+      "name": "grpc-kit.server.weight",
       "type": "java.lang.Integer",
-      "sourceType": "cn.fantasticmao.grpckit.boot.GrpcKitConfig$Grpc$Server",
+      "sourceType": "cn.fantasticmao.grpckit.boot.GrpcKitConfig$Server",
       "defaultValue": 1
     },
     {
-      "name": "grpc-kit.grpc.server.tag",
+      "name": "grpc-kit.server.tag",
       "type": "java.lang.String",
-      "sourceType": "cn.fantasticmao.grpckit.boot.GrpcKitConfig$Grpc$Server",
+      "sourceType": "cn.fantasticmao.grpckit.boot.GrpcKitConfig$Server",
       "defaultValue": ""
     },
     {
-      "name": "grpc-kit.grpc.server.interface-name",
+      "name": "grpc-kit.server.interface-name",
       "type": "java.lang.String",
-      "sourceType": "cn.fantasticmao.grpckit.boot.GrpcKitConfig$Grpc$Server"
+      "sourceType": "cn.fantasticmao.grpckit.boot.GrpcKitConfig$Server"
     },
     {
-      "name": "grpc-kit.grpc.client.tag",
+      "name": "grpc-kit.client.tag",
       "type": "java.lang.String",
-      "sourceType": "cn.fantasticmao.grpckit.boot.GrpcKitConfig$Grpc$Client",
+      "sourceType": "cn.fantasticmao.grpckit.boot.GrpcKitConfig$Client",
       "defaultValue": ""
     },
     {
-      "name": "grpc-kit.grpc.client.timeout",
+      "name": "grpc-kit.client.timeout",
       "type": "java.lang.String",
-      "sourceType": "cn.fantasticmao.grpckit.boot.GrpcKitConfig$Grpc$Client",
+      "sourceType": "cn.fantasticmao.grpckit.boot.GrpcKitConfig$Client",
       "defaultValue": 2000
     },
     {

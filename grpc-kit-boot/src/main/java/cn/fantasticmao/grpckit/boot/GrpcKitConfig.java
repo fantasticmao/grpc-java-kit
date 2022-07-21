@@ -44,7 +44,7 @@ public class GrpcKitConfig {
             GrpcKitConfig config = yaml.load(input);
             return config.validate();
         } catch (IOException | YAMLException e) {
-            throw new GrpcKitException("Unable to load configurations from location: " + path, e);
+            throw new GrpcKitException("Unable to load GrpcKitConfig from: " + path, e);
         }
     }
 
@@ -55,33 +55,27 @@ public class GrpcKitConfig {
         return this;
     }
 
-    private Grpc grpc = new Grpc();
+    private String group = "default";
+    private Server server = new Server();
+    private Client client = new Client();
     private NameResolver nameResolver = new NameResolver();
     private LoadBalancer loadBalancer = new LoadBalancer();
 
     @Getter
     @Setter
-    public static class Grpc {
-        private String group = "default";
-        private Server server = new Server();
-        private Client client = new Client();
+    public static class Server {
+        private int port = ServiceMetadata.DEFAULT_PORT;
+        private int weight = ServiceMetadata.DEFAULT_WEIGHT;
+        private String tag = ServiceMetadata.DEFAULT_TAG;
+        @Nullable
+        private String interfaceName = null;
+    }
 
-        @Getter
-        @Setter
-        public static class Server {
-            private int port = ServiceMetadata.DEFAULT_PORT;
-            private int weight = ServiceMetadata.DEFAULT_WEIGHT;
-            private String tag = ServiceMetadata.DEFAULT_TAG;
-            @Nullable
-            private String interfaceName = null;
-        }
-
-        @Getter
-        @Setter
-        public static class Client {
-            private String tag = ServiceMetadata.DEFAULT_TAG;
-            private int timeout = 2_000;
-        }
+    @Getter
+    @Setter
+    public static class Client {
+        private String tag = ServiceMetadata.DEFAULT_TAG;
+        private int timeout = 2_000;
     }
 
     @Getter

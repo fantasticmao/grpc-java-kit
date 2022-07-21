@@ -1,8 +1,7 @@
-grpc:
-  server:
-    port: 50051
-    weight: 20
-    tag: "debug"
+server:
+  port: 50051
+  weight: 20
+  tag: "debug"
 
 nameResolver:
   registry: "zookeeper://localhost:2181"

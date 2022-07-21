@@ -1,7 +1,6 @@
-grpc:
-  client:
-    # tag: "debug"
-    timeout: 5_000
+client:
+  # tag: "debug"
+  timeout: 5_000
 
 nameResolver:
   registry: "zookeeper://localhost:2181"

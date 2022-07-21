@@ -83,7 +83,7 @@ public class GrpcServerContainer implements SmartLifecycle, ApplicationContextAw
             } catch (InterruptedException e) {
                 currentThread.interrupt();
             }
-        }, "gRPC-server-container");
+        }, "grpc-server-container");
         awaitThread.setDaemon(false);
         awaitThread.start();
 

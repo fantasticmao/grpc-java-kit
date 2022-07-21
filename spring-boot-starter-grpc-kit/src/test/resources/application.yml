@@ -3,10 +3,10 @@ spring:
     name: "unit_test_spring_boot"
 
 grpc-kit:
-  grpc:
-    server:
-      port: 50051
-    client:
-      timeout: 5_000
+  group: "group1"
+  server:
+    port: 50052
+  client:
+    timeout: 5_000
   name-resolver:
     registry: "zookeeper://localhost:2181"

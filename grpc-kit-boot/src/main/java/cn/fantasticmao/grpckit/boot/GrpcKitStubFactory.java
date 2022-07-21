@@ -25,8 +25,8 @@ public class GrpcKitStubFactory {
 
     public static <S extends AbstractStub<S>> S newStub(Class<S> clazz, @Nonnull Channel channel,
                                                         @Nonnull GrpcKitConfig config) {
-        String tag = config.getGrpc().getClient().getTag();
-        int timeout = config.getGrpc().getClient().getTimeout();
+        String tag = config.getClient().getTag();
+        int timeout = config.getClient().getTimeout();
         return newStub(clazz, channel, tag, timeout);
     }
 

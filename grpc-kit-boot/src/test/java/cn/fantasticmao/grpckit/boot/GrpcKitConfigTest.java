@@ -17,13 +17,13 @@ public class GrpcKitConfigTest {
     public void loadAndParse() {
         GrpcKitConfig config = GrpcKitConfig.loadAndParse("grpc-kit-example.yml");
 
-        Assertions.assertEquals("dev", config.getGrpc().getGroup());
-        Assertions.assertEquals(8080, config.getGrpc().getServer().getPort());
-        Assertions.assertEquals(100, config.getGrpc().getServer().getWeight());
-        Assertions.assertEquals("debug", config.getGrpc().getServer().getTag());
-        Assertions.assertEquals("en0", config.getGrpc().getServer().getInterfaceName());
-        Assertions.assertEquals("debug", config.getGrpc().getClient().getTag());
-        Assertions.assertEquals(5_000, config.getGrpc().getClient().getTimeout());
+        Assertions.assertEquals("dev", config.getGroup());
+        Assertions.assertEquals(8080, config.getServer().getPort());
+        Assertions.assertEquals(100, config.getServer().getWeight());
+        Assertions.assertEquals("debug", config.getServer().getTag());
+        Assertions.assertEquals("en0", config.getServer().getInterfaceName());
+        Assertions.assertEquals("debug", config.getClient().getTag());
+        Assertions.assertEquals(5_000, config.getClient().getTimeout());
 
         Assertions.assertEquals("zookeeper://localhost:2181", config.getNameResolver().getRegistry());
 

@@ -16,11 +16,14 @@ public interface ApplicationNameValidator {
 
     static void validateWithRegistry(String name, String registry) throws IllegalArgumentException {
         URI registryUri = URI.create(registry);
+
+        final ApplicationNameValidator validator;
         if ("dns".equals(registryUri.getScheme())) {
-            Dns.INSTANCE.validate(name);
+            validator = Dns.INSTANCE;
         } else {
-            Canonic.INSTANCE.validate(name);
+            validator = Canonic.INSTANCE;
         }
+        validator.validate(name);
     }
 
     enum Canonic implements ApplicationNameValidator {
