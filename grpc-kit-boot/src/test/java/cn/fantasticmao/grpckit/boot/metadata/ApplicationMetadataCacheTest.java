@@ -1,4 +1,4 @@
-package cn.fantasticmao.grpckit.boot;
+package cn.fantasticmao.grpckit.boot.metadata;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

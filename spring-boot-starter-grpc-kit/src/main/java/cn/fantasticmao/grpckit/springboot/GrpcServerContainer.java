@@ -1,7 +1,7 @@
 package cn.fantasticmao.grpckit.springboot;
 
 import cn.fantasticmao.grpckit.GrpcKitException;
-import cn.fantasticmao.grpckit.boot.GrpcKitConfig;
+import cn.fantasticmao.grpckit.boot.config.GrpcKitConfig;
 import cn.fantasticmao.grpckit.boot.GrpcKitServerBuilder;
 import cn.fantasticmao.grpckit.springboot.annotation.GrpcService;
 import cn.fantasticmao.grpckit.springboot.event.GrpcServerStartedEvent;
@@ -87,7 +87,7 @@ public class GrpcServerContainer implements SmartLifecycle, ApplicationContextAw
         awaitThread.setDaemon(false);
         awaitThread.start();
 
-        this.publishGrpcServiceStartedEvent(applicationContext, server, services);
+        this.publishGrpcServiceStartedEvent(applicationContext, server);
     }
 
     @Override
@@ -165,9 +165,8 @@ public class GrpcServerContainer implements SmartLifecycle, ApplicationContextAw
         }
     }
 
-    private void publishGrpcServiceStartedEvent(ApplicationContext context, Server server,
-                                                List<ServerServiceDefinition> services) {
-        List<String> serviceNames = services.stream()
+    private void publishGrpcServiceStartedEvent(ApplicationContext context, Server server) {
+        List<String> serviceNames = server.getServices().stream()
             .map(service -> service.getServiceDescriptor().getName())
             .collect(Collectors.toList());
         ApplicationEvent event = new GrpcServerStartedEvent(server, serviceNames);

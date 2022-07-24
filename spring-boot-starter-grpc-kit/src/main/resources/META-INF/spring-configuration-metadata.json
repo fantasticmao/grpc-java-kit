@@ -2,7 +2,7 @@
   "groups": [
     {
       "name": "grpc-kit",
-      "type": "cn.fantasticmao.grpckit.boot.GrpcKitConfig",
+      "type": "cn.fantasticmao.grpckit.boot.config.GrpcKitConfig",
       "description": "Grpc-Java-Kit configuration properties.",
       "sourceType": "cn.fantasticmao.grpckit.springboot.GrpcKitAutoConfiguration",
       "sourceMethod": "grpcKitConfig()"
@@ -12,65 +12,65 @@
     {
       "name": "grpc-kit.group",
       "type": "java.lang.String",
-      "sourceType": "cn.fantasticmao.grpckit.boot.GrpcKitConfig",
+      "sourceType": "cn.fantasticmao.grpckit.boot.config.GrpcKitConfig",
       "defaultValue": "default"
     },
     {
       "name": "grpc-kit.server.port",
       "type": "java.lang.Integer",
-      "sourceType": "cn.fantasticmao.grpckit.boot.GrpcKitConfig$Server",
+      "sourceType": "cn.fantasticmao.grpckit.boot.config.GrpcKitConfig$Server",
       "defaultValue": 50051
     },
     {
       "name": "grpc-kit.server.weight",
       "type": "java.lang.Integer",
-      "sourceType": "cn.fantasticmao.grpckit.boot.GrpcKitConfig$Server",
+      "sourceType": "cn.fantasticmao.grpckit.boot.config.GrpcKitConfig$Server",
       "defaultValue": 1
     },
     {
       "name": "grpc-kit.server.tag",
       "type": "java.lang.String",
-      "sourceType": "cn.fantasticmao.grpckit.boot.GrpcKitConfig$Server",
+      "sourceType": "cn.fantasticmao.grpckit.boot.config.GrpcKitConfig$Server",
       "defaultValue": ""
     },
     {
       "name": "grpc-kit.server.interface-name",
       "type": "java.lang.String",
-      "sourceType": "cn.fantasticmao.grpckit.boot.GrpcKitConfig$Server"
+      "sourceType": "cn.fantasticmao.grpckit.boot.config.GrpcKitConfig$Server"
     },
     {
       "name": "grpc-kit.client.tag",
       "type": "java.lang.String",
-      "sourceType": "cn.fantasticmao.grpckit.boot.GrpcKitConfig$Client",
+      "sourceType": "cn.fantasticmao.grpckit.boot.config.GrpcKitConfig$Client",
       "defaultValue": ""
     },
     {
       "name": "grpc-kit.client.timeout",
       "type": "java.lang.String",
-      "sourceType": "cn.fantasticmao.grpckit.boot.GrpcKitConfig$Client",
+      "sourceType": "cn.fantasticmao.grpckit.boot.config.GrpcKitConfig$Client",
       "defaultValue": 2000
     },
     {
       "name": "grpc-kit.name-resolver.registry",
       "type": "java.lang.String",
-      "sourceType": "cn.fantasticmao.grpckit.boot.GrpcKitConfig$NameResolver"
+      "sourceType": "cn.fantasticmao.grpckit.boot.config.GrpcKitConfig$NameResolver"
     },
     {
       "name": "grpc-kit.load-balancer.policy",
       "type": "java.lang.String",
-      "sourceType": "cn.fantasticmao.grpckit.boot.GrpcKitConfig$LoadBalancer",
+      "sourceType": "cn.fantasticmao.grpckit.boot.config.GrpcKitConfig$LoadBalancer",
       "defaultValue": "weighted_random"
     },
     {
       "name": "grpc-kit.load-balancer.max-fails",
       "type": "java.lang.String",
-      "sourceType": "cn.fantasticmao.grpckit.boot.GrpcKitConfig$LoadBalancer",
+      "sourceType": "cn.fantasticmao.grpckit.boot.config.GrpcKitConfig$LoadBalancer",
       "defaultValue": 1
     },
     {
       "name": "grpc-kit.load-balancer.fail-timeout",
       "type": "java.lang.String",
-      "sourceType": "cn.fantasticmao.grpckit.boot.GrpcKitConfig$LoadBalancer",
+      "sourceType": "cn.fantasticmao.grpckit.boot.config.GrpcKitConfig$LoadBalancer",
       "defaultValue": 10000
     }
   ],

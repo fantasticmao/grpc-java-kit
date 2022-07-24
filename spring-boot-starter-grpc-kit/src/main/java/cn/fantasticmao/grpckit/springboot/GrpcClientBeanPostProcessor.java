@@ -1,7 +1,11 @@
 package cn.fantasticmao.grpckit.springboot;
 
 import cn.fantasticmao.grpckit.GrpcKitException;
-import cn.fantasticmao.grpckit.boot.*;
+import cn.fantasticmao.grpckit.boot.GrpcKitChannelBuilder;
+import cn.fantasticmao.grpckit.boot.config.GrpcKitConfig;
+import cn.fantasticmao.grpckit.boot.GrpcKitStubFactory;
+import cn.fantasticmao.grpckit.boot.metadata.ApplicationMetadata;
+import cn.fantasticmao.grpckit.boot.metadata.ApplicationMetadataCache;
 import cn.fantasticmao.grpckit.springboot.annotation.GrpcClient;
 import cn.fantasticmao.grpckit.springboot.factory.GrpcKitChannelBuilderFactory;
 import cn.fantasticmao.grpckit.util.ProtoUtil;
@@ -170,14 +174,14 @@ public class GrpcClientBeanPostProcessor implements BeanPostProcessor, Ordered, 
         protected void inject(@Nonnull Object bean, @Nullable String requestingBeanName, @Nullable PropertyValues pvs)
             throws Throwable {
             Field field = (Field) super.member;
-            Object stub = this.newStubObject(field, bean);
+            Object stub = this.newStubObject(field);
             if (stub != null) {
                 ReflectionUtils.makeAccessible(field);
                 field.set(bean, stub);
             }
         }
 
-        protected <S extends AbstractStub<S>> S newStubObject(Field field, Object bean) {
+        protected <S extends AbstractStub<S>> S newStubObject(Field field) {
             @SuppressWarnings("unchecked")
             Class<S> stubClass = (Class<S>) field.getType();
             // stub class -> service name

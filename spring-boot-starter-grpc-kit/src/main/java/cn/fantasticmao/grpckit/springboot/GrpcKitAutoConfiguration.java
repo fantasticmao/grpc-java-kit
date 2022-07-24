@@ -1,6 +1,6 @@
 package cn.fantasticmao.grpckit.springboot;
 
-import cn.fantasticmao.grpckit.boot.GrpcKitConfig;
+import cn.fantasticmao.grpckit.boot.config.GrpcKitConfig;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;

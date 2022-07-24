@@ -1,6 +1,7 @@
 package cn.fantasticmao.grpckit.boot;
 
 import cn.fantasticmao.grpckit.GrpcKitException;
+import cn.fantasticmao.grpckit.boot.config.GrpcKitConfig;
 import cn.fantasticmao.grpckit.support.Constant;
 import io.grpc.CallOptions;
 import io.grpc.Channel;

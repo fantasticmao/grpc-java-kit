@@ -1,4 +1,4 @@
-package cn.fantasticmao.grpckit.boot;
+package cn.fantasticmao.grpckit.boot.config;
 
 import cn.fantasticmao.grpckit.GrpcKitException;
 import cn.fantasticmao.grpckit.ServiceLoadBalancer;

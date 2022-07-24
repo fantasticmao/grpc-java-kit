@@ -1,7 +1,7 @@
 package cn.fantasticmao.grpckit.proto;
 
 import cn.fantasticmao.grpckit.boot.GrpcKitChannelBuilder;
-import cn.fantasticmao.grpckit.boot.GrpcKitConfig;
+import cn.fantasticmao.grpckit.boot.config.GrpcKitConfig;
 import cn.fantasticmao.grpckit.boot.GrpcKitServerBuilder;
 import cn.fantasticmao.grpckit.boot.GrpcKitStubFactory;
 import io.grpc.Channel;

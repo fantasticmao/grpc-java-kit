@@ -1,4 +1,4 @@
-package cn.fantasticmao.grpckit.boot;
+package cn.fantasticmao.grpckit.boot.metadata;
 
 import lombok.Getter;
 import lombok.Setter;

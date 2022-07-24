@@ -1,4 +1,4 @@
-package cn.fantasticmao.grpckit.boot;
+package cn.fantasticmao.grpckit.boot.metadata;
 
 import java.net.URI;
 import java.util.regex.Pattern;

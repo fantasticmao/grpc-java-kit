@@ -2,6 +2,8 @@ package cn.fantasticmao.grpckit.boot;
 
 import cn.fantasticmao.grpckit.ServiceLoadBalancer;
 import cn.fantasticmao.grpckit.ServiceURI;
+import cn.fantasticmao.grpckit.boot.config.GrpcKitConfig;
+import cn.fantasticmao.grpckit.boot.metadata.ApplicationNameValidator;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.internal.AbstractManagedChannelImplBuilder;

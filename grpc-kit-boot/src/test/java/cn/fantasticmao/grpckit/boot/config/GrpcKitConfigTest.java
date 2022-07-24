@@ -1,6 +1,7 @@
-package cn.fantasticmao.grpckit.boot;
+package cn.fantasticmao.grpckit.boot.config;
 
 import cn.fantasticmao.grpckit.ServiceLoadBalancer;
+import cn.fantasticmao.grpckit.boot.config.GrpcKitConfig;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

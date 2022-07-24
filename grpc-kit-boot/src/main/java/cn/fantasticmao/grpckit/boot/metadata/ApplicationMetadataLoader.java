@@ -1,4 +1,4 @@
-package cn.fantasticmao.grpckit.boot;
+package cn.fantasticmao.grpckit.boot.metadata;
 
 import javax.annotation.Nullable;
 import java.util.List;
