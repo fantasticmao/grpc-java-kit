@@ -1,9 +1,10 @@
 package cn.fantasticmao.grpckit.proto;
 
 import cn.fantasticmao.grpckit.boot.GrpcKitChannelBuilder;
-import cn.fantasticmao.grpckit.boot.config.GrpcKitConfig;
 import cn.fantasticmao.grpckit.boot.GrpcKitServerBuilder;
 import cn.fantasticmao.grpckit.boot.GrpcKitStubFactory;
+import cn.fantasticmao.grpckit.boot.config.GrpcKitConfig;
+import cn.fantasticmao.grpckit.boot.config.GrpcKitConfigLoader;
 import io.grpc.Channel;
 import io.grpc.Server;
 import io.grpc.protobuf.services.ProtoReflectionService;
@@ -28,7 +29,7 @@ public class ExampleDnsTest {
         final String appName = "localhost:50051";
 
         // build servers
-        final GrpcKitConfig serverConfig = GrpcKitConfig.loadAndParse("grpc-kit-dns-server.yml");
+        final GrpcKitConfig serverConfig = GrpcKitConfigLoader.YAML.loadAndParse("grpc-kit-dns-server.yml");
 
         final Server server = GrpcKitServerBuilder.forConfig(appName, serverConfig)
             .addService(new GreeterService("dns"))
@@ -40,7 +41,7 @@ public class ExampleDnsTest {
 
         try {
             // new channel and stub
-            final GrpcKitConfig clientConfig = GrpcKitConfig.loadAndParse("grpc-kit-dns-client.yml");
+            final GrpcKitConfig clientConfig = GrpcKitConfigLoader.YAML.loadAndParse("grpc-kit-dns-client.yml");
             final Channel channel = GrpcKitChannelBuilder.forConfig(appName, clientConfig)
                 .usePlaintext()
                 .build();

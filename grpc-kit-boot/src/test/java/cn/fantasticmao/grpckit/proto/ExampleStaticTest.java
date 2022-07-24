@@ -1,9 +1,10 @@
 package cn.fantasticmao.grpckit.proto;
 
 import cn.fantasticmao.grpckit.boot.GrpcKitChannelBuilder;
-import cn.fantasticmao.grpckit.boot.config.GrpcKitConfig;
 import cn.fantasticmao.grpckit.boot.GrpcKitServerBuilder;
 import cn.fantasticmao.grpckit.boot.GrpcKitStubFactory;
+import cn.fantasticmao.grpckit.boot.config.GrpcKitConfig;
+import cn.fantasticmao.grpckit.boot.config.GrpcKitConfigLoader;
 import io.grpc.Channel;
 import io.grpc.Server;
 import io.grpc.protobuf.services.ProtoReflectionService;
@@ -28,8 +29,8 @@ public class ExampleStaticTest {
         final String appName = "unit_test";
 
         // build servers
-        final GrpcKitConfig serverConfig_1 = GrpcKitConfig.loadAndParse("grpc-kit-static-server-1.yml");
-        final GrpcKitConfig serverConfig_2 = GrpcKitConfig.loadAndParse("grpc-kit-static-server-2.yml");
+        final GrpcKitConfig serverConfig_1 = GrpcKitConfigLoader.YAML.loadAndParse("grpc-kit-static-server-1.yml");
+        final GrpcKitConfig serverConfig_2 = GrpcKitConfigLoader.YAML.loadAndParse("grpc-kit-static-server-2.yml");
 
         final Server server_1 = GrpcKitServerBuilder.forConfig(appName, serverConfig_1)
             .addService(new GreeterService("static_1"))
@@ -46,7 +47,7 @@ public class ExampleStaticTest {
 
         try {
             // new channel and stub
-            final GrpcKitConfig clientConfig = GrpcKitConfig.loadAndParse("grpc-kit-static-client.yml");
+            final GrpcKitConfig clientConfig = GrpcKitConfigLoader.YAML.loadAndParse("grpc-kit-static-client.yml");
             final Channel channel = GrpcKitChannelBuilder.forConfig(appName, clientConfig)
                 .usePlaintext()
                 .build();

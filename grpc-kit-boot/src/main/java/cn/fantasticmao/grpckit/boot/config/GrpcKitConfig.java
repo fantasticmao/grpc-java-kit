@@ -1,20 +1,11 @@
 package cn.fantasticmao.grpckit.boot.config;
 
-import cn.fantasticmao.grpckit.GrpcKitException;
 import cn.fantasticmao.grpckit.ServiceLoadBalancer;
 import cn.fantasticmao.grpckit.ServiceMetadata;
 import lombok.Getter;
 import lombok.Setter;
-import org.yaml.snakeyaml.Yaml;
-import org.yaml.snakeyaml.constructor.Constructor;
-import org.yaml.snakeyaml.error.YAMLException;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.Objects;
 
 /**
  * Configurations used in RPC Java Kit.
@@ -26,27 +17,6 @@ import java.util.Objects;
 @Getter
 @Setter
 public class GrpcKitConfig {
-
-    /**
-     * Load and parse {@link GrpcKitConfig} from the specific file.
-     *
-     * @param path the config file path
-     * @return a new {@link GrpcKitConfig} instance
-     * @throws GrpcKitException errors during loading and parsing phases
-     */
-    public static GrpcKitConfig loadAndParse(@Nonnull String path) {
-        Yaml yaml = new Yaml(new Constructor(GrpcKitConfig.class));
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        URL url = classLoader.getResource(path);
-        Objects.requireNonNull(url, "File not found: " + path);
-
-        try (InputStream input = url.openStream()) {
-            GrpcKitConfig config = yaml.load(input);
-            return config.validate();
-        } catch (IOException | YAMLException e) {
-            throw new GrpcKitException("Unable to load GrpcKitConfig from: " + path, e);
-        }
-    }
 
     public GrpcKitConfig validate() throws IllegalArgumentException {
         if (nameResolver.getRegistry() == null || nameResolver.getRegistry().isBlank()) {

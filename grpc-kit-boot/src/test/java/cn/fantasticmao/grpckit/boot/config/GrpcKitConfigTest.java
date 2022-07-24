@@ -1,7 +1,6 @@
 package cn.fantasticmao.grpckit.boot.config;
 
 import cn.fantasticmao.grpckit.ServiceLoadBalancer;
-import cn.fantasticmao.grpckit.boot.config.GrpcKitConfig;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +15,7 @@ public class GrpcKitConfigTest {
 
     @Test
     public void loadAndParse() {
-        GrpcKitConfig config = GrpcKitConfig.loadAndParse("grpc-kit-example.yml");
+        GrpcKitConfig config = GrpcKitConfigLoader.YAML.loadAndParse("grpc-kit-example.yml");
 
         Assertions.assertEquals("dev", config.getGroup());
         Assertions.assertEquals(8080, config.getServer().getPort());
