@@ -1,5 +1,5 @@
 client:
   timeout: 5_000
 
-nameResolver:
+name-resolver:
   registry: "static://localhost?unit_test=127.0.0.1:50051,127.0.0.1:50052"

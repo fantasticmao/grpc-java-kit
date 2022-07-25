@@ -10,10 +10,10 @@ client:
   tag: "debug"
   timeout: 5_000
 
-nameResolver:
+name-resolver:
   registry: "zookeeper://localhost:2181"
 
-loadBalancer:
+load_balancer:
   policy: "pick_first"
-  maxFails: 1
-  failTimeout: 30_000
+  max-fails: 1
+  fail-timeout: 30_000

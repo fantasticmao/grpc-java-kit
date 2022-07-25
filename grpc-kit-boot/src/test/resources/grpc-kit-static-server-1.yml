@@ -1,5 +1,5 @@
 server:
   port: 50051
 
-nameResolver:
+name-resolver:
   registry: "static://localhost"

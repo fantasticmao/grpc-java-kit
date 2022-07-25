@@ -3,5 +3,5 @@ server:
   weight: 20
   tag: "debug"
 
-nameResolver:
+name-resolver:
   registry: "zookeeper://localhost:2181"

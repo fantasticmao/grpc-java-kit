@@ -23,18 +23,21 @@ public class GrpcKitAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     @ConfigurationProperties("grpc-kit")
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     public GrpcKitConfig grpcKitConfig() {
         return new GrpcKitConfig();
     }
 
     @Bean
     @ConditionalOnMissingBean
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     public GrpcServerContainer grpcServerContainer() {
         return new GrpcServerContainer();
     }
 
     @Bean
     @ConditionalOnMissingBean
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     public GrpcClientBeanPostProcessor grpcStubBeanPostProcessor() {
         return new GrpcClientBeanPostProcessor();
     }

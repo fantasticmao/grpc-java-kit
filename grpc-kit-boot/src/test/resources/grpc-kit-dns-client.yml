@@ -1,5 +1,5 @@
 client:
   timeout: 5_000
 
-nameResolver:
+name-resolver:
   registry: "dns://localhost"

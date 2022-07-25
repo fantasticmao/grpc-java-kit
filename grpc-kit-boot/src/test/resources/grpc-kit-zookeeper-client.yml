@@ -2,5 +2,5 @@ client:
   # tag: "debug"
   timeout: 5_000
 
-nameResolver:
+name-resolver:
   registry: "zookeeper://localhost:2181"
