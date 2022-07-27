@@ -11,13 +11,13 @@
 - 序列化 / 反序列化 [Protocol Buffers](https://developers.google.com/protocol-buffers/docs/overview)
 - 接入方式
   - [x] Java SE (JDK 11+)
-  - [x] Spring Boot
+  - [x] [Spring Boot](https://spring.io/projects/spring-boot)
 - 服务注册 / 发现
   - [x] 注册中心
     - [x] 静态配置
     - [x] DNS
-    - [x] ZooKeeper
-    - [ ] Consul
+    - [x] [ZooKeeper](https://zookeeper.apache.org)
+    - [ ] [Consul](https://www.consul.io)
   - [x] 服务分组（隔离）
 - 流量控制
   - [x] 负载均衡
@@ -30,5 +30,5 @@
   - [ ] 限流熔断、业务降级
   - [ ] 故障上报、策略下发
 - 可观测性
-  - [ ] 链路追踪 [OpenTelemetry](https://opentelemetry.io) + [Jaeger](https://www.jaegertracing.io)
-  - [ ] 监控指标 [OpenTelemetry](https://opentelemetry.io) / [Spring Boot Actuator](https://docs.spring.io/spring-boot/docs/current/reference/html/actuator.html) + [Prometheus](https://prometheus.io)
+  - [x] 链路追踪 [OpenTelemetry](https://opentelemetry.io) + [Jaeger](https://www.jaegertracing.io)
+  - [ ] 指标监控 [JMX](https://en.wikipedia.org/wiki/Java_Management_Extensions) / [Spring Boot Actuator](https://docs.spring.io/spring-boot/docs/current/reference/html/actuator.html) + [Prometheus](https://prometheus.io)
