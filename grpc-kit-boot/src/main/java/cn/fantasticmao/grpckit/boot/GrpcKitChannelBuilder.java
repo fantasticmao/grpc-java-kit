@@ -7,9 +7,13 @@ import cn.fantasticmao.grpckit.boot.metadata.ApplicationNameValidator;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.internal.AbstractManagedChannelImplBuilder;
+import io.micrometer.core.instrument.Metrics;
+import io.micrometer.core.instrument.Tags;
+import io.micrometer.core.instrument.binder.jvm.ExecutorServiceMetrics;
 
 import javax.annotation.Nonnull;
 import java.net.URI;
+import java.util.concurrent.Executor;
 
 /**
  * A builder for creating {@link ManagedChannel gRPC ManagedChannel} instances.
@@ -19,27 +23,50 @@ import java.net.URI;
  * @since 2022-04-21
  */
 public class GrpcKitChannelBuilder extends AbstractManagedChannelImplBuilder<GrpcKitChannelBuilder> {
+    private final String srcAppName;
+    private final String dstAppName;
+    private final GrpcKitConfig config;
     private final ManagedChannelBuilder<?> managedChannelBuilder;
 
-    private GrpcKitChannelBuilder(String appName, GrpcKitConfig config) {
+    private GrpcKitChannelBuilder(String srcAppName, String dstAppName, @Nonnull GrpcKitConfig config) {
+        this.srcAppName = srcAppName;
+        this.dstAppName = dstAppName;
+        this.config = config;
+
         final String appGroup = config.getGroup();
         final String registry = config.getNameResolver().getRegistry();
-
         final String policy = config.getLoadBalancer().getPolicy();
-        final ServiceURI serviceUri = ServiceURI.Factory.loadWith(URI.create(registry), appName, appGroup);
+        final ServiceURI serviceUri = ServiceURI.Factory.loadWith(URI.create(registry), dstAppName, appGroup);
         this.managedChannelBuilder = ManagedChannelBuilder.forTarget(serviceUri.toTargetUri().toString())
-            .userAgent(appName)
+            .userAgent(srcAppName)
             .defaultLoadBalancingPolicy(ServiceLoadBalancer.Policy.of(policy).name);
     }
 
-    public static GrpcKitChannelBuilder forConfig(String appName, @Nonnull GrpcKitConfig config) {
+    public static GrpcKitChannelBuilder forConfig(String srcAppName, String dstAppName,
+                                                  @Nonnull GrpcKitConfig config) {
         String registry = config.validate().getNameResolver().getRegistry();
-        ApplicationNameValidator.validateWithRegistry(appName, registry);
-        return new GrpcKitChannelBuilder(appName, config.validate());
+        ApplicationNameValidator.validateWithRegistry(dstAppName, registry);
+        return new GrpcKitChannelBuilder(srcAppName, dstAppName, config.validate());
     }
 
     @Override
     protected ManagedChannelBuilder<?> delegate() {
         return managedChannelBuilder;
+    }
+
+    @Override
+    public GrpcKitChannelBuilder executor(Executor executor) {
+        if (executor != null) {
+            Tags tags = Tags.of("src.app.name", srcAppName, "dst.app.name", dstAppName,
+                "group", config.getGroup());
+            /*
+             * Add executor metrics to the global registry.
+             *
+             * @see https://github.com/open-telemetry/opentelemetry-java-instrumentation/blob/9058ad6f40a75d15a70a69d7fe32ff2c19b05a00/instrumentation/micrometer/micrometer-1.5/javaagent/src/main/java/io/opentelemetry/javaagent/instrumentation/micrometer/v1_5/MetricsInstrumentation.java#L35
+             */
+            executor = ExecutorServiceMetrics.monitor(Metrics.globalRegistry, executor,
+                "grpc_channel", tags);
+        }
+        return super.executor(executor);
     }
 }

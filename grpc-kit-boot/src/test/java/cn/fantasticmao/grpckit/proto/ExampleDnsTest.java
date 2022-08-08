@@ -42,7 +42,7 @@ public class ExampleDnsTest {
         try {
             // new channel and stub
             final GrpcKitConfig clientConfig = GrpcKitConfigLoader.YAML.loadAndParse("grpc-kit-dns-client.yml");
-            final Channel channel = GrpcKitChannelBuilder.forConfig(appName, clientConfig)
+            final Channel channel = GrpcKitChannelBuilder.forConfig(appName, appName, clientConfig)
                 .usePlaintext()
                 .build();
             final GreeterServiceGrpc.GreeterServiceBlockingStub stub = GrpcKitStubFactory.newStub(

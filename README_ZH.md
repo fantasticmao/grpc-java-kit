@@ -30,5 +30,5 @@
   - [ ] 限流熔断、业务降级
   - [ ] 故障上报、策略下发
 - 可观测性
-  - [x] 链路追踪 [OpenTelemetry](https://opentelemetry.io) + [Jaeger](https://www.jaegertracing.io)
-  - [ ] 指标监控 [JMX](https://en.wikipedia.org/wiki/Java_Management_Extensions) / [Spring Boot Actuator](https://docs.spring.io/spring-boot/docs/current/reference/html/actuator.html) + [Prometheus](https://prometheus.io)
+  - [x] 链路追踪 [OpenTelemetry](https://opentelemetry.io)
+  - [x] 指标监控 [OpenTelemetry](https://opentelemetry.io) + [Micrometer](https://micrometer.io)

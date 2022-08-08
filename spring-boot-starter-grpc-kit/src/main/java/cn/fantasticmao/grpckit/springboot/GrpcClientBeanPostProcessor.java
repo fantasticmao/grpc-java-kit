@@ -2,8 +2,8 @@ package cn.fantasticmao.grpckit.springboot;
 
 import cn.fantasticmao.grpckit.GrpcKitException;
 import cn.fantasticmao.grpckit.boot.GrpcKitChannelBuilder;
-import cn.fantasticmao.grpckit.boot.config.GrpcKitConfig;
 import cn.fantasticmao.grpckit.boot.GrpcKitStubFactory;
+import cn.fantasticmao.grpckit.boot.config.GrpcKitConfig;
 import cn.fantasticmao.grpckit.boot.metadata.ApplicationMetadata;
 import cn.fantasticmao.grpckit.boot.metadata.ApplicationMetadataCache;
 import cn.fantasticmao.grpckit.springboot.annotation.GrpcClient;
@@ -17,9 +17,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.PropertyValues;
 import org.springframework.beans.factory.BeanCreationException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.annotation.InjectionMetadata;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.core.Ordered;
@@ -34,7 +31,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -48,7 +44,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @see org.springframework.context.annotation.CommonAnnotationBeanPostProcessor
  * @since 2022-04-03
  */
-public class GrpcClientBeanPostProcessor implements BeanPostProcessor, Ordered, BeanFactoryAware {
+public class GrpcClientBeanPostProcessor extends ApplicationBaseInfo implements BeanPostProcessor, Ordered {
     private static final Logger LOGGER = LoggerFactory.getLogger(GrpcClientBeanPostProcessor.class);
 
     /**
@@ -61,28 +57,12 @@ public class GrpcClientBeanPostProcessor implements BeanPostProcessor, Ordered, 
      */
     private final ConcurrentHashMap<String, Channel> channelCache = new ConcurrentHashMap<>(64);
 
-    @Nullable
-    private GrpcKitConfig grpcKitConfig;
-    @Nullable
-    private GrpcKitChannelBuilderFactory grpcKitChannelBuilderFactory;
-
     public GrpcClientBeanPostProcessor() {
     }
 
     @Override
     public int getOrder() {
         return Ordered.LOWEST_PRECEDENCE;
-    }
-
-    @Override
-    public void setBeanFactory(@Nonnull BeanFactory beanFactory) throws BeansException {
-        this.grpcKitConfig = beanFactory.getBean(GrpcKitConfig.class).validate();
-
-        try {
-            this.grpcKitChannelBuilderFactory = beanFactory.getBean(GrpcKitChannelBuilderFactory.class);
-        } catch (NoSuchBeanDefinitionException e) {
-            this.grpcKitChannelBuilderFactory = GrpcKitChannelBuilderFactory.Default.INSTANCE;
-        }
     }
 
     @Override
@@ -144,20 +124,22 @@ public class GrpcClientBeanPostProcessor implements BeanPostProcessor, Ordered, 
         });
     }
 
+    private Channel getChannel(String dstAppName) {
+        String appName = super.getCurrentAppName();
+        GrpcKitConfig config = super.getGrpcKitConfig();
+        GrpcKitChannelBuilderFactory channelBuilderFactory = super.getGrpcKitChannelBuilderFactory();
+
+        return channelCache.computeIfAbsent(dstAppName, key -> {
+            GrpcKitChannelBuilder builder = GrpcKitChannelBuilder.forConfig(appName, dstAppName, config);
+            builder = channelBuilderFactory.customize(builder);
+            return builder.build();
+        });
+    }
+
     private String getDependApplicationName(String serviceName) {
         ApplicationMetadata applicationMetadata = ApplicationMetadataCache.getInstance()
             .getByServiceName(serviceName);
         return applicationMetadata.getName();
-    }
-
-    private Channel getChannel(String appName) {
-        Objects.requireNonNull(this.grpcKitConfig, "grpcKitConfig must not be null");
-        Objects.requireNonNull(this.grpcKitChannelBuilderFactory, "grpcKitChannelBuilderFactory must not be null");
-        return channelCache.computeIfAbsent(appName, key -> {
-            GrpcKitChannelBuilder builder = GrpcKitChannelBuilder.forConfig(appName, this.grpcKitConfig);
-            builder = grpcKitChannelBuilderFactory.customize(builder);
-            return builder.build();
-        });
     }
 
     private class GrpcClientFieldElement extends InjectionMetadata.InjectedElement {
@@ -187,9 +169,9 @@ public class GrpcClientBeanPostProcessor implements BeanPostProcessor, Ordered, 
             // stub class -> service name
             String serviceName = GrpcClientBeanPostProcessor.this.getServiceName(stubClass);
             // service name -> application name
-            String appName = GrpcClientBeanPostProcessor.this.getDependApplicationName(serviceName);
+            String dstAppName = GrpcClientBeanPostProcessor.this.getDependApplicationName(serviceName);
             // application name -> channel
-            Channel channel = GrpcClientBeanPostProcessor.this.getChannel(appName);
+            Channel channel = GrpcClientBeanPostProcessor.this.getChannel(dstAppName);
             return GrpcKitStubFactory.newStub(stubClass, channel, tag, timeout);
         }
     }

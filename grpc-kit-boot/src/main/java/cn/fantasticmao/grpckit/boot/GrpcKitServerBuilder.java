@@ -8,10 +8,14 @@ import cn.fantasticmao.grpckit.util.NetUtil;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.internal.AbstractServerImplBuilder;
+import io.micrometer.core.instrument.Metrics;
+import io.micrometer.core.instrument.Tags;
+import io.micrometer.core.instrument.binder.jvm.ExecutorServiceMetrics;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -19,6 +23,7 @@ import java.net.SocketException;
 import java.net.URI;
 import java.util.List;
 import java.util.ServiceLoader;
+import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
 
 /**
@@ -35,7 +40,7 @@ public class GrpcKitServerBuilder extends AbstractServerImplBuilder<GrpcKitServe
     private final GrpcKitConfig config;
     private final ServerBuilder<?> serverBuilder;
 
-    private GrpcKitServerBuilder(String appName, GrpcKitConfig config) {
+    private GrpcKitServerBuilder(String appName, @Nonnull GrpcKitConfig config) {
         this.appName = appName;
         this.config = config;
         this.serverBuilder = ServerBuilder.forPort(config.getServer().getPort());
@@ -50,6 +55,21 @@ public class GrpcKitServerBuilder extends AbstractServerImplBuilder<GrpcKitServe
     @Override
     protected ServerBuilder<?> delegate() {
         return this.serverBuilder;
+    }
+
+    @Override
+    public GrpcKitServerBuilder executor(@Nullable Executor executor) {
+        if (executor != null) {
+            Tags tags = Tags.of("app.name", appName, "group", config.getGroup());
+            /*
+             * Add executor metrics to the global registry.
+             *
+             * @see https://github.com/open-telemetry/opentelemetry-java-instrumentation/blob/9058ad6f40a75d15a70a69d7fe32ff2c19b05a00/instrumentation/micrometer/micrometer-1.5/javaagent/src/main/java/io/opentelemetry/javaagent/instrumentation/micrometer/v1_5/MetricsInstrumentation.java#L35
+             */
+            executor = ExecutorServiceMetrics.monitor(Metrics.globalRegistry, executor,
+                "grpc_server", tags);
+        }
+        return super.executor(executor);
     }
 
     @Override
