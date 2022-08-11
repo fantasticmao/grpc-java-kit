@@ -1,8 +1,8 @@
 package cn.fantasticmao.grpckit.springboot;
 
 import cn.fantasticmao.grpckit.boot.config.GrpcKitConfig;
-import cn.fantasticmao.grpckit.springboot.factory.GrpcKitChannelBuilderFactory;
-import cn.fantasticmao.grpckit.springboot.factory.GrpcKitServerBuilderFactory;
+import cn.fantasticmao.grpckit.boot.factory.GrpcKitChannelBuilderFactory;
+import cn.fantasticmao.grpckit.boot.factory.GrpcKitServerBuilderFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;

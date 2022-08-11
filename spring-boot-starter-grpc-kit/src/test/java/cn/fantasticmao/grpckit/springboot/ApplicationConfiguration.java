@@ -1,7 +1,6 @@
 package cn.fantasticmao.grpckit.springboot;
 
-import cn.fantasticmao.grpckit.springboot.factory.GrpcKitServerBuilderFactory;
-import io.grpc.protobuf.services.ProtoReflectionService;
+import cn.fantasticmao.grpckit.boot.factory.GrpcKitServerBuilderFactory;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
@@ -24,9 +23,7 @@ public class ApplicationConfiguration {
     public GrpcKitServerBuilderFactory grpcKitServerBuilderFactory() {
         ExecutorService executorService = new ThreadPoolExecutor(5, 100,
             10, TimeUnit.MINUTES, new SynchronousQueue<>());
-        return (builder, services) -> builder
-            .executor(executorService)
-            .addServices(services)
-            .addService(ProtoReflectionService.newInstance());
+        return (builder) -> GrpcKitServerBuilderFactory.Default.INSTANCE.customize(builder)
+            .executor(executorService);
     }
 }

@@ -5,9 +5,10 @@ import cn.fantasticmao.grpckit.boot.GrpcKitServerBuilder;
 import cn.fantasticmao.grpckit.boot.GrpcKitStubFactory;
 import cn.fantasticmao.grpckit.boot.config.GrpcKitConfig;
 import cn.fantasticmao.grpckit.boot.config.GrpcKitConfigLoader;
+import cn.fantasticmao.grpckit.boot.factory.GrpcKitChannelBuilderFactory;
+import cn.fantasticmao.grpckit.boot.factory.GrpcKitServerBuilderFactory;
 import io.grpc.Channel;
 import io.grpc.Server;
-import io.grpc.protobuf.services.ProtoReflectionService;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,12 +36,12 @@ public class ExampleZooKeeperTest {
         final GrpcKitConfig serverConfig_2 = GrpcKitConfigLoader.YAML.loadAndParse("grpc-kit-zookeeper-server-2.yml");
 
         final Server server_1 = GrpcKitServerBuilder.forConfig(appName, serverConfig_1)
+            .customize(GrpcKitServerBuilderFactory.Default.INSTANCE)
             .addService(new GreeterService("zookeeper_1"))
-            .addService(ProtoReflectionService.newInstance())
             .build();
         final Server server_2 = GrpcKitServerBuilder.forConfig(appName, serverConfig_2)
+            .customize(GrpcKitServerBuilderFactory.Default.INSTANCE)
             .addService(new GreeterService("zookeeper_2"))
-            .addService(ProtoReflectionService.newInstance())
             .build();
 
         // start servers
@@ -51,7 +52,7 @@ public class ExampleZooKeeperTest {
             // new channel and stub
             final GrpcKitConfig clientConfig = GrpcKitConfigLoader.YAML.loadAndParse("grpc-kit-zookeeper-client.yml");
             final Channel channel = GrpcKitChannelBuilder.forConfig(appName, appName, clientConfig)
-                .usePlaintext()
+                .customize(GrpcKitChannelBuilderFactory.Default.INSTANCE)
                 .build();
             final GreeterServiceGrpc.GreeterServiceBlockingStub stub = GrpcKitStubFactory.newStub(
                 GreeterServiceGrpc.GreeterServiceBlockingStub.class, channel, clientConfig);

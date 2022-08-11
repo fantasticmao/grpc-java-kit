@@ -2,6 +2,7 @@ package cn.fantasticmao.grpckit.boot;
 
 import cn.fantasticmao.grpckit.*;
 import cn.fantasticmao.grpckit.boot.config.GrpcKitConfig;
+import cn.fantasticmao.grpckit.boot.factory.GrpcKitServerBuilderFactory;
 import cn.fantasticmao.grpckit.boot.metadata.ApplicationNameValidator;
 import cn.fantasticmao.grpckit.support.Constant;
 import cn.fantasticmao.grpckit.util.NetUtil;
@@ -50,6 +51,10 @@ public class GrpcKitServerBuilder extends AbstractServerImplBuilder<GrpcKitServe
         String registry = config.validate().getNameResolver().getRegistry();
         ApplicationNameValidator.validateWithRegistry(appName, registry);
         return new GrpcKitServerBuilder(appName, config.validate());
+    }
+
+    public GrpcKitServerBuilder customize(GrpcKitServerBuilderFactory factory) {
+        return factory.customize(this);
     }
 
     @Override

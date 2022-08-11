@@ -3,6 +3,7 @@ package cn.fantasticmao.grpckit.boot;
 import cn.fantasticmao.grpckit.ServiceLoadBalancer;
 import cn.fantasticmao.grpckit.ServiceURI;
 import cn.fantasticmao.grpckit.boot.config.GrpcKitConfig;
+import cn.fantasticmao.grpckit.boot.factory.GrpcKitChannelBuilderFactory;
 import cn.fantasticmao.grpckit.boot.metadata.ApplicationNameValidator;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
@@ -47,6 +48,10 @@ public class GrpcKitChannelBuilder extends AbstractManagedChannelImplBuilder<Grp
         String registry = config.validate().getNameResolver().getRegistry();
         ApplicationNameValidator.validateWithRegistry(dstAppName, registry);
         return new GrpcKitChannelBuilder(srcAppName, dstAppName, config.validate());
+    }
+
+    public GrpcKitChannelBuilder customize(GrpcKitChannelBuilderFactory factory) {
+        return factory.customize(this);
     }
 
     @Override

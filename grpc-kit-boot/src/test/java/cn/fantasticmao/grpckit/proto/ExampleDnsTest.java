@@ -5,9 +5,10 @@ import cn.fantasticmao.grpckit.boot.GrpcKitServerBuilder;
 import cn.fantasticmao.grpckit.boot.GrpcKitStubFactory;
 import cn.fantasticmao.grpckit.boot.config.GrpcKitConfig;
 import cn.fantasticmao.grpckit.boot.config.GrpcKitConfigLoader;
+import cn.fantasticmao.grpckit.boot.factory.GrpcKitChannelBuilderFactory;
+import cn.fantasticmao.grpckit.boot.factory.GrpcKitServerBuilderFactory;
 import io.grpc.Channel;
 import io.grpc.Server;
-import io.grpc.protobuf.services.ProtoReflectionService;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,8 +33,8 @@ public class ExampleDnsTest {
         final GrpcKitConfig serverConfig = GrpcKitConfigLoader.YAML.loadAndParse("grpc-kit-dns-server.yml");
 
         final Server server = GrpcKitServerBuilder.forConfig(appName, serverConfig)
+            .customize(GrpcKitServerBuilderFactory.Default.INSTANCE)
             .addService(new GreeterService("dns"))
-            .addService(ProtoReflectionService.newInstance())
             .build();
 
         // start servers
@@ -43,7 +44,7 @@ public class ExampleDnsTest {
             // new channel and stub
             final GrpcKitConfig clientConfig = GrpcKitConfigLoader.YAML.loadAndParse("grpc-kit-dns-client.yml");
             final Channel channel = GrpcKitChannelBuilder.forConfig(appName, appName, clientConfig)
-                .usePlaintext()
+                .customize(GrpcKitChannelBuilderFactory.Default.INSTANCE)
                 .build();
             final GreeterServiceGrpc.GreeterServiceBlockingStub stub = GrpcKitStubFactory.newStub(
                 GreeterServiceGrpc.GreeterServiceBlockingStub.class, channel, clientConfig);

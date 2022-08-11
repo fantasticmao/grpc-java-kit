@@ -1,4 +1,4 @@
-package cn.fantasticmao.grpckit.springboot.factory;
+package cn.fantasticmao.grpckit.boot.factory;
 
 import cn.fantasticmao.grpckit.boot.GrpcKitChannelBuilder;
 

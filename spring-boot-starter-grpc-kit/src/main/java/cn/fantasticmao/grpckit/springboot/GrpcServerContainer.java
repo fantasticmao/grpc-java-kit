@@ -3,9 +3,9 @@ package cn.fantasticmao.grpckit.springboot;
 import cn.fantasticmao.grpckit.GrpcKitException;
 import cn.fantasticmao.grpckit.boot.GrpcKitServerBuilder;
 import cn.fantasticmao.grpckit.boot.config.GrpcKitConfig;
+import cn.fantasticmao.grpckit.boot.factory.GrpcKitServerBuilderFactory;
 import cn.fantasticmao.grpckit.springboot.annotation.GrpcService;
 import cn.fantasticmao.grpckit.springboot.event.GrpcServerStartedEvent;
-import cn.fantasticmao.grpckit.springboot.factory.GrpcKitServerBuilderFactory;
 import cn.fantasticmao.grpckit.support.Constant;
 import io.grpc.BindableService;
 import io.grpc.Server;
@@ -94,14 +94,15 @@ public class GrpcServerContainer extends ApplicationBaseInfo implements SmartLif
     private Server createAndStartServer(List<ServerServiceDefinition> services) {
         String appName = super.getCurrentAppName();
         GrpcKitConfig config = super.getGrpcKitConfig();
-        GrpcKitServerBuilderFactory serverBuilderFactory = super.getGrpcKitServerBuilderFactory();
+        GrpcKitServerBuilderFactory factory = super.getGrpcKitServerBuilderFactory();
 
         LOGGER.info("Starting gRPC Server using gRPC-Java v{} in '{}' application",
             Constant.VERSION, appName);
         long startTime = System.nanoTime();
-        GrpcKitServerBuilder builder = GrpcKitServerBuilder.forConfig(appName, config);
-        builder = serverBuilderFactory.customize(builder, services);
-        Server server = builder.build();
+        Server server = GrpcKitServerBuilder.forConfig(appName, config)
+            .customize(factory)
+            .addServices(services)
+            .build();
 
         try {
             server.start();

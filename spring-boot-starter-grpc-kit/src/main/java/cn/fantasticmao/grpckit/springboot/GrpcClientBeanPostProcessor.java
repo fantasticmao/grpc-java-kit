@@ -4,10 +4,10 @@ import cn.fantasticmao.grpckit.GrpcKitException;
 import cn.fantasticmao.grpckit.boot.GrpcKitChannelBuilder;
 import cn.fantasticmao.grpckit.boot.GrpcKitStubFactory;
 import cn.fantasticmao.grpckit.boot.config.GrpcKitConfig;
+import cn.fantasticmao.grpckit.boot.factory.GrpcKitChannelBuilderFactory;
 import cn.fantasticmao.grpckit.boot.metadata.ApplicationMetadata;
 import cn.fantasticmao.grpckit.boot.metadata.ApplicationMetadataCache;
 import cn.fantasticmao.grpckit.springboot.annotation.GrpcClient;
-import cn.fantasticmao.grpckit.springboot.factory.GrpcKitChannelBuilderFactory;
 import cn.fantasticmao.grpckit.util.ProtoUtil;
 import io.grpc.Channel;
 import io.grpc.ServiceDescriptor;
@@ -127,13 +127,13 @@ public class GrpcClientBeanPostProcessor extends ApplicationBaseInfo implements 
     private Channel getChannel(String dstAppName) {
         String appName = super.getCurrentAppName();
         GrpcKitConfig config = super.getGrpcKitConfig();
-        GrpcKitChannelBuilderFactory channelBuilderFactory = super.getGrpcKitChannelBuilderFactory();
+        GrpcKitChannelBuilderFactory factory = super.getGrpcKitChannelBuilderFactory();
 
-        return channelCache.computeIfAbsent(dstAppName, key -> {
-            GrpcKitChannelBuilder builder = GrpcKitChannelBuilder.forConfig(appName, dstAppName, config);
-            builder = channelBuilderFactory.customize(builder);
-            return builder.build();
-        });
+        return channelCache.computeIfAbsent(dstAppName, key ->
+            GrpcKitChannelBuilder.forConfig(appName, dstAppName, config)
+                .customize(factory)
+                .build()
+        );
     }
 
     private String getDependApplicationName(String serviceName) {
