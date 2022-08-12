@@ -10,6 +10,7 @@ import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.internal.AbstractServerImplBuilder;
 import io.micrometer.core.instrument.Metrics;
+import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.binder.jvm.ExecutorServiceMetrics;
 import org.slf4j.Logger;
@@ -25,6 +26,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.ServiceLoader;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 
 /**
@@ -40,6 +42,8 @@ public class GrpcKitServerBuilder extends AbstractServerImplBuilder<GrpcKitServe
     private final String appName;
     private final GrpcKitConfig config;
     private final ServerBuilder<?> serverBuilder;
+    @Nullable
+    private Executor executor;
 
     private GrpcKitServerBuilder(String appName, @Nonnull GrpcKitConfig config) {
         this.appName = appName;
@@ -65,14 +69,27 @@ public class GrpcKitServerBuilder extends AbstractServerImplBuilder<GrpcKitServe
     @Override
     public GrpcKitServerBuilder executor(@Nullable Executor executor) {
         if (executor != null) {
-            Tags tags = Tags.of("app.name", appName, "group", config.getGroup());
+            /*
+             * Attributes that SHOULD be included on metric events.
+             *
+             * @see https://opentelemetry.io/docs/reference/specification/metrics/semantic_conventions/rpc/
+             */
+            Tags tags = Tags.of(
+                Tag.of("rpc.system", "grpc"),
+                Tag.of("app.name", appName),
+                Tag.of("app.group", config.getGroup())
+            );
+            String executorName = "grpc_server";
+            String metricPrefix = "rpc.server";
             /*
              * Add executor metrics to the global registry.
              *
+             * @see https://github.com/open-telemetry/opentelemetry-java-instrumentation/issues/5292
              * @see https://github.com/open-telemetry/opentelemetry-java-instrumentation/blob/9058ad6f40a75d15a70a69d7fe32ff2c19b05a00/instrumentation/micrometer/micrometer-1.5/javaagent/src/main/java/io/opentelemetry/javaagent/instrumentation/micrometer/v1_5/MetricsInstrumentation.java#L35
              */
             executor = ExecutorServiceMetrics.monitor(Metrics.globalRegistry, executor,
-                "grpc_server", tags);
+                executorName, metricPrefix, tags);
+            this.executor = executor;
         }
         return super.executor(executor);
     }
@@ -85,6 +102,20 @@ public class GrpcKitServerBuilder extends AbstractServerImplBuilder<GrpcKitServe
             public Server start() throws IOException {
                 Server _server = super.start();
                 GrpcKitServerBuilder.this.register(_server);
+                return _server;
+            }
+
+            @Override
+            public Server shutdown() {
+                Server _server = super.shutdown();
+                GrpcKitServerBuilder.this.shutdown();
+                return _server;
+            }
+
+            @Override
+            public Server shutdownNow() {
+                Server _server = super.shutdownNow();
+                GrpcKitServerBuilder.this.shutdownNow();
                 return _server;
             }
         };
@@ -129,5 +160,23 @@ public class GrpcKitServerBuilder extends AbstractServerImplBuilder<GrpcKitServe
             .filter(ServiceRegistryProvider::isAvailable)
             .sorted()
             .collect(Collectors.toList());
+    }
+
+    private void shutdown() {
+        if (this.executor == null) {
+            return;
+        }
+        if (this.executor instanceof ExecutorService) {
+            ((ExecutorService) this.executor).shutdown();
+        }
+    }
+
+    public void shutdownNow() {
+        if (this.executor == null) {
+            return;
+        }
+        if (this.executor instanceof ExecutorService) {
+            ((ExecutorService) this.executor).shutdownNow();
+        }
     }
 }

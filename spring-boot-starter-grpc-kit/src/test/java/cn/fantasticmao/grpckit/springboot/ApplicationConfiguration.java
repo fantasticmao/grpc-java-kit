@@ -1,13 +1,12 @@
 package cn.fantasticmao.grpckit.springboot;
 
+import cn.fantasticmao.grpckit.boot.factory.GrpcKitChannelBuilderFactory;
 import cn.fantasticmao.grpckit.boot.factory.GrpcKitServerBuilderFactory;
+import cn.fantasticmao.grpckit.boot.factory.GrpcKitThreadFactory;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * ApplicationConfiguration
@@ -20,9 +19,19 @@ import java.util.concurrent.TimeUnit;
 public class ApplicationConfiguration {
 
     @Bean
+    public GrpcKitChannelBuilderFactory grpcKitChannelBuilderFactory() {
+        ExecutorService executorService = new ThreadPoolExecutor(5, 50,
+            10, TimeUnit.MINUTES, new ArrayBlockingQueue<>(200),
+            new GrpcKitThreadFactory.Channel("unit_test_spring_boot"));
+        return builder -> GrpcKitChannelBuilderFactory.Default.INSTANCE.customize(builder)
+            .executor(executorService);
+    }
+
+    @Bean
     public GrpcKitServerBuilderFactory grpcKitServerBuilderFactory() {
         ExecutorService executorService = new ThreadPoolExecutor(5, 100,
-            10, TimeUnit.MINUTES, new SynchronousQueue<>());
+            10, TimeUnit.MINUTES, new SynchronousQueue<>(),
+            new GrpcKitThreadFactory.Server("unit_test_spring_boot"));
         return (builder) -> GrpcKitServerBuilderFactory.Default.INSTANCE.customize(builder)
             .executor(executorService);
     }

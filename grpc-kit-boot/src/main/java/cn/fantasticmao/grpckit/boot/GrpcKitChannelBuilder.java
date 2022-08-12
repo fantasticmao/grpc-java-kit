@@ -9,6 +9,7 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.internal.AbstractManagedChannelImplBuilder;
 import io.micrometer.core.instrument.Metrics;
+import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.Tags;
 import io.micrometer.core.instrument.binder.jvm.ExecutorServiceMetrics;
 
@@ -62,15 +63,27 @@ public class GrpcKitChannelBuilder extends AbstractManagedChannelImplBuilder<Grp
     @Override
     public GrpcKitChannelBuilder executor(Executor executor) {
         if (executor != null) {
-            Tags tags = Tags.of("src.app.name", srcAppName, "dst.app.name", dstAppName,
-                "group", config.getGroup());
+            /*
+             * Attributes that SHOULD be included on metric events.
+             *
+             * @see https://opentelemetry.io/docs/reference/specification/metrics/semantic_conventions/rpc/
+             */
+            Tags tags = Tags.of(
+                Tag.of("rpc.system", "grpc"),
+                Tag.of("app.name", srcAppName),
+                Tag.of("app.peer.name", dstAppName),
+                Tag.of("app.group", config.getGroup())
+            );
+            String executorName = "grpc_channel_" + dstAppName;
+            String metricPrefix = "rpc.channel";
             /*
              * Add executor metrics to the global registry.
              *
+             * @see https://github.com/open-telemetry/opentelemetry-java-instrumentation/issues/5292
              * @see https://github.com/open-telemetry/opentelemetry-java-instrumentation/blob/9058ad6f40a75d15a70a69d7fe32ff2c19b05a00/instrumentation/micrometer/micrometer-1.5/javaagent/src/main/java/io/opentelemetry/javaagent/instrumentation/micrometer/v1_5/MetricsInstrumentation.java#L35
              */
             executor = ExecutorServiceMetrics.monitor(Metrics.globalRegistry, executor,
-                "grpc_channel", tags);
+                executorName, metricPrefix, tags);
         }
         return super.executor(executor);
     }
